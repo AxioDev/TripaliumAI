@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: tripalium-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tripalium
+      POSTGRES_PASSWORD: tripalium_prod_2024_secure
+      POSTGRES_DB: tripalium
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tripalium"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for queues
+  redis:
+    image: redis:7-alpine
+    container_name: tripalium-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NestJS API
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: tripalium-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://tripalium:tripalium_prod_2024_secure@postgres:5432/tripalium
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: tripalium-jwt-secret-prod-2024-very-secure-key
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      SMTP_HOST: localhost
+      SMTP_PORT: "1025"
+      SMTP_FROM: noreply@tripalium.projets.work
+      ENABLE_REAL_EMAIL: "false"
+      CORS_ORIGINS: https://tripalium.projets.work,http://tripalium.projets.work
+    volumes:
+      - uploads_data:/app/uploads
+    ports:
+      - "3001:3001"
+
+  # Next.js Web App
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://tripalium.projets.work
+    container_name: tripalium-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      NODE_ENV: production
+      NEXTAUTH_URL: https://tripalium.projets.work
+      NEXTAUTH_SECRET: tripalium-nextauth-secret-prod-2024-secure
+      AUTH_TRUST_HOST: "true"
+      AUTH_URL: https://tripalium.projets.work
+    ports:
+      - "3000:3000"
+
+  # Caddy (simpler than Nginx + Certbot, auto SSL)
+  caddy:
+    image: caddy:2-alpine
+    container_name: tripalium-caddy
+    restart: unless-stopped
+    depends_on:
+      - api
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  postgres_data:
+  redis_data:
+  uploads_data:
+  caddy_data:
+  caddy_config:

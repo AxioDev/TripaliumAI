@@ -1,0 +1,66 @@
+# Web Dockerfile
+FROM node:20-alpine AS base
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+
+WORKDIR /app
+
+# Install dependencies
+FROM base AS deps
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
+COPY apps/web/package.json ./apps/web/
+COPY packages/shared/package.json ./packages/shared/
+
+RUN pnpm install --frozen-lockfile
+
+# Build shared package
+FROM base AS shared-builder
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY packages/shared ./packages/shared
+COPY tsconfig.json ./
+
+WORKDIR /app/packages/shared
+RUN pnpm build
+
+# Build web app
+FROM base AS web-builder
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=shared-builder /app/packages/shared ./packages/shared
+COPY apps/web ./apps/web
+COPY tsconfig.json ./
+
+WORKDIR /app/apps/web
+
+# Set build-time environment variables
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# Build
+RUN pnpm build
+
+# Production image
+FROM base AS runner
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy built files
+COPY --from=web-builder /app/apps/web/public ./public
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=web-builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "server.js"]

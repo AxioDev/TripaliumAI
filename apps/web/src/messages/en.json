@@ -1,0 +1,757 @@
+{
+  "common": {
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "retry": "Retry",
+      "create": "Create",
+      "upload": "Upload",
+      "download": "Download",
+      "view": "View",
+      "edit": "Edit",
+      "close": "Close",
+      "done": "Done",
+      "next": "Next",
+      "previous": "Previous",
+      "start": "Start",
+      "stop": "Stop",
+      "pause": "Pause",
+      "resume": "Resume",
+      "withdraw": "Withdraw",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "status": {
+      "loading": "Loading...",
+      "error": "Error",
+      "success": "Success",
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalidEmail": "Invalid email address",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordsNoMatch": "Passwords do not match"
+    },
+    "time": {
+      "ago": "{time} ago",
+      "created": "Created {time}",
+      "updated": "Updated {time}",
+      "submitted": "Submitted {time}",
+      "expires": "Expires {time}",
+      "lastUsed": "Last used {time}"
+    },
+    "pagination": {
+      "page": "Page {current} of {total}",
+      "showing": "Showing {start} to {end} of {total}"
+    },
+    "empty": {
+      "noData": "No data available",
+      "noResults": "No results found"
+    }
+  },
+  "nav": {
+    "brand": "TripaliumAI",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "cvs": "CVs",
+    "campaigns": "Campaigns",
+    "applications": "Applications",
+    "activity": "Activity",
+    "apiKeys": "API Keys",
+    "settings": "Settings",
+    "signOut": "Sign out",
+    "openMenu": "Open menu"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "description": "Enter your email and password to access your account",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "toast": {
+        "error": {
+          "title": "Error",
+          "invalidCredentials": "Invalid email or password",
+          "generic": "Something went wrong"
+        }
+      }
+    },
+    "signup": {
+      "title": "Create account",
+      "description": "Enter your email and password to create your account",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "confirmPassword": "Confirm Password",
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "toast": {
+        "success": {
+          "title": "Success",
+          "description": "Account created! Please sign in."
+        },
+        "error": {
+          "title": "Error",
+          "passwordsNoMatch": "Passwords do not match",
+          "passwordTooShort": "Password must be at least 8 characters",
+          "generic": "Signup failed"
+        }
+      }
+    }
+  },
+  "landing": {
+    "title": "TripaliumAI",
+    "subtitle": "Automate your job search with AI-powered CV generation and smart application matching. Upload your resume, define your criteria, and let us handle the rest.",
+    "getStarted": "Get Started",
+    "signIn": "Sign In",
+    "features": {
+      "upload": {
+        "title": "Upload Your CV",
+        "description": "Upload your existing resume. Our AI extracts and structures your experience, skills, and education."
+      },
+      "criteria": {
+        "title": "Define Criteria",
+        "description": "Set your target roles, locations, and preferences. We find matching opportunities automatically."
+      },
+      "applications": {
+        "title": "Smart Applications",
+        "description": "AI generates tailored CVs and cover letters. Review and apply with one click."
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Your job search at a glance",
+    "newCampaign": "New Campaign",
+    "stats": {
+      "cvsUploaded": "CVs Uploaded",
+      "cvsUploadedEmpty": "Upload your first CV to get started",
+      "cvsUploadedHint": "CVs available for applications",
+      "activeCampaigns": "Active Campaigns",
+      "activeCampaignsHint": "of {total} total campaigns",
+      "activeCampaignsEmpty": "Create a campaign to start finding jobs",
+      "jobsDiscovered": "Jobs Discovered",
+      "jobsDiscoveredHint": "Jobs matching your criteria",
+      "jobsDiscoveredEmpty": "Matching jobs will appear here",
+      "applications": "Applications",
+      "applicationsSubmitted": "{count} submitted",
+      "applicationsHint": "Track your application progress"
+    },
+    "pendingReview": {
+      "title": "{count, plural, one {# application} other {# applications}} pending review",
+      "description": "Review generated documents before confirming",
+      "action": "Review Now"
+    },
+    "error": {
+      "title": "Couldn't load dashboard data",
+      "description": "Please try again or check your connection."
+    },
+    "gettingStarted": {
+      "title": "Getting Started",
+      "subtitle": "Complete these steps to set up your job search",
+      "step1": {
+        "title": "Upload your CV",
+        "complete": "CV uploaded successfully",
+        "pending": "Upload a PDF resume to extract your profile data"
+      },
+      "step2": {
+        "title": "Create a campaign",
+        "complete": "Campaign created",
+        "pending": "Define your target roles, locations, and preferences"
+      },
+      "step3": {
+        "title": "Start your campaign",
+        "complete": "Campaign is running",
+        "pending": "Click \"Start\" on your campaign to begin finding jobs"
+      }
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "subtitle": "Common tasks and shortcuts",
+      "uploadCv": "Upload a new CV",
+      "createCampaign": "Create new campaign",
+      "reviewApplications": "Review applications",
+      "updateProfile": "Update profile"
+    },
+    "activeCampaigns": {
+      "title": "Active Campaigns",
+      "subtitle": "Currently running job searches",
+      "jobs": "{count} jobs",
+      "running": "Running",
+      "viewAll": "View all campaigns"
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "subtitle": "Your latest actions and updates",
+      "empty": "No recent activity. Start by uploading your CV.",
+      "viewAll": "View all activity",
+      "practice": "(practice)",
+      "failed": "Failed"
+    },
+    "actions": {
+      "userLogin": "User logged in",
+      "profileCreated": "Profile created",
+      "profileUpdated": "Profile updated",
+      "cvUploaded": "CV uploaded",
+      "cvParseStarted": "CV parsing started",
+      "cvParsed": "CV parsed successfully",
+      "cvParseFailed": "CV parsing failed",
+      "campaignCreated": "Campaign created",
+      "campaignStarted": "Campaign started",
+      "campaignPaused": "Campaign paused",
+      "campaignStopped": "Campaign stopped",
+      "jobDiscovered": "Job discovered",
+      "jobAnalyzed": "Job analyzed",
+      "jobMatched": "Job matched",
+      "jobRejected": "Job rejected",
+      "jobDiscoveryStarted": "Job discovery started",
+      "jobDiscoveryCompleted": "Job discovery completed",
+      "jobAnalysisStarted": "Job analysis started",
+      "applicationCreated": "Application created",
+      "applicationConfirmed": "Application confirmed",
+      "applicationSubmitted": "Application submitted",
+      "applicationWithdrawn": "Application withdrawn",
+      "documentGenerationStarted": "Document generation started",
+      "documentGenerated": "Document generated",
+      "apiKeyCreated": "API key created",
+      "apiKeyRevoked": "API key revoked"
+    }
+  },
+  "campaigns": {
+    "title": "Campaigns",
+    "subtitle": "Manage your job search campaigns",
+    "newCampaign": "New Campaign",
+    "new": {
+      "title": "New Campaign",
+      "subtitle": "Define your job search criteria",
+      "details": {
+        "title": "Campaign Details",
+        "description": "Give your campaign a name and define the target roles",
+        "name": "Campaign Name",
+        "namePlaceholder": "e.g., Senior Frontend Engineer - Paris",
+        "targetRoles": "Target Roles",
+        "targetRolesPlaceholder": "e.g., Frontend Developer",
+        "targetLocations": "Target Locations",
+        "targetLocationsPlaceholder": "e.g., Paris, France"
+      },
+      "advanced": {
+        "title": "Advanced options",
+        "preferences": {
+          "title": "Preferences",
+          "description": "Set your contract and salary preferences"
+        },
+        "contractTypes": "Contract Types",
+        "contractTypesHint": "Leave empty to include all contract types",
+        "salaryMin": "Minimum Salary",
+        "salaryMax": "Maximum Salary",
+        "currency": "Currency",
+        "remoteWork": "Remote Work",
+        "remoteWorkHint": "Include remote positions in search"
+      },
+      "matching": {
+        "title": "Matching Settings",
+        "description": "Configure how jobs are matched and processed",
+        "threshold": "Match Threshold",
+        "thresholdHint": "Higher threshold = fewer but more relevant jobs. Lower threshold = more jobs but less relevant. Start with 60% and adjust based on results.",
+        "thresholdStrict": "Strict - fewer but highly relevant matches.",
+        "thresholdBalanced": "Balanced - recommended for most users.",
+        "thresholdRelaxed": "Relaxed - more jobs, but less relevant."
+      },
+      "automation": {
+        "autoApply": "Auto-Apply",
+        "autoApplyBeta": "Beta",
+        "autoApplyHint": "When enabled, we'll automatically generate application documents for matching jobs. You'll still need to review and approve before anything is sent.",
+        "autoApplyDescription": "Automatically apply to jobs above threshold (requires review)",
+        "practiceMode": "Practice Mode",
+        "practiceModeHint": "Perfect for testing! Documents are created but never actually sent to employers. Turn this off when you're ready to apply for real.",
+        "practiceModeDescription": "Practice mode: documents are generated but never sent to employers"
+      },
+      "sources": {
+        "title": "Job Sources",
+        "description": "Select which job boards to search (leave empty for all)",
+        "supportsAutoApply": "Supports auto-apply",
+        "names": {
+          "manual": "Manual Entry",
+          "mock": "Mock Jobs (Testing)",
+          "remoteok": "RemoteOK",
+          "welcometothejungle": "Welcome to the Jungle"
+        }
+      },
+      "contractTypes": {
+        "fullTime": "Full-time",
+        "partTime": "Part-time",
+        "contract": "Contract",
+        "freelance": "Freelance",
+        "internship": "Internship"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create Campaign",
+        "creating": "Creating..."
+      },
+      "toast": {
+        "created": {
+          "title": "Campaign created!",
+          "description": "Click \"Start\" to begin finding jobs."
+        },
+        "error": {
+          "title": "Error",
+          "createFailed": "Failed to create campaign",
+          "rolesRequired": "Please add at least one target role",
+          "locationsRequired": "Please add at least one target location"
+        }
+      }
+    },
+    "empty": {
+      "title": "No campaigns yet",
+      "description": "Create a campaign to define your job search criteria. We'll find matching opportunities and help you apply.",
+      "action": "Create your first campaign"
+    },
+    "practice": "Practice",
+    "jobs": "jobs",
+    "applications": "applications",
+    "created": "Created",
+    "status": {
+      "draft": "Draft",
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "actions": {
+      "view": "View details",
+      "start": "Start campaign",
+      "pause": "Pause campaign",
+      "stop": "Stop campaign",
+      "delete": "Delete campaign"
+    },
+    "deleteDialog": {
+      "title": "Delete Campaign",
+      "description": "Are you sure you want to delete this campaign? This will remove all discovered jobs and applications associated with it. This action cannot be undone.",
+      "confirm": "Delete Campaign"
+    },
+    "toast": {
+      "started": {
+        "title": "Campaign started",
+        "description": "Job discovery has begun."
+      },
+      "paused": {
+        "title": "Campaign paused",
+        "description": "Job discovery has been paused."
+      },
+      "stopped": {
+        "title": "Campaign stopped",
+        "description": "The campaign has been completed."
+      },
+      "deleted": {
+        "title": "Campaign deleted",
+        "description": "The campaign has been removed."
+      },
+      "error": {
+        "title": "Error",
+        "loadFailed": "Failed to load campaigns",
+        "startFailed": "Failed to start campaign",
+        "pauseFailed": "Failed to pause campaign",
+        "stopFailed": "Failed to stop campaign",
+        "deleteFailed": "Failed to delete campaign"
+      }
+    }
+  },
+  "applications": {
+    "title": "Applications",
+    "subtitle": "Track and manage your job applications",
+    "stats": {
+      "total": "Total",
+      "pendingReview": "Pending Review",
+      "readyToSubmit": "Ready to Submit",
+      "submitted": "Submitted"
+    },
+    "list": {
+      "title": "All Applications",
+      "subtitle": "Review and manage your job applications"
+    },
+    "filter": {
+      "all": "All applications",
+      "needsAttention": "Needs attention",
+      "readyToSend": "Ready to send",
+      "sent": "Sent",
+      "withdrawn": "Withdrawn"
+    },
+    "empty": {
+      "title": "No applications yet",
+      "description": "Start a campaign to discover matching jobs and create applications.",
+      "action": "View Campaigns"
+    },
+    "practice": "Practice",
+    "created": "Created",
+    "status": {
+      "pendingGeneration": "Creating documents...",
+      "generating": "Creating documents...",
+      "generationFailed": "Document creation failed",
+      "pendingReview": "Ready for review",
+      "readyToSubmit": "Ready to send",
+      "submitting": "Sending...",
+      "submitted": "Sent",
+      "submissionFailed": "Sending failed",
+      "withdrawn": "Withdrawn"
+    },
+    "actions": {
+      "confirm": "Confirm",
+      "markSubmitted": "Mark Submitted",
+      "withdraw": "Withdraw",
+      "viewDetails": "View details"
+    },
+    "toast": {
+      "confirmed": {
+        "title": "Application confirmed",
+        "description": "The application is ready to submit."
+      },
+      "withdrawn": {
+        "title": "Application withdrawn",
+        "description": "The application has been withdrawn."
+      },
+      "markedSubmitted": {
+        "title": "Marked as submitted",
+        "description": "The application has been marked as submitted."
+      },
+      "error": {
+        "title": "Error",
+        "loadFailed": "Failed to load applications"
+      }
+    }
+  },
+  "cvs": {
+    "title": "CVs",
+    "subtitle": "Upload and manage your resumes",
+    "uploadCv": "Upload CV",
+    "uploading": "Uploading...",
+    "empty": {
+      "title": "No CVs uploaded",
+      "description": "Upload your resume to get started. Our AI will extract your experience, skills, and education automatically."
+    },
+    "uploaded": "Uploaded",
+    "parsing": {
+      "analyzing": "Analyzing your CV... Usually takes 30-60 seconds.",
+      "completed": "COMPLETED",
+      "processing": "PROCESSING",
+      "pending": "PENDING",
+      "failed": "FAILED"
+    },
+    "actions": {
+      "viewParsed": "View parsed data",
+      "retryParsing": "Retry parsing",
+      "download": "Download",
+      "setBaseline": "Set as baseline",
+      "delete": "Delete"
+    },
+    "parsedData": {
+      "title": "Parsed CV Data",
+      "subtitle": "Extracted information from {fileName}",
+      "personalInfo": "Personal Information",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "summary": "Summary",
+      "workExperience": "Work Experience",
+      "present": "Present",
+      "skills": "Skills",
+      "extractionConfidence": "Extraction confidence"
+    },
+    "deleteDialog": {
+      "title": "Delete CV",
+      "description": "Are you sure you want to delete this CV? This action cannot be undone.",
+      "confirm": "Delete CV"
+    },
+    "toast": {
+      "uploaded": {
+        "title": "CV uploaded",
+        "description": "Your CV is being processed. This may take a moment."
+      },
+      "parsed": {
+        "title": "CV parsed successfully",
+        "description": "{fileName} has been analyzed and your profile has been updated."
+      },
+      "deleted": {
+        "title": "CV deleted",
+        "description": "The CV has been removed."
+      },
+      "baselineSet": {
+        "title": "Baseline updated",
+        "description": "This CV is now your baseline resume."
+      },
+      "reparseStarted": {
+        "title": "Re-parsing started",
+        "description": "The CV is being analyzed again."
+      },
+      "error": {
+        "title": "Error",
+        "loadFailed": "Failed to load CVs",
+        "uploadFailed": "Failed to upload CV. Please try again.",
+        "deleteFailed": "Failed to delete CV",
+        "baselineFailed": "Failed to set baseline",
+        "reparseFailed": "Failed to start parsing",
+        "parsedDataFailed": "Failed to load parsed data",
+        "invalidFileType": "Please upload a PDF file",
+        "fileTooLarge": "Maximum file size is 10MB"
+      }
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Manage your professional profile information",
+    "tabs": {
+      "personal": "Personal",
+      "experience": "Experience",
+      "education": "Education",
+      "skills": "Skills"
+    },
+    "personalInfo": {
+      "title": "Personal Information",
+      "subtitle": "Basic information used in your CV and applications",
+      "firstName": "First Name",
+      "firstNamePlaceholder": "John",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Doe",
+      "email": "Professional Email",
+      "emailPlaceholder": "john@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 555 123 4567",
+      "location": "Location",
+      "locationPlaceholder": "Paris, France",
+      "linkedIn": "LinkedIn URL",
+      "linkedInPlaceholder": "https://linkedin.com/in/johndoe",
+      "website": "Personal Website",
+      "websitePlaceholder": "https://johndoe.com"
+    },
+    "summary": {
+      "title": "Professional Summary",
+      "subtitle": "A brief summary of your professional background (2-3 sentences)",
+      "placeholder": "Experienced software engineer with expertise in full-stack development..."
+    },
+    "motivation": {
+      "title": "Motivation Text",
+      "subtitle": "A generic motivation text used as a base for cover letter generation",
+      "placeholder": "I am seeking a challenging role where I can leverage my technical skills while continuing to grow professionally..."
+    },
+    "saveProfile": "Save Profile",
+    "saving": "Saving...",
+    "error": {
+      "loadFailed": "Failed to load profile"
+    },
+    "toast": {
+      "updated": {
+        "title": "Profile updated",
+        "description": "Your profile has been saved."
+      },
+      "experienceUpdated": {
+        "title": "Work experience updated",
+        "description": "Your work experience has been saved."
+      },
+      "educationUpdated": {
+        "title": "Education updated",
+        "description": "Your education has been saved."
+      },
+      "skillsUpdated": {
+        "title": "Skills updated",
+        "description": "Your skills have been saved."
+      },
+      "error": {
+        "title": "Error",
+        "updateFailed": "Failed to update profile",
+        "experienceFailed": "Failed to update work experience",
+        "educationFailed": "Failed to update education",
+        "skillsFailed": "Failed to update skills"
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account and application preferences",
+    "account": {
+      "title": "Account",
+      "subtitle": "Your account information",
+      "email": "Email"
+    },
+    "campaignDefaults": {
+      "title": "Campaign Defaults",
+      "subtitle": "Default settings for new campaigns",
+      "matchThreshold": "Match Threshold",
+      "matchThresholdHint": "Minimum match score required for a job to be considered a match",
+      "practiceMode": "Practice Mode by Default",
+      "practiceModeHint": "Practice mode: documents are generated but never sent to employers",
+      "autoApply": "Auto-Apply by Default",
+      "autoApplyHint": "Automatically generate applications for matched jobs",
+      "remoteJobs": "Include Remote Jobs",
+      "remoteJobsHint": "Include remote positions in job searches",
+      "savePreferences": "Save Preferences"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Configure how you want to be notified",
+      "email": "Email Notifications",
+      "emailHint": "Receive notifications via email",
+      "jobAlerts": "Job Alerts",
+      "jobAlertsHint": "Get notified when new matching jobs are found",
+      "applicationUpdates": "Application Updates",
+      "applicationUpdatesHint": "Get notified about application status changes",
+      "weeklyDigest": "Weekly Digest",
+      "weeklyDigestHint": "Receive a weekly summary of your job search activity"
+    },
+    "security": {
+      "title": "Security",
+      "subtitle": "Update your password",
+      "currentPassword": "Current Password",
+      "currentPasswordPlaceholder": "Enter current password",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm new password",
+      "updatePassword": "Update Password"
+    },
+    "language": {
+      "title": "Language",
+      "subtitle": "Choose your preferred language"
+    },
+    "toast": {
+      "saved": {
+        "title": "Settings saved",
+        "description": "Your preferences have been updated."
+      },
+      "passwordUpdated": {
+        "title": "Password updated",
+        "description": "Your password has been changed successfully."
+      },
+      "error": {
+        "title": "Error",
+        "passwordsNoMatch": "New passwords do not match",
+        "passwordTooShort": "Password must be at least 8 characters"
+      }
+    }
+  },
+  "apiKeys": {
+    "title": "API Keys",
+    "subtitle": "Manage API keys for programmatic access",
+    "createKey": "Create Key",
+    "info": {
+      "title": "API Access",
+      "description": "Use API keys to access TripaliumAI programmatically. Keys are shown only once when created. Store them securely and never share them publicly."
+    },
+    "list": {
+      "title": "Your API Keys",
+      "count": "{count, plural, one {# active key} other {# active keys}}"
+    },
+    "empty": {
+      "title": "No API keys",
+      "description": "Create an API key to access TripaliumAI programmatically.",
+      "action": "Create Your First Key"
+    },
+    "scope": {
+      "read": {
+        "label": "Read Only",
+        "description": "Can read data but not make changes"
+      },
+      "write": {
+        "label": "Read & Write",
+        "description": "Can read and modify data"
+      },
+      "admin": {
+        "label": "Admin",
+        "description": "Full access including account settings"
+      },
+      "test": {
+        "label": "Test",
+        "description": "For testing - actions are simulated"
+      }
+    },
+    "created": "Created",
+    "lastUsed": "Last used",
+    "expires": "Expires",
+    "createDialog": {
+      "title": "Create API Key",
+      "description": "Create a new API key for programmatic access. The key will only be shown once.",
+      "name": "Name",
+      "namePlaceholder": "e.g., Production Server",
+      "nameHint": "A descriptive name to identify this key",
+      "scope": "Scope",
+      "scopePlaceholder": "Select scope",
+      "expiration": "Expiration (optional)",
+      "expirationNever": "Never expires",
+      "expiration7Days": "7 days",
+      "expiration30Days": "30 days",
+      "expiration90Days": "90 days",
+      "expiration1Year": "1 year"
+    },
+    "keyCreated": {
+      "title": "API Key Created",
+      "description": "Copy your API key now. You won't be able to see it again.",
+      "warning": "Make sure to copy your API key now. You won't be able to see it again!"
+    },
+    "revokeDialog": {
+      "title": "Revoke API Key",
+      "description": "Are you sure you want to revoke this API key? This action cannot be undone. Any applications using this key will lose access immediately.",
+      "confirm": "Revoke Key"
+    },
+    "toast": {
+      "revoked": {
+        "title": "API key revoked",
+        "description": "The API key has been permanently revoked."
+      },
+      "error": {
+        "title": "Error",
+        "loadFailed": "Failed to load API keys",
+        "createFailed": "Failed to create API key",
+        "revokeFailed": "Failed to revoke API key",
+        "nameRequired": "Please enter a name for the API key"
+      }
+    }
+  },
+  "activity": {
+    "title": "Activity",
+    "subtitle": "View your recent activity and action history",
+    "filters": {
+      "title": "Filters",
+      "entityType": "Entity type",
+      "all": "All types",
+      "profile": "Profile",
+      "cvs": "CVs",
+      "campaigns": "Campaigns",
+      "jobs": "Jobs",
+      "applications": "Applications",
+      "apiKeys": "API Keys"
+    },
+    "log": {
+      "title": "Activity Log",
+      "total": "{count} total events"
+    },
+    "empty": {
+      "title": "No activity yet",
+      "description": "Your activity will appear here as you use the platform."
+    },
+    "test": "Test",
+    "toast": {
+      "error": {
+        "title": "Error",
+        "loadFailed": "Failed to load activity logs"
+      }
+    }
+  },
+  "metadata": {
+    "title": "TripaliumAI - Job Search Automation",
+    "description": "Automate your job search with AI-powered CV generation and applications"
+  }
+}

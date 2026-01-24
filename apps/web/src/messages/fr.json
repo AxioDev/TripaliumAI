@@ -1,0 +1,757 @@
+{
+  "common": {
+    "actions": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "confirm": "Confirmer",
+      "retry": "Réessayer",
+      "create": "Créer",
+      "upload": "Téléverser",
+      "download": "Télécharger",
+      "view": "Voir",
+      "edit": "Modifier",
+      "close": "Fermer",
+      "done": "Terminé",
+      "next": "Suivant",
+      "previous": "Précédent",
+      "start": "Démarrer",
+      "stop": "Arrêter",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "withdraw": "Retirer",
+      "copy": "Copier",
+      "copied": "Copié"
+    },
+    "status": {
+      "loading": "Chargement...",
+      "error": "Erreur",
+      "success": "Succès",
+      "pending": "En attente",
+      "processing": "En cours",
+      "completed": "Terminé",
+      "failed": "Échoué"
+    },
+    "validation": {
+      "required": "Ce champ est requis",
+      "invalidEmail": "Adresse e-mail invalide",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordsNoMatch": "Les mots de passe ne correspondent pas"
+    },
+    "time": {
+      "ago": "il y a {time}",
+      "created": "Créé {time}",
+      "updated": "Mis à jour {time}",
+      "submitted": "Soumis {time}",
+      "expires": "Expire {time}",
+      "lastUsed": "Dernière utilisation {time}"
+    },
+    "pagination": {
+      "page": "Page {current} sur {total}",
+      "showing": "Affichage de {start} à {end} sur {total}"
+    },
+    "empty": {
+      "noData": "Aucune donnée disponible",
+      "noResults": "Aucun résultat trouvé"
+    }
+  },
+  "nav": {
+    "brand": "TripaliumAI",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "cvs": "CV",
+    "campaigns": "Campagnes",
+    "applications": "Candidatures",
+    "activity": "Activité",
+    "apiKeys": "Clés API",
+    "settings": "Paramètres",
+    "signOut": "Déconnexion",
+    "openMenu": "Ouvrir le menu"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "description": "Entrez votre e-mail et mot de passe pour accéder à votre compte",
+      "email": "E-mail",
+      "emailPlaceholder": "vous@exemple.com",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "submitting": "Connexion en cours...",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "signUp": "S'inscrire",
+      "toast": {
+        "error": {
+          "title": "Erreur",
+          "invalidCredentials": "E-mail ou mot de passe invalide",
+          "generic": "Une erreur s'est produite"
+        }
+      }
+    },
+    "signup": {
+      "title": "Créer un compte",
+      "description": "Entrez votre e-mail et mot de passe pour créer votre compte",
+      "email": "E-mail",
+      "emailPlaceholder": "vous@exemple.com",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Au moins 8 caractères",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "Créer un compte",
+      "submitting": "Création du compte...",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter",
+      "toast": {
+        "success": {
+          "title": "Succès",
+          "description": "Compte créé ! Veuillez vous connecter."
+        },
+        "error": {
+          "title": "Erreur",
+          "passwordsNoMatch": "Les mots de passe ne correspondent pas",
+          "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
+          "generic": "L'inscription a échoué"
+        }
+      }
+    }
+  },
+  "landing": {
+    "title": "TripaliumAI",
+    "subtitle": "Automatisez votre recherche d'emploi avec la génération de CV assistée par IA et la correspondance intelligente des candidatures. Téléversez votre CV, définissez vos critères, et laissez-nous faire le reste.",
+    "getStarted": "Commencer",
+    "signIn": "Se connecter",
+    "features": {
+      "upload": {
+        "title": "Téléversez votre CV",
+        "description": "Téléversez votre CV existant. Notre IA extrait et structure votre expérience, vos compétences et votre formation."
+      },
+      "criteria": {
+        "title": "Définissez vos critères",
+        "description": "Définissez vos postes cibles, lieux et préférences. Nous trouvons automatiquement les opportunités correspondantes."
+      },
+      "applications": {
+        "title": "Candidatures intelligentes",
+        "description": "L'IA génère des CV et lettres de motivation personnalisés. Examinez et postulez en un clic."
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Votre recherche d'emploi en un coup d'œil",
+    "newCampaign": "Nouvelle campagne",
+    "stats": {
+      "cvsUploaded": "CV téléversés",
+      "cvsUploadedEmpty": "Téléversez votre premier CV pour commencer",
+      "cvsUploadedHint": "CV disponibles pour les candidatures",
+      "activeCampaigns": "Campagnes actives",
+      "activeCampaignsHint": "sur {total} campagnes au total",
+      "activeCampaignsEmpty": "Créez une campagne pour commencer à trouver des emplois",
+      "jobsDiscovered": "Emplois découverts",
+      "jobsDiscoveredHint": "Emplois correspondant à vos critères",
+      "jobsDiscoveredEmpty": "Les emplois correspondants apparaîtront ici",
+      "applications": "Candidatures",
+      "applicationsSubmitted": "{count} envoyées",
+      "applicationsHint": "Suivez la progression de vos candidatures"
+    },
+    "pendingReview": {
+      "title": "{count, plural, one {# candidature} other {# candidatures}} en attente de révision",
+      "description": "Examinez les documents générés avant de confirmer",
+      "action": "Réviser maintenant"
+    },
+    "error": {
+      "title": "Impossible de charger les données du tableau de bord",
+      "description": "Veuillez réessayer ou vérifier votre connexion."
+    },
+    "gettingStarted": {
+      "title": "Pour commencer",
+      "subtitle": "Complétez ces étapes pour configurer votre recherche d'emploi",
+      "step1": {
+        "title": "Téléversez votre CV",
+        "complete": "CV téléversé avec succès",
+        "pending": "Téléversez un CV PDF pour extraire vos données de profil"
+      },
+      "step2": {
+        "title": "Créez une campagne",
+        "complete": "Campagne créée",
+        "pending": "Définissez vos postes cibles, lieux et préférences"
+      },
+      "step3": {
+        "title": "Démarrez votre campagne",
+        "complete": "La campagne est en cours",
+        "pending": "Cliquez sur « Démarrer » sur votre campagne pour commencer à trouver des emplois"
+      }
+    },
+    "quickActions": {
+      "title": "Actions rapides",
+      "subtitle": "Tâches courantes et raccourcis",
+      "uploadCv": "Téléverser un nouveau CV",
+      "createCampaign": "Créer une nouvelle campagne",
+      "reviewApplications": "Réviser les candidatures",
+      "updateProfile": "Mettre à jour le profil"
+    },
+    "activeCampaigns": {
+      "title": "Campagnes actives",
+      "subtitle": "Recherches d'emploi en cours",
+      "jobs": "{count} emplois",
+      "running": "En cours",
+      "viewAll": "Voir toutes les campagnes"
+    },
+    "recentActivity": {
+      "title": "Activité récente",
+      "subtitle": "Vos dernières actions et mises à jour",
+      "empty": "Aucune activité récente. Commencez par téléverser votre CV.",
+      "viewAll": "Voir toute l'activité",
+      "practice": "(pratique)",
+      "failed": "Échoué"
+    },
+    "actions": {
+      "userLogin": "Utilisateur connecté",
+      "profileCreated": "Profil créé",
+      "profileUpdated": "Profil mis à jour",
+      "cvUploaded": "CV téléversé",
+      "cvParseStarted": "Analyse du CV démarrée",
+      "cvParsed": "CV analysé avec succès",
+      "cvParseFailed": "Échec de l'analyse du CV",
+      "campaignCreated": "Campagne créée",
+      "campaignStarted": "Campagne démarrée",
+      "campaignPaused": "Campagne mise en pause",
+      "campaignStopped": "Campagne arrêtée",
+      "jobDiscovered": "Emploi découvert",
+      "jobAnalyzed": "Emploi analysé",
+      "jobMatched": "Emploi correspondant",
+      "jobRejected": "Emploi rejeté",
+      "jobDiscoveryStarted": "Recherche d'emplois démarrée",
+      "jobDiscoveryCompleted": "Recherche d'emplois terminée",
+      "jobAnalysisStarted": "Analyse d'emploi démarrée",
+      "applicationCreated": "Candidature créée",
+      "applicationConfirmed": "Candidature confirmée",
+      "applicationSubmitted": "Candidature envoyée",
+      "applicationWithdrawn": "Candidature retirée",
+      "documentGenerationStarted": "Génération de documents démarrée",
+      "documentGenerated": "Document généré",
+      "apiKeyCreated": "Clé API créée",
+      "apiKeyRevoked": "Clé API révoquée"
+    }
+  },
+  "campaigns": {
+    "title": "Campagnes",
+    "subtitle": "Gérez vos campagnes de recherche d'emploi",
+    "newCampaign": "Nouvelle campagne",
+    "new": {
+      "title": "Nouvelle campagne",
+      "subtitle": "Définissez vos critères de recherche d'emploi",
+      "details": {
+        "title": "Détails de la campagne",
+        "description": "Donnez un nom à votre campagne et définissez les postes cibles",
+        "name": "Nom de la campagne",
+        "namePlaceholder": "ex. Ingénieur Frontend Senior - Paris",
+        "targetRoles": "Postes cibles",
+        "targetRolesPlaceholder": "ex. Développeur Frontend",
+        "targetLocations": "Lieux cibles",
+        "targetLocationsPlaceholder": "ex. Paris, France"
+      },
+      "advanced": {
+        "title": "Options avancées",
+        "preferences": {
+          "title": "Préférences",
+          "description": "Définissez vos préférences de contrat et de salaire"
+        },
+        "contractTypes": "Types de contrat",
+        "contractTypesHint": "Laissez vide pour inclure tous les types de contrat",
+        "salaryMin": "Salaire minimum",
+        "salaryMax": "Salaire maximum",
+        "currency": "Devise",
+        "remoteWork": "Télétravail",
+        "remoteWorkHint": "Inclure les postes à distance dans la recherche"
+      },
+      "matching": {
+        "title": "Paramètres de correspondance",
+        "description": "Configurez comment les emplois sont évalués et traités",
+        "threshold": "Seuil de correspondance",
+        "thresholdHint": "Seuil élevé = moins d'emplois mais plus pertinents. Seuil bas = plus d'emplois mais moins pertinents. Commencez à 60% et ajustez selon les résultats.",
+        "thresholdStrict": "Strict - moins de résultats mais très pertinents.",
+        "thresholdBalanced": "Équilibré - recommandé pour la plupart des utilisateurs.",
+        "thresholdRelaxed": "Souple - plus d'emplois, mais moins pertinents."
+      },
+      "automation": {
+        "autoApply": "Candidature automatique",
+        "autoApplyBeta": "Bêta",
+        "autoApplyHint": "Lorsque activé, nous générerons automatiquement les documents de candidature pour les emplois correspondants. Vous devrez toujours les examiner et les approuver avant tout envoi.",
+        "autoApplyDescription": "Postuler automatiquement aux emplois au-dessus du seuil (nécessite révision)",
+        "practiceMode": "Mode pratique",
+        "practiceModeHint": "Parfait pour les tests ! Les documents sont créés mais jamais envoyés aux employeurs. Désactivez cette option quand vous êtes prêt à postuler pour de vrai.",
+        "practiceModeDescription": "Mode pratique : les documents sont générés mais jamais envoyés aux employeurs"
+      },
+      "sources": {
+        "title": "Sources d'emploi",
+        "description": "Sélectionnez les sites d'emploi à rechercher (laissez vide pour tous)",
+        "supportsAutoApply": "Prend en charge la candidature automatique",
+        "names": {
+          "manual": "Saisie manuelle",
+          "mock": "Emplois fictifs (Test)",
+          "remoteok": "RemoteOK",
+          "welcometothejungle": "Welcome to the Jungle"
+        }
+      },
+      "contractTypes": {
+        "fullTime": "Temps plein",
+        "partTime": "Temps partiel",
+        "contract": "Contrat",
+        "freelance": "Freelance",
+        "internship": "Stage"
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "create": "Créer la campagne",
+        "creating": "Création..."
+      },
+      "toast": {
+        "created": {
+          "title": "Campagne créée !",
+          "description": "Cliquez sur « Démarrer » pour commencer à trouver des emplois."
+        },
+        "error": {
+          "title": "Erreur",
+          "createFailed": "Échec de la création de la campagne",
+          "rolesRequired": "Veuillez ajouter au moins un poste cible",
+          "locationsRequired": "Veuillez ajouter au moins un lieu cible"
+        }
+      }
+    },
+    "empty": {
+      "title": "Aucune campagne",
+      "description": "Créez une campagne pour définir vos critères de recherche d'emploi. Nous trouverons les opportunités correspondantes et vous aiderons à postuler.",
+      "action": "Créer votre première campagne"
+    },
+    "practice": "Pratique",
+    "jobs": "emplois",
+    "applications": "candidatures",
+    "created": "Créée",
+    "status": {
+      "draft": "Brouillon",
+      "active": "Active",
+      "paused": "En pause",
+      "completed": "Terminée",
+      "failed": "Échouée"
+    },
+    "actions": {
+      "view": "Voir les détails",
+      "start": "Démarrer la campagne",
+      "pause": "Mettre en pause",
+      "stop": "Arrêter la campagne",
+      "delete": "Supprimer la campagne"
+    },
+    "deleteDialog": {
+      "title": "Supprimer la campagne",
+      "description": "Êtes-vous sûr de vouloir supprimer cette campagne ? Cela supprimera tous les emplois découverts et les candidatures associées. Cette action est irréversible.",
+      "confirm": "Supprimer la campagne"
+    },
+    "toast": {
+      "started": {
+        "title": "Campagne démarrée",
+        "description": "La recherche d'emplois a commencé."
+      },
+      "paused": {
+        "title": "Campagne mise en pause",
+        "description": "La recherche d'emplois a été mise en pause."
+      },
+      "stopped": {
+        "title": "Campagne arrêtée",
+        "description": "La campagne a été terminée."
+      },
+      "deleted": {
+        "title": "Campagne supprimée",
+        "description": "La campagne a été supprimée."
+      },
+      "error": {
+        "title": "Erreur",
+        "loadFailed": "Échec du chargement des campagnes",
+        "startFailed": "Échec du démarrage de la campagne",
+        "pauseFailed": "Échec de la mise en pause de la campagne",
+        "stopFailed": "Échec de l'arrêt de la campagne",
+        "deleteFailed": "Échec de la suppression de la campagne"
+      }
+    }
+  },
+  "applications": {
+    "title": "Candidatures",
+    "subtitle": "Suivez et gérez vos candidatures",
+    "stats": {
+      "total": "Total",
+      "pendingReview": "En attente de révision",
+      "readyToSubmit": "Prêtes à envoyer",
+      "submitted": "Envoyées"
+    },
+    "list": {
+      "title": "Toutes les candidatures",
+      "subtitle": "Révisez et gérez vos candidatures"
+    },
+    "filter": {
+      "all": "Toutes les candidatures",
+      "needsAttention": "Nécessite attention",
+      "readyToSend": "Prêtes à envoyer",
+      "sent": "Envoyées",
+      "withdrawn": "Retirées"
+    },
+    "empty": {
+      "title": "Aucune candidature",
+      "description": "Démarrez une campagne pour découvrir des emplois correspondants et créer des candidatures.",
+      "action": "Voir les campagnes"
+    },
+    "practice": "Pratique",
+    "created": "Créée",
+    "status": {
+      "pendingGeneration": "Création des documents...",
+      "generating": "Création des documents...",
+      "generationFailed": "Échec de la création des documents",
+      "pendingReview": "Prête pour révision",
+      "readyToSubmit": "Prête à envoyer",
+      "submitting": "Envoi en cours...",
+      "submitted": "Envoyée",
+      "submissionFailed": "Échec de l'envoi",
+      "withdrawn": "Retirée"
+    },
+    "actions": {
+      "confirm": "Confirmer",
+      "markSubmitted": "Marquer comme envoyée",
+      "withdraw": "Retirer",
+      "viewDetails": "Voir les détails"
+    },
+    "toast": {
+      "confirmed": {
+        "title": "Candidature confirmée",
+        "description": "La candidature est prête à être envoyée."
+      },
+      "withdrawn": {
+        "title": "Candidature retirée",
+        "description": "La candidature a été retirée."
+      },
+      "markedSubmitted": {
+        "title": "Marquée comme envoyée",
+        "description": "La candidature a été marquée comme envoyée."
+      },
+      "error": {
+        "title": "Erreur",
+        "loadFailed": "Échec du chargement des candidatures"
+      }
+    }
+  },
+  "cvs": {
+    "title": "CV",
+    "subtitle": "Téléversez et gérez vos CV",
+    "uploadCv": "Téléverser un CV",
+    "uploading": "Téléversement...",
+    "empty": {
+      "title": "Aucun CV téléversé",
+      "description": "Téléversez votre CV pour commencer. Notre IA extraira automatiquement votre expérience, vos compétences et votre formation."
+    },
+    "uploaded": "Téléversé",
+    "parsing": {
+      "analyzing": "Analyse de votre CV... Généralement 30 à 60 secondes.",
+      "completed": "TERMINÉ",
+      "processing": "EN COURS",
+      "pending": "EN ATTENTE",
+      "failed": "ÉCHOUÉ"
+    },
+    "actions": {
+      "viewParsed": "Voir les données extraites",
+      "retryParsing": "Réessayer l'analyse",
+      "download": "Télécharger",
+      "setBaseline": "Définir comme référence",
+      "delete": "Supprimer"
+    },
+    "parsedData": {
+      "title": "Données extraites du CV",
+      "subtitle": "Informations extraites de {fileName}",
+      "personalInfo": "Informations personnelles",
+      "name": "Nom",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "location": "Lieu",
+      "summary": "Résumé",
+      "workExperience": "Expérience professionnelle",
+      "present": "Présent",
+      "skills": "Compétences",
+      "extractionConfidence": "Confiance de l'extraction"
+    },
+    "deleteDialog": {
+      "title": "Supprimer le CV",
+      "description": "Êtes-vous sûr de vouloir supprimer ce CV ? Cette action est irréversible.",
+      "confirm": "Supprimer le CV"
+    },
+    "toast": {
+      "uploaded": {
+        "title": "CV téléversé",
+        "description": "Votre CV est en cours de traitement. Cela peut prendre un moment."
+      },
+      "parsed": {
+        "title": "CV analysé avec succès",
+        "description": "{fileName} a été analysé et votre profil a été mis à jour."
+      },
+      "deleted": {
+        "title": "CV supprimé",
+        "description": "Le CV a été supprimé."
+      },
+      "baselineSet": {
+        "title": "Référence mise à jour",
+        "description": "Ce CV est maintenant votre CV de référence."
+      },
+      "reparseStarted": {
+        "title": "Réanalyse démarrée",
+        "description": "Le CV est en cours de réanalyse."
+      },
+      "error": {
+        "title": "Erreur",
+        "loadFailed": "Échec du chargement des CV",
+        "uploadFailed": "Échec du téléversement du CV. Veuillez réessayer.",
+        "deleteFailed": "Échec de la suppression du CV",
+        "baselineFailed": "Échec de la définition comme référence",
+        "reparseFailed": "Échec du démarrage de l'analyse",
+        "parsedDataFailed": "Échec du chargement des données extraites",
+        "invalidFileType": "Veuillez téléverser un fichier PDF",
+        "fileTooLarge": "La taille maximale du fichier est de 10 Mo"
+      }
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Gérez vos informations professionnelles",
+    "tabs": {
+      "personal": "Personnel",
+      "experience": "Expérience",
+      "education": "Formation",
+      "skills": "Compétences"
+    },
+    "personalInfo": {
+      "title": "Informations personnelles",
+      "subtitle": "Informations de base utilisées dans votre CV et vos candidatures",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Jean",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Dupont",
+      "email": "E-mail professionnel",
+      "emailPlaceholder": "jean@exemple.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "location": "Lieu",
+      "locationPlaceholder": "Paris, France",
+      "linkedIn": "URL LinkedIn",
+      "linkedInPlaceholder": "https://linkedin.com/in/jeandupont",
+      "website": "Site web personnel",
+      "websitePlaceholder": "https://jeandupont.com"
+    },
+    "summary": {
+      "title": "Résumé professionnel",
+      "subtitle": "Un bref résumé de votre parcours professionnel (2-3 phrases)",
+      "placeholder": "Ingénieur logiciel expérimenté avec une expertise en développement full-stack..."
+    },
+    "motivation": {
+      "title": "Texte de motivation",
+      "subtitle": "Un texte de motivation générique utilisé comme base pour la génération de lettres de motivation",
+      "placeholder": "Je recherche un poste stimulant où je peux mettre à profit mes compétences techniques tout en continuant à me développer professionnellement..."
+    },
+    "saveProfile": "Enregistrer le profil",
+    "saving": "Enregistrement...",
+    "error": {
+      "loadFailed": "Échec du chargement du profil"
+    },
+    "toast": {
+      "updated": {
+        "title": "Profil mis à jour",
+        "description": "Votre profil a été enregistré."
+      },
+      "experienceUpdated": {
+        "title": "Expérience mise à jour",
+        "description": "Votre expérience professionnelle a été enregistrée."
+      },
+      "educationUpdated": {
+        "title": "Formation mise à jour",
+        "description": "Votre formation a été enregistrée."
+      },
+      "skillsUpdated": {
+        "title": "Compétences mises à jour",
+        "description": "Vos compétences ont été enregistrées."
+      },
+      "error": {
+        "title": "Erreur",
+        "updateFailed": "Échec de la mise à jour du profil",
+        "experienceFailed": "Échec de la mise à jour de l'expérience",
+        "educationFailed": "Échec de la mise à jour de la formation",
+        "skillsFailed": "Échec de la mise à jour des compétences"
+      }
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Gérez votre compte et vos préférences",
+    "account": {
+      "title": "Compte",
+      "subtitle": "Informations de votre compte",
+      "email": "E-mail"
+    },
+    "campaignDefaults": {
+      "title": "Paramètres de campagne par défaut",
+      "subtitle": "Paramètres par défaut pour les nouvelles campagnes",
+      "matchThreshold": "Seuil de correspondance",
+      "matchThresholdHint": "Score de correspondance minimum requis pour qu'un emploi soit considéré comme correspondant",
+      "practiceMode": "Mode pratique par défaut",
+      "practiceModeHint": "Mode pratique : les documents sont générés mais jamais envoyés aux employeurs",
+      "autoApply": "Candidature automatique par défaut",
+      "autoApplyHint": "Générer automatiquement des candidatures pour les emplois correspondants",
+      "remoteJobs": "Inclure les emplois à distance",
+      "remoteJobsHint": "Inclure les postes à distance dans les recherches d'emploi",
+      "savePreferences": "Enregistrer les préférences"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Configurez comment vous souhaitez être notifié",
+      "email": "Notifications par e-mail",
+      "emailHint": "Recevoir des notifications par e-mail",
+      "jobAlerts": "Alertes emploi",
+      "jobAlertsHint": "Être notifié quand de nouveaux emplois correspondants sont trouvés",
+      "applicationUpdates": "Mises à jour des candidatures",
+      "applicationUpdatesHint": "Être notifié des changements de statut des candidatures",
+      "weeklyDigest": "Résumé hebdomadaire",
+      "weeklyDigestHint": "Recevoir un résumé hebdomadaire de votre activité de recherche d'emploi"
+    },
+    "security": {
+      "title": "Sécurité",
+      "subtitle": "Mettez à jour votre mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "currentPasswordPlaceholder": "Entrez le mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordPlaceholder": "Entrez le nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez le nouveau mot de passe",
+      "updatePassword": "Mettre à jour le mot de passe"
+    },
+    "language": {
+      "title": "Langue",
+      "subtitle": "Choisissez votre langue préférée"
+    },
+    "toast": {
+      "saved": {
+        "title": "Paramètres enregistrés",
+        "description": "Vos préférences ont été mises à jour."
+      },
+      "passwordUpdated": {
+        "title": "Mot de passe mis à jour",
+        "description": "Votre mot de passe a été modifié avec succès."
+      },
+      "error": {
+        "title": "Erreur",
+        "passwordsNoMatch": "Les nouveaux mots de passe ne correspondent pas",
+        "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères"
+      }
+    }
+  },
+  "apiKeys": {
+    "title": "Clés API",
+    "subtitle": "Gérez les clés API pour l'accès programmatique",
+    "createKey": "Créer une clé",
+    "info": {
+      "title": "Accès API",
+      "description": "Utilisez les clés API pour accéder à TripaliumAI de manière programmatique. Les clés ne sont affichées qu'une seule fois lors de leur création. Stockez-les en toute sécurité et ne les partagez jamais publiquement."
+    },
+    "list": {
+      "title": "Vos clés API",
+      "count": "{count, plural, one {# clé active} other {# clés actives}}"
+    },
+    "empty": {
+      "title": "Aucune clé API",
+      "description": "Créez une clé API pour accéder à TripaliumAI de manière programmatique.",
+      "action": "Créer votre première clé"
+    },
+    "scope": {
+      "read": {
+        "label": "Lecture seule",
+        "description": "Peut lire les données mais pas les modifier"
+      },
+      "write": {
+        "label": "Lecture et écriture",
+        "description": "Peut lire et modifier les données"
+      },
+      "admin": {
+        "label": "Admin",
+        "description": "Accès complet, y compris les paramètres du compte"
+      },
+      "test": {
+        "label": "Test",
+        "description": "Pour les tests - les actions sont simulées"
+      }
+    },
+    "created": "Créée",
+    "lastUsed": "Dernière utilisation",
+    "expires": "Expire",
+    "createDialog": {
+      "title": "Créer une clé API",
+      "description": "Créez une nouvelle clé API pour l'accès programmatique. La clé ne sera affichée qu'une seule fois.",
+      "name": "Nom",
+      "namePlaceholder": "ex. Serveur de production",
+      "nameHint": "Un nom descriptif pour identifier cette clé",
+      "scope": "Portée",
+      "scopePlaceholder": "Sélectionner la portée",
+      "expiration": "Expiration (optionnel)",
+      "expirationNever": "N'expire jamais",
+      "expiration7Days": "7 jours",
+      "expiration30Days": "30 jours",
+      "expiration90Days": "90 jours",
+      "expiration1Year": "1 an"
+    },
+    "keyCreated": {
+      "title": "Clé API créée",
+      "description": "Copiez votre clé API maintenant. Vous ne pourrez plus la voir.",
+      "warning": "Assurez-vous de copier votre clé API maintenant. Vous ne pourrez plus la voir !"
+    },
+    "revokeDialog": {
+      "title": "Révoquer la clé API",
+      "description": "Êtes-vous sûr de vouloir révoquer cette clé API ? Cette action est irréversible. Toutes les applications utilisant cette clé perdront immédiatement l'accès.",
+      "confirm": "Révoquer la clé"
+    },
+    "toast": {
+      "revoked": {
+        "title": "Clé API révoquée",
+        "description": "La clé API a été définitivement révoquée."
+      },
+      "error": {
+        "title": "Erreur",
+        "loadFailed": "Échec du chargement des clés API",
+        "createFailed": "Échec de la création de la clé API",
+        "revokeFailed": "Échec de la révocation de la clé API",
+        "nameRequired": "Veuillez entrer un nom pour la clé API"
+      }
+    }
+  },
+  "activity": {
+    "title": "Activité",
+    "subtitle": "Consultez votre activité récente et l'historique des actions",
+    "filters": {
+      "title": "Filtres",
+      "entityType": "Type d'entité",
+      "all": "Tous les types",
+      "profile": "Profil",
+      "cvs": "CV",
+      "campaigns": "Campagnes",
+      "jobs": "Emplois",
+      "applications": "Candidatures",
+      "apiKeys": "Clés API"
+    },
+    "log": {
+      "title": "Journal d'activité",
+      "total": "{count} événements au total"
+    },
+    "empty": {
+      "title": "Aucune activité",
+      "description": "Votre activité apparaîtra ici au fur et à mesure que vous utilisez la plateforme."
+    },
+    "test": "Test",
+    "toast": {
+      "error": {
+        "title": "Erreur",
+        "loadFailed": "Échec du chargement des journaux d'activité"
+      }
+    }
+  },
+  "metadata": {
+    "title": "TripaliumAI - Automatisation de recherche d'emploi",
+    "description": "Automatisez votre recherche d'emploi avec la génération de CV et les candidatures assistées par IA"
+  }
+}
