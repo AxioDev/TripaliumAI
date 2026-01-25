@@ -371,8 +371,8 @@ export class IndeedMCPAdapter extends BaseJobSourceAdapter {
     // Extract requirements from description
     const requirements = job.description ? this.extractRequirements(job.description) : [];
 
-    // Generate unique external ID
-    const externalId = job.id || `indeed-${this.hashString(job.job_url)}`;
+    // Generate unique external ID with indeed- prefix for source matching
+    const externalId = `indeed-${job.id || this.hashString(job.job_url)}`;
 
     return {
       externalId,
