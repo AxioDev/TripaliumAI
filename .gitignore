@@ -40,9 +40,9 @@ coverage/
 prisma/*.db
 prisma/*.db-journal
 
-# Storage (uploaded files, generated docs)
-storage/
-!storage/.gitkeep
+# Storage (uploaded files, generated docs) - only at root level
+/storage/
+!/storage/.gitkeep
 
 # Temporary files
 tmp/
