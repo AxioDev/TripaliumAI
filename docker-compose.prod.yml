@@ -1,24 +1,45 @@
 version: '3.8'
 
+# =============================================================================
+# TripaliumAI Production Docker Compose
+# =============================================================================
+# This file is designed for production deployment with:
+# - Pre-built images from GitHub Container Registry (ghcr.io)
+# - Automatic updates via Watchtower
+# - Externalized secrets via .env file
+# - Health checks on all services
+#
+# Usage:
+#   1. Copy this file and Caddyfile to /opt/tripalium on your server
+#   2. Create a .env file with your configuration (see deploy/.env.template)
+#   3. Run: docker compose up -d
+# =============================================================================
+
 services:
-  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database with pgvector extension
+  # ---------------------------------------------------------------------------
   postgres:
-    image: postgres:16-alpine
+    image: pgvector/pgvector:pg16
     container_name: tripalium-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: tripalium
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tripalium_secret_2024}
-      POSTGRES_DB: tripalium
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U tripalium"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - internal
 
-  # Redis for queues
+  # ---------------------------------------------------------------------------
+  # Redis for job queues and caching
+  # ---------------------------------------------------------------------------
   redis:
     image: redis:7-alpine
     container_name: tripalium-redis
@@ -31,12 +52,35 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - internal
 
-  # NestJS API
+  # ---------------------------------------------------------------------------
+  # JobSpy API for Indeed job discovery
+  # ---------------------------------------------------------------------------
+  jobspy:
+    image: rainmanjam/jobspy-api:latest
+    container_name: tripalium-jobspy
+    restart: unless-stopped
+    environment:
+      API_KEY: ""
+      RATE_LIMIT_ENABLED: "false"
+      CACHE_ENABLED: "true"
+      CACHE_TTL: "3600"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - internal
+
+  # ---------------------------------------------------------------------------
+  # NestJS API Backend
+  # ---------------------------------------------------------------------------
   api:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+    image: ghcr.io/${GITHUB_OWNER}/tripalium-api:latest
     container_name: tripalium-api
     restart: unless-stopped
     depends_on:
@@ -44,44 +88,67 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      jobspy:
+        condition: service_started
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://tripalium:${POSTGRES_PASSWORD:-tripalium_secret_2024}@postgres:5432/tripalium
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      JWT_SECRET: ${JWT_SECRET}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      JOBSPY_MCP_URL: http://jobspy:8000
       SMTP_HOST: ${SMTP_HOST:-localhost}
       SMTP_PORT: ${SMTP_PORT:-1025}
       SMTP_FROM: ${SMTP_FROM:-noreply@tripalium.projets.work}
       ENABLE_REAL_EMAIL: ${ENABLE_REAL_EMAIL:-false}
-      CORS_ORIGINS: https://tripalium.projets.work
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://tripalium.projets.work}
     volumes:
       - uploads_data:/app/uploads
-    expose:
-      - "3001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - internal
 
-  # Next.js Web App
+  # ---------------------------------------------------------------------------
+  # Next.js Web Frontend
+  # ---------------------------------------------------------------------------
   web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
+    image: ghcr.io/${GITHUB_OWNER}/tripalium-web:latest
     container_name: tripalium-web
     restart: unless-stopped
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_API_URL: https://tripalium.projets.work/api
-      NEXTAUTH_URL: https://tripalium.projets.work
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-your-nextauth-secret-change-in-production}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-https://tripalium.projets.work}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      AUTH_TRUST_HOST: "true"
+      AUTH_URL: ${NEXTAUTH_URL:-https://tripalium.projets.work}
       API_INTERNAL_URL: http://api:3001
-    expose:
-      - "3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - internal
 
-  # Nginx Reverse Proxy
-  nginx:
-    image: nginx:alpine
-    container_name: tripalium-nginx
+  # ---------------------------------------------------------------------------
+  # Caddy Reverse Proxy (automatic HTTPS)
+  # ---------------------------------------------------------------------------
+  caddy:
+    image: caddy:2-alpine
+    container_name: tripalium-caddy
     restart: unless-stopped
     depends_on:
       - api
@@ -90,21 +157,46 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot:ro
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - internal
 
-  # Certbot for SSL
-  certbot:
-    image: certbot/certbot:arm64v8-latest
-    container_name: tripalium-certbot
+  # ---------------------------------------------------------------------------
+  # Watchtower - Automatic container updates
+  # ---------------------------------------------------------------------------
+  # Watchtower monitors ghcr.io for new image versions and automatically
+  # pulls and restarts containers when updates are available.
+  # Only containers with the watchtower.enable=true label are updated.
+  # ---------------------------------------------------------------------------
+  watchtower:
+    image: containrrr/watchtower
+    container_name: tripalium-watchtower
+    restart: unless-stopped
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json:ro
+    environment:
+      # Clean up old images after updating
+      WATCHTOWER_CLEANUP: "true"
+      # Poll interval in seconds (300 = 5 minutes)
+      WATCHTOWER_POLL_INTERVAL: "300"
+      # Only update containers with watchtower.enable=true label
+      WATCHTOWER_LABEL_ENABLE: "true"
+      # Include stopped containers
+      WATCHTOWER_INCLUDE_STOPPED: "false"
+      # Timeout for container stop
+      WATCHTOWER_TIMEOUT: "60s"
+    command: --interval 300
+
+networks:
+  internal:
+    driver: bridge
 
 volumes:
   postgres_data:
   redis_data:
   uploads_data:
+  caddy_data:
+  caddy_config:

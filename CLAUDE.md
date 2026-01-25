@@ -6,16 +6,79 @@
 - **Server IP:** 91.107.207.5
 - **Server User:** root
 - **Hosting:** Hetzner
-- **Hetzner API Token:** aXdOMftoWQyZGFpZHpq0SQNJgZgzmuC4lBLmNuxO75nL2YzFVr3E2nRXq6V57r0v
+- **Container Registry:** ghcr.io (GitHub Container Registry)
 
-### Deploy Commands
+### CI/CD Architecture
+
+```
+GitHub Push → GitHub Actions → ghcr.io → Watchtower (auto-pull) → Production
+```
+
+1. **Push to master** triggers GitHub Actions workflow
+2. **GitHub Actions** builds Docker images and pushes to ghcr.io
+3. **Watchtower** on production server polls every 5 minutes for new images
+4. **Auto-update** pulls new images and restarts containers
+
+### Automatic Deployment (Default)
+
+Deployments happen automatically when you push to `master`:
+- GitHub Actions builds `tripalium-api` and `tripalium-web` images
+- Images are tagged with `:latest` and `:sha-<commit>`
+- Watchtower on the server detects and deploys new images
+
+### Manual Deployment (If Needed)
+
 ```bash
 # SSH to server
 ssh root@91.107.207.5
 
-# On server: pull and rebuild web
-cd /root/TripaliumAI && git pull && docker compose -f docker-compose.simple.yml build web && docker compose -f docker-compose.simple.yml up -d web
+# Force pull and restart
+cd /opt/tripalium
+docker compose pull
+docker compose up -d
 ```
+
+### Rollback
+
+```bash
+# SSH to server, then:
+cd /opt/tripalium
+
+# Stop current containers
+docker compose stop api web
+
+# Pull specific version by commit SHA
+docker pull ghcr.io/axiodev/tripalium-api:sha-abc123
+docker pull ghcr.io/axiodev/tripalium-web:sha-abc123
+
+# Tag as latest and restart
+docker tag ghcr.io/axiodev/tripalium-api:sha-abc123 ghcr.io/axiodev/tripalium-api:latest
+docker tag ghcr.io/axiodev/tripalium-web:sha-abc123 ghcr.io/axiodev/tripalium-web:latest
+docker compose up -d
+```
+
+### First-Time Server Setup
+
+Run the setup script on a fresh server:
+```bash
+curl -sL https://raw.githubusercontent.com/AxioDev/TripaliumAI/master/deploy/server-setup.sh | bash
+```
+
+Or manually:
+1. Copy `docker-compose.prod.yml` to `/opt/tripalium/docker-compose.yml`
+2. Copy `Caddyfile` to `/opt/tripalium/Caddyfile`
+3. Create `.env` from `deploy/.env.template`
+4. Set up Docker registry auth: `docker login ghcr.io`
+5. Run: `docker compose up -d`
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `.github/workflows/build.yml` | CI pipeline (build + push images) |
+| `docker-compose.prod.yml` | Production compose with registry images |
+| `deploy/server-setup.sh` | One-time server initialization |
+| `deploy/.env.template` | Environment variable template |
 
 ---
 
