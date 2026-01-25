@@ -50,6 +50,15 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Make package public
+        if: github.event_name != 'pull_request'
+        run: |
+          curl -X PATCH \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/user/packages/container/tripalium-api \
+            -d '{"visibility":"public"}' || true
+
   build-web:
     runs-on: ubuntu-latest
     permissions:
@@ -89,3 +98,12 @@ jobs:
             NEXT_PUBLIC_API_URL=https://tripalium.projets.work
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Make package public
+        if: github.event_name != 'pull_request'
+        run: |
+          curl -X PATCH \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/user/packages/container/tripalium-web \
+            -d '{"visibility":"public"}' || true
