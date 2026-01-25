@@ -288,7 +288,8 @@
           "manual": "Saisie manuelle",
           "mock": "Emplois fictifs (Test)",
           "remoteok": "RemoteOK",
-          "welcometothejungle": "Welcome to the Jungle"
+          "welcometothejungle": "Welcome to the Jungle",
+          "indeed": "Indeed"
         }
       },
       "contractTypes": {
@@ -368,6 +369,84 @@
         "pauseFailed": "Échec de la mise en pause de la campagne",
         "stopFailed": "Échec de l'arrêt de la campagne",
         "deleteFailed": "Échec de la suppression de la campagne"
+      }
+    },
+    "detail": {
+      "notFound": "Campagne introuvable",
+      "backToCampaigns": "Retour aux campagnes",
+      "practice": "Pratique",
+      "resume": "Reprendre",
+      "start": "Démarrer",
+      "pause": "Pause",
+      "stop": "Arrêter",
+      "stats": {
+        "totalJobs": "Total emplois",
+        "matched": "Correspondances",
+        "applied": "Candidatures",
+        "rejected": "Rejetés"
+      },
+      "readyToStart": {
+        "title": "Prêt à démarrer ?",
+        "description": "Votre campagne ne trouvera pas d'emplois tant qu'elle n'est pas démarrée.",
+        "button": "Démarrer la campagne"
+      },
+      "jobs": {
+        "title": "Emplois découverts",
+        "subtitle": "Emplois correspondant à vos critères",
+        "filterPlaceholder": "Filtrer par statut",
+        "filterAll": "Tous les statuts",
+        "filterMatched": "Bonnes correspondances",
+        "filterApplied": "Candidatures envoyées",
+        "filterDiscovered": "Nouveaux emplois",
+        "filterAnalyzing": "En cours d'analyse",
+        "filterRejected": "Pas intéressé",
+        "emptyDraft": "Démarrez la campagne pour découvrir des emplois",
+        "emptyActive": "Aucun emploi trouvé pour l'instant. Les emplois apparaîtront ici au fur et à mesure de leur découverte.",
+        "discovered": "Découvert",
+        "notInterested": "Pas intéressé",
+        "viewJobPosting": "Voir l'offre d'emploi",
+        "match": "{score}% correspondance",
+        "sources": {
+          "remoteok": "RemoteOK",
+          "wttj": "WTTJ",
+          "indeed": "Indeed",
+          "mock": "Démo",
+          "manual": "Manuel",
+          "api": "API",
+          "rss": "RSS"
+        }
+      },
+      "jobStatus": {
+        "discovered": "Nouveaux emplois",
+        "analyzing": "En cours d'analyse",
+        "matched": "Bonnes correspondances",
+        "rejected": "Pas intéressé",
+        "applied": "Candidature envoyée",
+        "expired": "Expirée",
+        "error": "Erreur"
+      },
+      "toast": {
+        "loadError": {
+          "title": "Erreur",
+          "campaignFailed": "Échec du chargement de la campagne",
+          "jobsFailed": "Échec du chargement des emplois"
+        },
+        "started": {
+          "title": "Campagne démarrée",
+          "description": "La recherche d'emplois a commencé."
+        },
+        "paused": {
+          "title": "Campagne mise en pause",
+          "description": "La recherche d'emplois a été mise en pause."
+        },
+        "stopped": {
+          "title": "Campagne arrêtée",
+          "description": "La campagne a été terminée."
+        },
+        "jobRejected": {
+          "title": "Emploi rejeté",
+          "description": "L'emploi a été marqué comme pas intéressant."
+        }
       }
     }
   },
@@ -550,6 +629,86 @@
     },
     "saveProfile": "Enregistrer le profil",
     "saving": "Enregistrement...",
+    "saveChanges": "Enregistrer les modifications",
+    "add": "Ajouter",
+    "cancel": "Annuler",
+    "update": "Mettre à jour",
+    "present": "Présent",
+    "more": "+{count} de plus",
+    "experience": {
+      "title": "Expérience professionnelle",
+      "count": "{count} poste(s)",
+      "empty": "Aucune expérience ajoutée. Téléversez un CV pour extraire votre expérience ou ajoutez-la manuellement.",
+      "addTitle": "Ajouter une expérience",
+      "editTitle": "Modifier l'expérience",
+      "dialogDescription": "Entrez les détails de votre expérience professionnelle",
+      "jobTitle": "Intitulé du poste",
+      "jobTitlePlaceholder": "Ingénieur logiciel",
+      "company": "Entreprise",
+      "companyPlaceholder": "Acme Inc",
+      "location": "Lieu",
+      "locationPlaceholder": "Paris, France",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "endDateHint": "Laissez vide pour le poste actuel",
+      "description": "Description",
+      "descriptionPlaceholder": "Brève description de votre rôle...",
+      "highlights": "Réalisations clés (une par ligne)",
+      "highlightsPlaceholder": "Direction d'une équipe de 5 ingénieurs\nAmélioration des performances de 40%\nMise en place du pipeline CI/CD"
+    },
+    "education": {
+      "title": "Formation",
+      "count": "{count} diplôme(s)",
+      "empty": "Aucune formation ajoutée. Téléversez un CV pour extraire votre formation ou ajoutez-la manuellement.",
+      "addTitle": "Ajouter une formation",
+      "editTitle": "Modifier la formation",
+      "dialogDescription": "Entrez les détails de votre formation",
+      "institution": "Établissement",
+      "institutionPlaceholder": "Université de Paris",
+      "degree": "Diplôme",
+      "degreePlaceholder": "Licence, Master, Doctorat",
+      "field": "Domaine d'études",
+      "fieldPlaceholder": "Informatique",
+      "startYear": "Année de début",
+      "endYear": "Année de fin",
+      "gpa": "Mention (optionnel)",
+      "gpaPlaceholder": "Bien, Très bien",
+      "descriptionLabel": "Description (optionnel)",
+      "descriptionPlaceholder": "Réalisations notables, activités, thèse...",
+      "in": "en"
+    },
+    "skills": {
+      "title": "Compétences",
+      "count": "{count} compétence(s)",
+      "empty": "Aucune compétence ajoutée. Téléversez un CV pour extraire vos compétences ou ajoutez-les manuellement.",
+      "addTitle": "Ajouter une compétence",
+      "dialogDescription": "Ajoutez une nouvelle compétence à votre profil",
+      "name": "Nom de la compétence",
+      "namePlaceholder": "ex. React, Python, Gestion de projet",
+      "category": "Catégorie",
+      "categoryPlaceholder": "Sélectionnez une catégorie",
+      "level": "Niveau de maîtrise",
+      "levelPlaceholder": "Sélectionnez un niveau",
+      "yearsOfExp": "Années d'expérience",
+      "addSkill": "Ajouter la compétence",
+      "categories": {
+        "programmingLanguages": "Langages de programmation",
+        "frameworks": "Frameworks",
+        "databases": "Bases de données",
+        "devops": "DevOps",
+        "cloud": "Cloud",
+        "tools": "Outils",
+        "softSkills": "Compétences transversales",
+        "languages": "Langues",
+        "other": "Autre"
+      },
+      "levels": {
+        "beginner": "Débutant",
+        "intermediate": "Intermédiaire",
+        "advanced": "Avancé",
+        "expert": "Expert"
+      }
+    },
     "error": {
       "loadFailed": "Échec du chargement du profil"
     },
@@ -733,6 +892,16 @@
       "jobs": "Emplois",
       "applications": "Candidatures",
       "apiKeys": "Clés API"
+    },
+    "entityTypes": {
+      "user": "Utilisateur",
+      "profile": "Profil",
+      "cv": "CV",
+      "campaign": "Campagne",
+      "job_offer": "Offre d'emploi",
+      "application": "Candidature",
+      "email": "E-mail",
+      "api_key": "Clé API"
     },
     "log": {
       "title": "Journal d'activité",

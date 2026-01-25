@@ -62,6 +62,18 @@ async function seedBase() {
         isActive: true,
       },
     }),
+    prisma.jobSource.upsert({
+      where: { name: 'indeed' },
+      update: {},
+      create: {
+        name: 'indeed',
+        displayName: 'Indeed',
+        type: JobSourceType.API,
+        baseUrl: 'https://indeed.com',
+        supportsAutoApply: false,
+        isActive: true,
+      },
+    }),
   ]);
 
   console.log(`Created ${jobSources.length} job sources`);
@@ -221,6 +233,66 @@ async function seedBase() {
   });
 
   console.log('Created sample profile with experiences, education, skills, and languages');
+
+  // Create sample campaigns for test user
+  const mockSource = jobSources.find(s => s.name === 'mock');
+  const wttjSource = jobSources.find(s => s.name === 'wttj');
+
+  // Active campaign
+  const activeCampaign = await prisma.campaign.upsert({
+    where: { id: 'test-campaign-active' },
+    update: {},
+    create: {
+      id: 'test-campaign-active',
+      userId: testUser.id,
+      name: 'Senior Developer Roles - Paris',
+      targetRoles: ['Senior Software Engineer', 'Lead Developer', 'Full Stack Developer'],
+      targetLocations: ['Paris, France', 'Remote'],
+      contractTypes: ['Full-time', 'Contract'],
+      remoteOk: true,
+      matchThreshold: 70,
+      status: 'ACTIVE',
+      testMode: false,
+      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+    },
+  });
+
+  // Connect job sources to active campaign
+  if (mockSource) {
+    await prisma.campaignJobSource.upsert({
+      where: {
+        campaignId_sourceId: {
+          campaignId: activeCampaign.id,
+          sourceId: mockSource.id,
+        },
+      },
+      update: {},
+      create: {
+        campaignId: activeCampaign.id,
+        sourceId: mockSource.id,
+      },
+    });
+  }
+
+  // Draft campaign (practice mode)
+  await prisma.campaign.upsert({
+    where: { id: 'test-campaign-draft' },
+    update: {},
+    create: {
+      id: 'test-campaign-draft',
+      userId: testUser.id,
+      name: 'Tech Lead Opportunities',
+      targetRoles: ['Tech Lead', 'Engineering Manager'],
+      targetLocations: ['Paris, France', 'Lyon, France'],
+      contractTypes: ['Full-time'],
+      remoteOk: true,
+      matchThreshold: 75,
+      status: 'DRAFT',
+      testMode: true,
+    },
+  });
+
+  console.log('Created sample campaigns');
 
   console.log('\n✅ Base database seeded successfully!');
   console.log('\nTest credentials:');

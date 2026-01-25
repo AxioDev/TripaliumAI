@@ -32,6 +32,25 @@ services:
       timeout: 5s
       retries: 5
 
+  # JobSpy API for Indeed job discovery
+  jobspy:
+    image: rainmanjam/jobspy-api:latest
+    container_name: tripalium-jobspy
+    restart: unless-stopped
+    environment:
+      API_KEY: ""
+      RATE_LIMIT_ENABLED: "false"
+      CACHE_ENABLED: "true"
+      CACHE_TTL: "3600"
+    ports:
+      - "9423:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
   # NestJS API
   api:
     build:
@@ -44,12 +63,15 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      jobspy:
+        condition: service_started
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://tripalium:tripalium_prod_2024_secure@postgres:5432/tripalium
       REDIS_URL: redis://redis:6379
       JWT_SECRET: tripalium-jwt-secret-prod-2024-very-secure-key
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      JOBSPY_MCP_URL: http://jobspy:9423
       SMTP_HOST: localhost
       SMTP_PORT: "1025"
       SMTP_FROM: noreply@tripalium.projets.work

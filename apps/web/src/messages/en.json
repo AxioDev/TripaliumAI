@@ -288,7 +288,8 @@
           "manual": "Manual Entry",
           "mock": "Mock Jobs (Testing)",
           "remoteok": "RemoteOK",
-          "welcometothejungle": "Welcome to the Jungle"
+          "welcometothejungle": "Welcome to the Jungle",
+          "indeed": "Indeed"
         }
       },
       "contractTypes": {
@@ -368,6 +369,84 @@
         "pauseFailed": "Failed to pause campaign",
         "stopFailed": "Failed to stop campaign",
         "deleteFailed": "Failed to delete campaign"
+      }
+    },
+    "detail": {
+      "notFound": "Campaign not found",
+      "backToCampaigns": "Back to campaigns",
+      "practice": "Practice",
+      "resume": "Resume",
+      "start": "Start",
+      "pause": "Pause",
+      "stop": "Stop",
+      "stats": {
+        "totalJobs": "Total Jobs",
+        "matched": "Matched",
+        "applied": "Applied",
+        "rejected": "Rejected"
+      },
+      "readyToStart": {
+        "title": "Ready to start?",
+        "description": "Your campaign won't find jobs until you start it.",
+        "button": "Start Campaign"
+      },
+      "jobs": {
+        "title": "Discovered Jobs",
+        "subtitle": "Jobs found matching your criteria",
+        "filterPlaceholder": "Filter by status",
+        "filterAll": "All statuses",
+        "filterMatched": "Good matches",
+        "filterApplied": "Applied",
+        "filterDiscovered": "New jobs",
+        "filterAnalyzing": "Being reviewed",
+        "filterRejected": "Not interested",
+        "emptyDraft": "Start the campaign to discover jobs",
+        "emptyActive": "No jobs found yet. Jobs will appear here as they are discovered.",
+        "discovered": "Discovered",
+        "notInterested": "Not interested",
+        "viewJobPosting": "View job posting",
+        "match": "{score}% match",
+        "sources": {
+          "remoteok": "RemoteOK",
+          "wttj": "WTTJ",
+          "indeed": "Indeed",
+          "mock": "Demo",
+          "manual": "Manual",
+          "api": "API",
+          "rss": "RSS"
+        }
+      },
+      "jobStatus": {
+        "discovered": "New jobs",
+        "analyzing": "Being reviewed",
+        "matched": "Good matches",
+        "rejected": "Not interested",
+        "applied": "Applied",
+        "expired": "Expired",
+        "error": "Error"
+      },
+      "toast": {
+        "loadError": {
+          "title": "Error",
+          "campaignFailed": "Failed to load campaign",
+          "jobsFailed": "Failed to load jobs"
+        },
+        "started": {
+          "title": "Campaign started",
+          "description": "Job discovery has begun."
+        },
+        "paused": {
+          "title": "Campaign paused",
+          "description": "Job discovery has been paused."
+        },
+        "stopped": {
+          "title": "Campaign stopped",
+          "description": "The campaign has been completed."
+        },
+        "jobRejected": {
+          "title": "Job rejected",
+          "description": "The job has been marked as not interested."
+        }
       }
     }
   },
@@ -550,6 +629,86 @@
     },
     "saveProfile": "Save Profile",
     "saving": "Saving...",
+    "saveChanges": "Save Changes",
+    "add": "Add",
+    "cancel": "Cancel",
+    "update": "Update",
+    "present": "Present",
+    "more": "+{count} more",
+    "experience": {
+      "title": "Work Experience",
+      "count": "{count} position(s)",
+      "empty": "No work experience added. Upload a CV to extract your experience or add manually.",
+      "addTitle": "Add Experience",
+      "editTitle": "Edit Experience",
+      "dialogDescription": "Enter the details of your work experience",
+      "jobTitle": "Job Title",
+      "jobTitlePlaceholder": "Software Engineer",
+      "company": "Company",
+      "companyPlaceholder": "Acme Inc",
+      "location": "Location",
+      "locationPlaceholder": "Paris, France",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "endDateHint": "Leave empty for current",
+      "description": "Description",
+      "descriptionPlaceholder": "Brief description of your role...",
+      "highlights": "Key Achievements (one per line)",
+      "highlightsPlaceholder": "Led team of 5 engineers\nIncreased performance by 40%\nImplemented CI/CD pipeline"
+    },
+    "education": {
+      "title": "Education",
+      "count": "{count} degree(s)",
+      "empty": "No education added. Upload a CV to extract your education or add manually.",
+      "addTitle": "Add Education",
+      "editTitle": "Edit Education",
+      "dialogDescription": "Enter the details of your education",
+      "institution": "Institution",
+      "institutionPlaceholder": "University of Paris",
+      "degree": "Degree",
+      "degreePlaceholder": "Bachelor's, Master's, PhD",
+      "field": "Field of Study",
+      "fieldPlaceholder": "Computer Science",
+      "startYear": "Start Year",
+      "endYear": "End Year",
+      "gpa": "GPA (optional)",
+      "gpaPlaceholder": "3.8/4.0",
+      "descriptionLabel": "Description (optional)",
+      "descriptionPlaceholder": "Notable achievements, activities, thesis...",
+      "in": "in"
+    },
+    "skills": {
+      "title": "Skills",
+      "count": "{count} skill(s)",
+      "empty": "No skills added. Upload a CV to extract your skills or add manually.",
+      "addTitle": "Add Skill",
+      "dialogDescription": "Add a new skill to your profile",
+      "name": "Skill Name",
+      "namePlaceholder": "e.g., React, Python, Project Management",
+      "category": "Category",
+      "categoryPlaceholder": "Select a category",
+      "level": "Proficiency Level",
+      "levelPlaceholder": "Select level",
+      "yearsOfExp": "Years of Experience",
+      "addSkill": "Add Skill",
+      "categories": {
+        "programmingLanguages": "Programming Languages",
+        "frameworks": "Frameworks",
+        "databases": "Databases",
+        "devops": "DevOps",
+        "cloud": "Cloud",
+        "tools": "Tools",
+        "softSkills": "Soft Skills",
+        "languages": "Languages",
+        "other": "Other"
+      },
+      "levels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "expert": "Expert"
+      }
+    },
     "error": {
       "loadFailed": "Failed to load profile"
     },
@@ -733,6 +892,16 @@
       "jobs": "Jobs",
       "applications": "Applications",
       "apiKeys": "API Keys"
+    },
+    "entityTypes": {
+      "user": "User",
+      "profile": "Profile",
+      "cv": "CV",
+      "campaign": "Campaign",
+      "job_offer": "Job offer",
+      "application": "Application",
+      "email": "Email",
+      "api_key": "API Key"
     },
     "log": {
       "title": "Activity Log",
