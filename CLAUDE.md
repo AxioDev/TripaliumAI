@@ -6,7 +6,9 @@
 - **Server IP:** 91.107.207.5
 - **Server User:** root
 - **Hosting:** Hetzner
-- **Container Registry:** ghcr.io (GitHub Container Registry)
+- **Container Registry:** ghcr.io (GitHub Container Registry) - **PRIVATE**
+- **GitHub PAT (read:packages):** Stored in `/root/.docker/config.json` on server
+- **Server Architecture:** ARM64 (aarch64)
 
 ### CI/CD Architecture
 
