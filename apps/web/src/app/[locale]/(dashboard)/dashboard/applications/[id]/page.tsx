@@ -26,9 +26,11 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
-import { applicationApi, Application, GeneratedDocument, EmailRecord } from '@/lib/api-client';
+import { applicationApi, profileApi, Application, GeneratedDocument, EmailRecord } from '@/lib/api-client';
 import { useApi, useMutation } from '@/hooks/use-api';
 import { DocumentPreview } from '@/components/document-preview';
+import { ApplicationStrength } from '@/components/applications/application-strength';
+import { SubmissionCelebration } from '@/components/applications/submission-celebration';
 import {
   ArrowLeft,
   Loader2,
@@ -166,6 +168,9 @@ export default function ApplicationDetailPage() {
   const [recipientEmail, setRecipientEmail] = useState('');
   const [customMessage, setCustomMessage] = useState('');
 
+  // Celebration state
+  const [showCelebration, setShowCelebration] = useState(false);
+
   const handlePreview = async (doc: GeneratedDocument) => {
     setLoadingPreview(doc.id);
     try {
@@ -200,6 +205,9 @@ export default function ApplicationDetailPage() {
       });
     },
   });
+
+  // Fetch profile for strength indicator
+  const { data: profile } = useApi(() => profileApi.get().catch(() => null));
 
   // Fetch documents
   const { data: documents } = useApi(
@@ -245,10 +253,7 @@ export default function ApplicationDetailPage() {
     {
       onSuccess: () => {
         refetch();
-        toast({
-          title: 'Marked as submitted',
-          description: 'The application has been marked as submitted.',
-        });
+        setShowCelebration(true);
       },
     }
   );
@@ -434,6 +439,15 @@ export default function ApplicationDetailPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Application Strength Indicator */}
+      {application && !isProcessing && (
+        <ApplicationStrength
+          application={application}
+          profile={profile ?? null}
+          documentsReady={!!documents && documents.length > 0}
+        />
+      )}
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Main Content */}
@@ -893,6 +907,17 @@ export default function ApplicationDetailPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Submission Celebration */}
+      {application && (
+        <SubmissionCelebration
+          show={showCelebration}
+          jobTitle={application.jobOffer.title}
+          company={application.jobOffer.company}
+          onClose={() => setShowCelebration(false)}
+          onViewApplications={() => router.push('/dashboard/applications')}
+        />
       )}
     </div>
   );

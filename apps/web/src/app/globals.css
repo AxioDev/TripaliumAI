@@ -28,6 +28,14 @@
     --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
     --success-muted: 160 40% 96%;
+    /* Warning */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --warning-muted: 38 40% 96%;
+    /* Info */
+    --info: 210 100% 50%;
+    --info-foreground: 0 0% 100%;
+    --info-muted: 210 40% 96%;
   }
 
   .dark {
@@ -53,6 +61,12 @@
     --success: 160 70% 50%;
     --success-foreground: 222.2 84% 4.9%;
     --success-muted: 160 30% 15%;
+    --warning: 38 80% 55%;
+    --warning-foreground: 222.2 84% 4.9%;
+    --warning-muted: 38 30% 15%;
+    --info: 210 90% 60%;
+    --info-foreground: 222.2 84% 4.9%;
+    --info-muted: 210 30% 15%;
   }
 }
 

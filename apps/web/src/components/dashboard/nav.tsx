@@ -24,7 +24,41 @@ import {
   Key,
   Menu,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { NotificationBell } from '@/components/notifications';
+import { Notification } from '@/components/notifications/notification-types';
+
+// Mock notifications for demo - in production, this would come from an API
+const useMockNotifications = () => {
+  const [notifications, setNotifications] = useState<Notification[]>([
+    // Uncomment to see sample notifications:
+    // {
+    //   id: '1',
+    //   type: 'jobs_discovered',
+    //   title: '5 new jobs found',
+    //   message: 'Your "Frontend Developer" campaign found new matches.',
+    //   read: false,
+    //   createdAt: new Date(Date.now() - 1000 * 60 * 5),
+    //   actionUrl: '/dashboard/campaigns',
+    // },
+  ]);
+
+  const markAsRead = useCallback((id: string) => {
+    setNotifications(prev =>
+      prev.map(n => n.id === id ? { ...n, read: true } : n)
+    );
+  }, []);
+
+  const markAllAsRead = useCallback(() => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  }, []);
+
+  const clearNotification = useCallback((id: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  }, []);
+
+  return { notifications, markAsRead, markAllAsRead, clearNotification };
+};
 
 const navItems = [
   { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard },
@@ -72,16 +106,23 @@ function NavLink({
 export function DashboardNav() {
   const pathname = usePathname();
   const t = useTranslations('nav');
+  const { notifications, markAsRead, markAllAsRead, clearNotification } = useMockNotifications();
 
   // Remove locale prefix from pathname for comparison
   const pathnameWithoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') || '/';
 
   return (
     <div className="hidden md:flex h-screen w-64 flex-col border-r bg-muted/40">
-      <div className="flex h-14 items-center border-b px-4">
+      <div className="flex h-14 items-center justify-between border-b px-4">
         <Link href="/dashboard" className="flex items-center font-semibold">
           {t('brand')}
         </Link>
+        <NotificationBell
+          notifications={notifications}
+          onMarkAsRead={markAsRead}
+          onMarkAllAsRead={markAllAsRead}
+          onClear={clearNotification}
+        />
       </div>
       <nav className="flex-1 space-y-1 p-4">
         {navItems.map((item) => (
@@ -113,6 +154,7 @@ export function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const t = useTranslations('nav');
+  const { notifications, markAsRead, markAllAsRead, clearNotification } = useMockNotifications();
 
   // Remove locale prefix from pathname for comparison
   const pathnameWithoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') || '/';
@@ -123,15 +165,23 @@ export function MobileNav() {
         <Link href="/dashboard" className="flex items-center font-semibold">
           {t('brand')}
         </Link>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="min-h-[44px] min-w-[44px]"
-          onClick={() => setOpen(true)}
-          aria-label={t('openMenu')}
-        >
-          <Menu className="h-6 w-6" />
-        </Button>
+        <div className="flex items-center gap-1">
+          <NotificationBell
+            notifications={notifications}
+            onMarkAsRead={markAsRead}
+            onMarkAllAsRead={markAllAsRead}
+            onClear={clearNotification}
+          />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="min-h-[44px] min-w-[44px]"
+            onClick={() => setOpen(true)}
+            aria-label={t('openMenu')}
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+        </div>
       </div>
 
       <Sheet open={open} onOpenChange={setOpen}>

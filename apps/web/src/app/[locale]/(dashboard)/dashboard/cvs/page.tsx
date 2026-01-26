@@ -27,9 +27,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { AnimatedCheckmark } from '@/components/ui/animated-checkmark';
+import { CVParsingProgress, useSimulatedProgress } from '@/components/ui/staged-progress';
 import { cvApi, CV } from '@/lib/api-client';
 import { useApi, useMutation, usePolling } from '@/hooks/use-api';
 import {
@@ -45,6 +45,18 @@ import {
   XCircle,
   Clock,
 } from 'lucide-react';
+
+// Helper component for CV parsing progress with simulated stages
+function CVParsingProgressCard({ status, cvId }: { status: string; cvId: string }) {
+  // Simulate progress based on status
+  const baseProgress = status === 'PROCESSING' ? 30 : 10;
+  const progress = useSimulatedProgress(true, 15000); // 15 second simulated parse
+
+  // Use the higher of simulated or base progress
+  const displayProgress = Math.max(baseProgress, Math.min(progress, 95));
+
+  return <CVParsingProgress progress={displayProgress} />;
+}
 
 export default function CVsPage() {
   const { toast } = useToast();
@@ -415,12 +427,10 @@ export default function CVsPage() {
               </CardHeader>
               {(cv.parsingStatus === 'PENDING' || cv.parsingStatus === 'PROCESSING') && (
                 <CardContent className="pt-0">
-                  <div className="space-y-2">
-                    <Progress value={cv.parsingStatus === 'PROCESSING' ? 60 : 20} className="h-2" />
-                    <p className="text-sm text-muted-foreground">
-                      {t('parsing.analyzing')}
-                    </p>
-                  </div>
+                  <CVParsingProgressCard
+                    status={cv.parsingStatus}
+                    cvId={cv.id}
+                  />
                 </CardContent>
               )}
               {cv.parsingStatus === 'FAILED' && cv.parsingError && (

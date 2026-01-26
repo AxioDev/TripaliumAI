@@ -25,6 +25,7 @@ import { Loader2, User, Briefcase, GraduationCap, Wrench } from 'lucide-react';
 import { WorkExperienceEditor } from '@/components/profile/work-experience-editor';
 import { EducationEditor } from '@/components/profile/education-editor';
 import { SkillsEditor } from '@/components/profile/skills-editor';
+import { ProfileReadiness } from '@/components/profile/profile-readiness';
 
 export default function ProfilePage() {
   const { toast } = useToast();
@@ -202,6 +203,9 @@ export default function ProfilePage() {
           {t('subtitle')}
         </p>
       </div>
+
+      {/* Profile Readiness Score */}
+      <ProfileReadiness profile={profile ?? null} compact />
 
       <Tabs defaultValue="personal" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4 lg:w-[400px]">

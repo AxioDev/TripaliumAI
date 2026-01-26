@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -19,8 +20,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
-import { campaignApi, jobApi, Campaign, JobOffer } from '@/lib/api-client';
+import { campaignApi, jobApi, profileApi, Campaign, JobOffer } from '@/lib/api-client';
 import { useApi, useMutation, usePolling } from '@/hooks/use-api';
+import { CampaignLaunchModal } from '@/components/campaigns/campaign-launch-modal';
+import { DiscoveryFunnel } from '@/components/campaigns/discovery-funnel';
 import {
   ArrowLeft,
   Loader2,
@@ -39,30 +42,34 @@ import {
   AlertTriangle,
   ThumbsDown,
   Building,
+  Globe,
+  Rss,
+  Database,
+  TestTube2,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { fr, enUS } from 'date-fns/locale';
+import { useLocale } from 'next-intl';
 
-const statusConfig: Record<string, { label: string; color: string }> = {
-  DISCOVERED: { label: 'New jobs', color: 'bg-blue-100 text-blue-800' },
-  ANALYZING: { label: 'Being reviewed', color: 'bg-yellow-100 text-yellow-800' },
-  MATCHED: { label: 'Good matches', color: 'bg-green-100 text-green-800' },
-  REJECTED: { label: 'Not interested', color: 'bg-gray-100 text-gray-800' },
-  APPLIED: { label: 'Applied', color: 'bg-purple-100 text-purple-800' },
-  EXPIRED: { label: 'Expired', color: 'bg-red-100 text-red-800' },
-  ERROR: { label: 'Error', color: 'bg-red-100 text-red-800' },
+const statusColors: Record<string, string> = {
+  DISCOVERED: 'bg-blue-100 text-blue-800',
+  ANALYZING: 'bg-yellow-100 text-yellow-800',
+  MATCHED: 'bg-green-100 text-green-800',
+  REJECTED: 'bg-gray-100 text-gray-800',
+  APPLIED: 'bg-purple-100 text-purple-800',
+  EXPIRED: 'bg-red-100 text-red-800',
+  ERROR: 'bg-red-100 text-red-800',
 };
 
-const campaignStatusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  DRAFT: { label: 'Draft', color: 'bg-gray-100 text-gray-800', icon: <Clock className="h-4 w-4" /> },
-  ACTIVE: { label: 'Active', color: 'bg-green-100 text-green-800', icon: <CheckCircle className="h-4 w-4" /> },
-  PAUSED: { label: 'Paused', color: 'bg-yellow-100 text-yellow-800', icon: <Pause className="h-4 w-4" /> },
-  COMPLETED: { label: 'Completed', color: 'bg-blue-100 text-blue-800', icon: <Square className="h-4 w-4" /> },
-  FAILED: { label: 'Failed', color: 'bg-red-100 text-red-800', icon: <AlertTriangle className="h-4 w-4" /> },
+const campaignStatusColors: Record<string, { color: string; icon: React.ReactNode }> = {
+  DRAFT: { color: 'bg-gray-100 text-gray-800', icon: <Clock className="h-4 w-4" /> },
+  ACTIVE: { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="h-4 w-4" /> },
+  PAUSED: { color: 'bg-yellow-100 text-yellow-800', icon: <Pause className="h-4 w-4" /> },
+  COMPLETED: { color: 'bg-blue-100 text-blue-800', icon: <Square className="h-4 w-4" /> },
+  FAILED: { color: 'bg-red-100 text-red-800', icon: <AlertTriangle className="h-4 w-4" /> },
 };
 
-function MatchScoreBadge({ score }: { score: number | null }) {
-  if (score === null) return null;
-
+function MatchScoreBadge({ score, label }: { score: number; label: string }) {
   let color = 'bg-gray-100 text-gray-800';
   if (score >= 80) color = 'bg-green-100 text-green-800';
   else if (score >= 60) color = 'bg-blue-100 text-blue-800';
@@ -71,7 +78,53 @@ function MatchScoreBadge({ score }: { score: number | null }) {
 
   return (
     <span className={`text-xs font-medium px-2 py-0.5 rounded ${color}`}>
-      {score}% match
+      {label}
+    </span>
+  );
+}
+
+// Source badge configuration
+const sourceConfig: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
+  remoteok: {
+    icon: <Globe className="h-3 w-3" />,
+    color: 'bg-emerald-100 text-emerald-800',
+    label: 'RemoteOK',
+  },
+  wttj: {
+    icon: <Database className="h-3 w-3" />,
+    color: 'bg-violet-100 text-violet-800',
+    label: 'WTTJ',
+  },
+  mock: {
+    icon: <TestTube2 className="h-3 w-3" />,
+    color: 'bg-orange-100 text-orange-800',
+    label: 'Demo',
+  },
+  RSS: {
+    icon: <Rss className="h-3 w-3" />,
+    color: 'bg-amber-100 text-amber-800',
+    label: 'RSS',
+  },
+  API: {
+    icon: <Database className="h-3 w-3" />,
+    color: 'bg-blue-100 text-blue-800',
+    label: 'API',
+  },
+};
+
+function SourceBadge({ source }: { source?: { name: string; displayName: string; type: string } }) {
+  if (!source) return null;
+
+  const config = sourceConfig[source.name] || sourceConfig[source.type] || {
+    icon: <Globe className="h-3 w-3" />,
+    color: 'bg-gray-100 text-gray-800',
+    label: source.displayName,
+  };
+
+  return (
+    <span className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded ${config.color}`}>
+      {config.icon}
+      {config.label}
     </span>
   );
 }
@@ -80,9 +133,31 @@ export default function CampaignDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
+  const t = useTranslations('campaigns');
+  const tStatus = useTranslations('campaigns.status');
+  const locale = useLocale();
+  const dateLocale = locale === 'fr' ? fr : enUS;
   const campaignId = params.id as string;
 
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [showLaunchModal, setShowLaunchModal] = useState(false);
+
+  // Fetch profile for launch modal readiness check
+  const { data: profile } = useApi(() => profileApi.get().catch(() => null));
+
+  // Get job status label
+  const getJobStatusLabel = (status: string) => {
+    const statusMap: Record<string, string> = {
+      DISCOVERED: t('detail.jobStatus.discovered'),
+      ANALYZING: t('detail.jobStatus.analyzing'),
+      MATCHED: t('detail.jobStatus.matched'),
+      REJECTED: t('detail.jobStatus.rejected'),
+      APPLIED: t('detail.jobStatus.applied'),
+      EXPIRED: t('detail.jobStatus.expired'),
+      ERROR: t('detail.jobStatus.error'),
+    };
+    return statusMap[status] || status;
+  };
 
   // Fetch campaign
   const {
@@ -92,8 +167,8 @@ export default function CampaignDetailPage() {
   } = useApi(() => campaignApi.get(campaignId), {
     onError: () => {
       toast({
-        title: 'Error',
-        description: 'Failed to load campaign',
+        title: t('detail.toast.loadError.title'),
+        description: t('detail.toast.loadError.campaignFailed'),
         variant: 'destructive',
       });
     },
@@ -113,8 +188,8 @@ export default function CampaignDetailPage() {
     {
       onError: () => {
         toast({
-          title: 'Error',
-          description: 'Failed to load jobs',
+          title: t('detail.toast.loadError.title'),
+          description: t('detail.toast.loadError.jobsFailed'),
           variant: 'destructive',
         });
       },
@@ -149,8 +224,8 @@ export default function CampaignDetailPage() {
       onSuccess: () => {
         refetchCampaign();
         toast({
-          title: 'Campaign started',
-          description: 'Job discovery has begun.',
+          title: t('detail.toast.started.title'),
+          description: t('detail.toast.started.description'),
         });
       },
     }
@@ -162,8 +237,8 @@ export default function CampaignDetailPage() {
       onSuccess: () => {
         refetchCampaign();
         toast({
-          title: 'Campaign paused',
-          description: 'Job discovery has been paused.',
+          title: t('detail.toast.paused.title'),
+          description: t('detail.toast.paused.description'),
         });
       },
     }
@@ -175,8 +250,8 @@ export default function CampaignDetailPage() {
       onSuccess: () => {
         refetchCampaign();
         toast({
-          title: 'Campaign stopped',
-          description: 'The campaign has been completed.',
+          title: t('detail.toast.stopped.title'),
+          description: t('detail.toast.stopped.description'),
         });
       },
     }
@@ -189,8 +264,8 @@ export default function CampaignDetailPage() {
       onSuccess: () => {
         refetchJobs();
         toast({
-          title: 'Job rejected',
-          description: 'The job has been marked as not interested.',
+          title: t('detail.toast.jobRejected.title'),
+          description: t('detail.toast.jobRejected.description'),
         });
       },
     }
@@ -207,17 +282,17 @@ export default function CampaignDetailPage() {
   if (!campaign) {
     return (
       <div className="text-center py-12">
-        <p className="text-destructive">Campaign not found</p>
+        <p className="text-destructive">{t('detail.notFound')}</p>
         <Link href="/dashboard/campaigns">
           <Button variant="outline" className="mt-4">
-            Back to campaigns
+            {t('detail.backToCampaigns')}
           </Button>
         </Link>
       </div>
     );
   }
 
-  const status = campaignStatusConfig[campaign.status] || campaignStatusConfig.DRAFT;
+  const statusStyle = campaignStatusColors[campaign.status] || campaignStatusColors.DRAFT;
   const jobs = jobsData?.data || [];
 
   const canStart = campaign.status === 'DRAFT' || campaign.status === 'PAUSED';
@@ -247,14 +322,14 @@ export default function CampaignDetailPage() {
               <h1 className="text-3xl font-bold">{campaign.name}</h1>
               {campaign.testMode && (
                 <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
-                  Practice
+                  {t('detail.practice')}
                 </span>
               )}
             </div>
             <div className="flex items-center gap-2 mt-1 text-muted-foreground">
-              <span className={`flex items-center gap-1 text-xs px-2 py-1 rounded ${status.color}`}>
-                {status.icon}
-                {status.label}
+              <span className={`flex items-center gap-1 text-xs px-2 py-1 rounded ${statusStyle.color}`}>
+                {statusStyle.icon}
+                {tStatus(campaign.status.toLowerCase())}
               </span>
               <span className="flex items-center gap-1 text-sm">
                 <Briefcase className="h-3 w-3" />
@@ -270,11 +345,11 @@ export default function CampaignDetailPage() {
         <div className="flex items-center gap-2">
           {canStart && (
             <Button
-              onClick={() => startMutation.mutate()}
+              onClick={() => campaign.status === 'DRAFT' ? setShowLaunchModal(true) : startMutation.mutate()}
               disabled={startMutation.isLoading}
             >
               <Play className="mr-2 h-4 w-4" />
-              {campaign.status === 'PAUSED' ? 'Resume' : 'Start'}
+              {campaign.status === 'PAUSED' ? t('detail.resume') : t('detail.start')}
             </Button>
           )}
           {canPause && (
@@ -284,7 +359,7 @@ export default function CampaignDetailPage() {
               disabled={pauseMutation.isLoading}
             >
               <Pause className="mr-2 h-4 w-4" />
-              Pause
+              {t('detail.pause')}
             </Button>
           )}
           {canStop && (
@@ -294,51 +369,26 @@ export default function CampaignDetailPage() {
               disabled={stopMutation.isLoading}
             >
               <Square className="mr-2 h-4 w-4" />
-              Stop
+              {t('detail.stop')}
             </Button>
           )}
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Jobs</CardTitle>
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Matched</CardTitle>
-            <Target className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.matched}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Applied</CardTitle>
-            <CheckCircle className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-600">{stats.applied}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rejected</CardTitle>
-            <XCircle className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-500">{stats.rejected}</div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Discovery Funnel */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">{t('detail.stats.pipeline')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DiscoveryFunnel
+            discovered={stats.total}
+            matched={stats.matched}
+            applied={stats.applied}
+            showInsights={stats.total > 0}
+          />
+        </CardContent>
+      </Card>
 
       {/* Start Reminder for Draft Campaigns */}
       {campaign.status === 'DRAFT' && (
@@ -346,45 +396,60 @@ export default function CampaignDetailPage() {
           <CardContent className="py-6">
             <div className="flex flex-col items-center text-center gap-4 sm:flex-row sm:text-left sm:justify-between">
               <div>
-                <h3 className="font-semibold text-green-900 text-lg">Ready to start?</h3>
+                <h3 className="font-semibold text-green-900 text-lg">{t('detail.readyToStart.title')}</h3>
                 <p className="text-green-800">
-                  Your campaign won't find jobs until you start it.
+                  {t('detail.readyToStart.description')}
                 </p>
               </div>
               <Button
                 size="lg"
                 className="bg-green-600 hover:bg-green-700"
-                onClick={() => startMutation.mutate()}
+                onClick={() => setShowLaunchModal(true)}
                 disabled={startMutation.isLoading}
               >
                 <Play className="mr-2 h-5 w-5" />
-                Start Campaign
+                {t('detail.readyToStart.button')}
               </Button>
             </div>
           </CardContent>
         </Card>
       )}
 
+      {/* Campaign Launch Modal */}
+      {campaign && (
+        <CampaignLaunchModal
+          open={showLaunchModal}
+          onOpenChange={setShowLaunchModal}
+          campaign={campaign}
+          profile={profile ?? null}
+          onLaunch={async () => {
+            await startMutation.mutateAsync();
+            setShowLaunchModal(false);
+          }}
+          isLaunching={startMutation.isLoading}
+        />
+      )}
+
       {/* Jobs List */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Discovered Jobs</CardTitle>
+            <CardTitle>{t('detail.jobs.title')}</CardTitle>
             <CardDescription>
-              Jobs found matching your criteria
+              {t('detail.jobs.subtitle')}
             </CardDescription>
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Filter by status" />
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder={t('detail.jobs.filterPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All statuses</SelectItem>
-              <SelectItem value="MATCHED">Good matches</SelectItem>
-              <SelectItem value="APPLIED">Applied</SelectItem>
-              <SelectItem value="DISCOVERED">New jobs</SelectItem>
-              <SelectItem value="ANALYZING">Being reviewed</SelectItem>
-              <SelectItem value="REJECTED">Not interested</SelectItem>
+              <SelectItem value="all">{t('detail.jobs.filterAll')}</SelectItem>
+              <SelectItem value="MATCHED">{t('detail.jobs.filterMatched')}</SelectItem>
+              <SelectItem value="APPLIED">{t('detail.jobs.filterApplied')}</SelectItem>
+              <SelectItem value="DISCOVERED">{t('detail.jobs.filterDiscovered')}</SelectItem>
+              <SelectItem value="ANALYZING">{t('detail.jobs.filterAnalyzing')}</SelectItem>
+              <SelectItem value="REJECTED">{t('detail.jobs.filterRejected')}</SelectItem>
             </SelectContent>
           </Select>
         </CardHeader>
@@ -398,14 +463,14 @@ export default function CampaignDetailPage() {
               <Briefcase className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">
                 {campaign.status === 'DRAFT'
-                  ? 'Start the campaign to discover jobs'
-                  : 'No jobs found yet. Jobs will appear here as they are discovered.'}
+                  ? t('detail.jobs.emptyDraft')
+                  : t('detail.jobs.emptyActive')}
               </p>
             </div>
           ) : (
             <div className="space-y-4">
               {jobs.map((job: JobOffer) => {
-                const jobStatus = statusConfig[job.status] || statusConfig.DISCOVERED;
+                const jobStatusColor = statusColors[job.status] || statusColors.DISCOVERED;
                 const isAnalyzing = job.status === 'ANALYZING';
                 const canReject = job.status === 'MATCHED' || job.status === 'DISCOVERED';
 
@@ -417,13 +482,18 @@ export default function CampaignDetailPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start gap-3">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
                             <h4 className="font-medium truncate">{job.title}</h4>
-                            <span className={`text-xs px-2 py-0.5 rounded ${jobStatus.color}`}>
+                            <span className={`text-xs px-2 py-0.5 rounded ${jobStatusColor}`}>
                               {isAnalyzing && <Loader2 className="h-3 w-3 animate-spin inline mr-1" />}
-                              {jobStatus.label}
+                              {getJobStatusLabel(job.status)}
                             </span>
-                            <MatchScoreBadge score={job.matchScore} />
+                            {job.matchScore !== null && (
+                              <MatchScoreBadge score={job.matchScore} label={t('detail.jobs.match', { score: job.matchScore })} />
+                            )}
+                            {job.jobSource && (
+                              <SourceBadge source={job.jobSource} />
+                            )}
                           </div>
                           <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                             <span className="flex items-center gap-1">
@@ -455,9 +525,10 @@ export default function CampaignDetailPage() {
                           </div>
                           <p className="text-xs text-muted-foreground mt-1">
                             <Calendar className="h-3 w-3 inline mr-1" />
-                            Discovered{' '}
+                            {t('detail.jobs.discovered')}{' '}
                             {formatDistanceToNow(new Date(job.discoveredAt), {
                               addSuffix: true,
+                              locale: dateLocale,
                             })}
                           </p>
                         </div>
@@ -468,7 +539,7 @@ export default function CampaignDetailPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          title="Not interested"
+                          title={t('detail.jobs.notInterested')}
                           onClick={() => rejectMutation.mutate(job.id)}
                           disabled={rejectMutation.isLoading}
                         >
@@ -476,7 +547,7 @@ export default function CampaignDetailPage() {
                         </Button>
                       )}
                       <a href={job.url} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" title="View job posting">
+                        <Button variant="ghost" size="icon" title={t('detail.jobs.viewJobPosting')}>
                           <ExternalLink className="h-4 w-4" />
                         </Button>
                       </a>

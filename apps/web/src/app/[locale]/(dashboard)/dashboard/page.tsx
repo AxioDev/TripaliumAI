@@ -30,8 +30,30 @@ import {
   Zap,
 } from 'lucide-react';
 import { useApi } from '@/hooks/use-api';
-import { dashboardApi, DashboardStats, ActionLog, applicationApi, campaignApi } from '@/lib/api-client';
+import { dashboardApi, DashboardStats, ActionLog, applicationApi, campaignApi, profileApi } from '@/lib/api-client';
 import { formatDistanceToNow } from 'date-fns';
+import { FocusArea } from '@/components/dashboard/focus-area';
+import { Milestones } from '@/components/dashboard/milestones';
+import { ProfileReadinessWidget } from '@/components/profile/profile-readiness';
+
+// Helper to calculate profile completeness percentage
+function calculateProfileCompleteness(profile: Awaited<ReturnType<typeof profileApi.get>> | null): number {
+  if (!profile) return 0;
+
+  const checks = [
+    !!(profile.firstName && profile.lastName),
+    !!(profile.email),
+    !!(profile.phone),
+    !!(profile.location),
+    !!(profile.summary && profile.summary.length >= 50),
+    !!(profile.workExperiences?.length),
+    !!(profile.educations?.length),
+    !!(profile.skills?.length && profile.skills.length >= 3),
+  ];
+
+  const passed = checks.filter(Boolean).length;
+  return Math.round((passed / checks.length) * 100);
+}
 
 const actionKeyMap: Record<string, string> = {
   'user.login': 'userLogin',
@@ -84,6 +106,9 @@ export default function DashboardPage() {
   const [statsError, setStatsError] = useState(false);
   const [pendingReviewCount, setPendingReviewCount] = useState(0);
   const [activeCampaigns, setActiveCampaigns] = useState<Array<{ id: string; name: string; jobCount: number }>>([]);
+  const [profile, setProfile] = useState<Awaited<ReturnType<typeof profileApi.get>> | null>(null);
+  const [hasDraftCampaign, setHasDraftCampaign] = useState(false);
+  const [newMatchCount, setNewMatchCount] = useState(0);
 
   const {
     data: activityData,
@@ -94,18 +119,29 @@ export default function DashboardPage() {
     setStatsLoading(true);
     setStatsError(false);
     try {
-      const [data, applicationsData, campaignsData] = await Promise.all([
+      const [data, applicationsData, campaignsData, profileData] = await Promise.all([
         dashboardApi.getStats(),
         applicationApi.list({ status: 'PENDING_REVIEW', limit: 1 }),
         campaignApi.list(),
+        profileApi.get().catch(() => null),
       ]);
       setStats(data);
       setPendingReviewCount(applicationsData.meta?.total || 0);
+      setProfile(profileData);
+
+      const campaigns = campaignsData || [];
       setActiveCampaigns(
-        campaignsData
+        campaigns
           .filter((c) => c.status === 'ACTIVE')
           .map((c) => ({ id: c.id, name: c.name, jobCount: c._count?.jobOffers || 0 }))
       );
+      setHasDraftCampaign(campaigns.some((c) => c.status === 'DRAFT'));
+
+      // Count new matches from active campaigns (jobs discovered in last 24h)
+      const matchCount = campaigns
+        .filter((c) => c.status === 'ACTIVE')
+        .reduce((sum, c) => sum + (c._count?.jobOffers || 0), 0);
+      setNewMatchCount(matchCount > 0 ? Math.min(matchCount, 10) : 0);
     } catch (error) {
       console.error('Failed to load stats:', error);
       setStatsError(true);
@@ -170,31 +206,17 @@ export default function DashboardPage() {
         </Card>
       )}
 
-      {/* Pending Actions Alert */}
-      {pendingReviewCount > 0 && (
-        <Card className="border-yellow-200 bg-yellow-50">
-          <CardContent className="py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <AlertCircle className="h-5 w-5 text-yellow-600" />
-                <div>
-                  <p className="font-medium text-yellow-900">
-                    {t('pendingReview.title', { count: pendingReviewCount })}
-                  </p>
-                  <p className="text-sm text-yellow-800">
-                    {t('pendingReview.description')}
-                  </p>
-                </div>
-              </div>
-              <Link href="/dashboard/applications?status=PENDING_REVIEW">
-                <Button size="sm" variant="outline" className="border-yellow-600 text-yellow-700 hover:bg-yellow-100">
-                  {t('pendingReview.action')}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Focus Area - Contextual action banner */}
+      {!statsLoading && (
+        <FocusArea
+          pendingReviewCount={pendingReviewCount}
+          newMatchCount={newMatchCount}
+          profileCompleteness={calculateProfileCompleteness(profile)}
+          hasCv={(stats?.cvCount || 0) > 0}
+          hasCampaign={(stats?.campaignCount || 0) > 0}
+          hasDraftCampaign={hasDraftCampaign}
+          hasActiveCampaign={(stats?.activeCampaignCount || 0) > 0}
+        />
       )}
 
       {/* Stats Cards */}
@@ -290,6 +312,18 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Milestones - Journey progress */}
+      {!statsLoading && (
+        <Milestones
+          cvUploaded={(stats?.cvCount || 0) > 0}
+          profileComplete={calculateProfileCompleteness(profile) >= 70}
+          firstCampaignLaunched={(stats?.activeCampaignCount || 0) > 0 || (stats?.campaignCount || 0) > 0}
+          firstStrongMatch={(stats?.jobCount || 0) > 0}
+          firstApplicationSent={(stats?.submittedCount || 0) > 0}
+          tenApplicationsSubmitted={(stats?.submittedCount || 0) >= 10}
+        />
+      )}
 
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Getting Started / Quick Actions */}
