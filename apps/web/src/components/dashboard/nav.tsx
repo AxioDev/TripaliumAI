@@ -80,7 +80,7 @@ export function DashboardNav() {
   const pathnameWithoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') || '/';
 
   return (
-    <div className="hidden md:flex h-screen w-64 flex-col border-r bg-muted/40">
+    <div className="hidden md:flex h-screen w-64 flex-col border-r bg-muted/40 flex-shrink-0 sticky top-0">
       <div className="flex h-14 items-center justify-between border-b px-4">
         <Link href="/dashboard" className="flex items-center font-semibold">
           {t('brand')}
