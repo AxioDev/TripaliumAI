@@ -5,6 +5,7 @@ import { LogService } from '../log/log.service';
 import { OpenAIService } from '../llm/openai.service';
 import { QueueService, JobPayload } from '../queue/queue.service';
 import { ProfileService } from '../profile/profile.service';
+import { RealtimeService } from '../realtime/realtime.service';
 import { ActionType, JobOfferStatus, ApplicationStatus } from '@tripalium/shared';
 import { jobAnalysisSchema } from '@tripalium/shared';
 import { Prisma } from '@prisma/client';
@@ -17,6 +18,7 @@ export class JobAnalyzerService implements OnModuleInit {
     private readonly openaiService: OpenAIService,
     private readonly queueService: QueueService,
     private readonly profileService: ProfileService,
+    private readonly realtimeService: RealtimeService,
   ) {}
 
   onModuleInit() {
@@ -120,6 +122,17 @@ export class JobAnalyzerService implements OnModuleInit {
         },
         testMode,
       });
+
+      // Emit job matched event if meets threshold
+      if (meetsThreshold) {
+        this.realtimeService.jobMatched(
+          userId,
+          campaignId,
+          jobId,
+          analysis.matchScore,
+          analysis.recommendation,
+        );
+      }
 
       // If matched and auto-apply is enabled, create application
       if (meetsThreshold && jobOffer.campaign.autoApply) {

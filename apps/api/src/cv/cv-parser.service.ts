@@ -6,6 +6,7 @@ import { OpenAIService } from '../llm/openai.service';
 import { LogService } from '../log/log.service';
 import { QueueService, JobPayload } from '../queue/queue.service';
 import { ProfileService } from '../profile/profile.service';
+import { RealtimeService } from '../realtime/realtime.service';
 import { ActionType, ParsingStatus } from '@tripalium/shared';
 import { cvParseResultSchema } from '@tripalium/shared';
 import { Prisma } from '@prisma/client';
@@ -19,6 +20,7 @@ export class CvParserService implements OnModuleInit {
     private readonly logService: LogService,
     private readonly queueService: QueueService,
     private readonly profileService: ProfileService,
+    private readonly realtimeService: RealtimeService,
   ) {}
 
   onModuleInit() {
@@ -36,6 +38,18 @@ export class CvParserService implements OnModuleInit {
       action: ActionType.CV_PARSE_STARTED,
     });
 
+    // Get CV info for notifications
+    const cv = await this.prisma.cV.findUnique({
+      where: { id: cvId },
+    });
+
+    if (!cv) {
+      throw new Error('CV not found');
+    }
+
+    // Emit parse started event
+    this.realtimeService.cvParseStarted(userId, cvId, cv.fileName);
+
     try {
       // Update status
       await this.prisma.cV.update({
@@ -43,20 +57,20 @@ export class CvParserService implements OnModuleInit {
         data: { parsingStatus: ParsingStatus.PROCESSING },
       });
 
-      // Get CV file
-      const cv = await this.prisma.cV.findUnique({
-        where: { id: cvId },
-      });
-
-      if (!cv) {
-        throw new Error('CV not found');
-      }
+      // Emit progress - uploading stage
+      this.realtimeService.cvParseProgress(userId, cvId, 10, 'uploading');
 
       // Read the PDF file
       const fileBuffer = await this.storageService.read(cv.filePath);
 
+      // Emit progress - converting stage
+      this.realtimeService.cvParseProgress(userId, cvId, 25, 'converting');
+
       // Convert PDF to images
       const images = await this.convertPdfToImages(fileBuffer);
+
+      // Emit progress - analyzing stage
+      this.realtimeService.cvParseProgress(userId, cvId, 45, 'analyzing');
 
       // Parse using Vision API
       const parsedData = await this.openaiService.parseCV(
@@ -64,6 +78,9 @@ export class CvParserService implements OnModuleInit {
         cvParseResultSchema,
         'cv_parse_result',
       );
+
+      // Emit progress - extracting stage
+      this.realtimeService.cvParseProgress(userId, cvId, 75, 'extracting');
 
       // Update CV with parsed data
       await this.prisma.cV.update({
@@ -73,6 +90,9 @@ export class CvParserService implements OnModuleInit {
           parsedData: parsedData as unknown as Prisma.InputJsonValue,
         },
       });
+
+      // Emit progress - finalizing stage
+      this.realtimeService.cvParseProgress(userId, cvId, 90, 'finalizing');
 
       // Create/update profile from parsed data
       await this.updateProfileFromParsedData(userId, parsedData);
@@ -84,6 +104,9 @@ export class CvParserService implements OnModuleInit {
         action: ActionType.CV_PARSED,
         metadata: { confidence: parsedData.extractionConfidence },
       });
+
+      // Emit parse completed event
+      this.realtimeService.cvParseCompleted(userId, cvId, cv.fileName);
 
       return parsedData;
     } catch (error) {
@@ -106,6 +129,9 @@ export class CvParserService implements OnModuleInit {
         status: 'failure',
         errorMessage,
       });
+
+      // Emit parse failed event
+      this.realtimeService.cvParseFailed(userId, cvId, errorMessage);
 
       throw error;
     }

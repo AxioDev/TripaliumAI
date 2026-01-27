@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -22,6 +22,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { campaignApi, jobApi, profileApi, Campaign, JobOffer } from '@/lib/api-client';
 import { useApi, useMutation, usePolling } from '@/hooks/use-api';
+import { useJobDiscoveryRealtime, useSocketConnection } from '@/hooks/use-realtime';
 import { CampaignLaunchModal } from '@/components/campaigns/campaign-launch-modal';
 import { DiscoveryFunnel } from '@/components/campaigns/discovery-funnel';
 import {
@@ -141,6 +142,7 @@ export default function CampaignDetailPage() {
 
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showLaunchModal, setShowLaunchModal] = useState(false);
+  const { isConnected: isRealtimeConnected } = useSocketConnection();
 
   // Fetch profile for launch modal readiness check
   const { data: profile } = useApi(() => profileApi.get().catch(() => null));
@@ -196,10 +198,51 @@ export default function CampaignDetailPage() {
     }
   );
 
-  // Poll for updates when campaign is active
+  // Check if campaign needs updates
   const isActive = campaign?.status === 'ACTIVE';
   const hasAnalyzing = jobsData?.data.some((j) => j.status === 'ANALYZING' || j.status === 'DISCOVERED');
 
+  // Real-time job discovery updates
+  useJobDiscoveryRealtime(campaignId, {
+    onJobDiscovered: useCallback(
+      (_job: { id: string; title: string; company: string; location?: string }) => {
+        // Add the new job to the list
+        refetchJobs();
+      },
+      [refetchJobs]
+    ),
+    onJobMatched: useCallback(
+      (payload: { campaignId: string; jobId: string; matchScore: number }) => {
+        // Update job match score
+        refetchJobs();
+        if (payload.matchScore >= 70) {
+          toast({
+            title: t('detail.toast.match.title'),
+            description: t('detail.toast.match.description', { score: payload.matchScore }),
+          });
+        }
+      },
+      [refetchJobs, toast, t]
+    ),
+    onDiscoveryCompleted: useCallback(
+      (stats: { jobsFound: number; newJobs: number; matchedJobs: number }) => {
+        if (stats.newJobs > 0) {
+          toast({
+            title: t('detail.toast.discovery.title', { count: stats.newJobs }),
+            description: t('detail.toast.discovery.description', {
+              found: stats.newJobs,
+              matched: stats.matchedJobs,
+            }),
+          });
+        }
+        refetchJobs();
+        refetchCampaign();
+      },
+      [toast, t, refetchJobs, refetchCampaign]
+    ),
+  });
+
+  // Polling fallback when realtime is not connected
   usePolling(
     async () => {
       await refetchCampaign();
@@ -210,7 +253,7 @@ export default function CampaignDetailPage() {
     },
     {
       interval: 5000,
-      enabled: (isActive || hasAnalyzing) ?? false,
+      enabled: ((isActive || hasAnalyzing) && !isRealtimeConnected) ?? false,
       onSuccess: () => {
         refetchJobs();
       },

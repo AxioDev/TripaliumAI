@@ -29,9 +29,10 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { AnimatedCheckmark } from '@/components/ui/animated-checkmark';
-import { CVParsingProgress, useSimulatedProgress } from '@/components/ui/staged-progress';
+import { CVParsingProgress } from '@/components/ui/staged-progress';
 import { cvApi, CV } from '@/lib/api-client';
 import { useApi, useMutation, usePolling } from '@/hooks/use-api';
+import { useCVParsingRealtime, useSocketConnection } from '@/hooks/use-realtime';
 import {
   Upload,
   FileText,
@@ -46,14 +47,19 @@ import {
   Clock,
 } from 'lucide-react';
 
-// Helper component for CV parsing progress with simulated stages
-function CVParsingProgressCard({ status, cvId }: { status: string; cvId: string }) {
-  // Simulate progress based on status
+// Helper component for CV parsing progress with real-time updates
+function CVParsingProgressCard({
+  status,
+  cvId,
+  realtimeProgress,
+}: {
+  status: string;
+  cvId: string;
+  realtimeProgress?: number;
+}) {
+  // Use realtime progress if available, otherwise estimate based on status
   const baseProgress = status === 'PROCESSING' ? 30 : 10;
-  const progress = useSimulatedProgress(true, 15000); // 15 second simulated parse
-
-  // Use the higher of simulated or base progress
-  const displayProgress = Math.max(baseProgress, Math.min(progress, 95));
+  const displayProgress = realtimeProgress ?? baseProgress;
 
   return <CVParsingProgress progress={displayProgress} />;
 }
@@ -67,6 +73,8 @@ export default function CVsPage() {
   const [showParsedData, setShowParsedData] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [recentlyCompletedIds, setRecentlyCompletedIds] = useState<Set<string>>(new Set());
+  const [cvProgress, setCvProgress] = useState<Map<string, number>>(new Map());
+  const { isConnected: isRealtimeConnected } = useSocketConnection();
 
   // Fetch CVs
   const {
@@ -84,14 +92,76 @@ export default function CVsPage() {
     },
   });
 
-  // Check if any CV is being parsed - poll for updates
+  // Check if any CV is being parsed
   const hasPendingParse = cvs?.some(
     (cv) => cv.parsingStatus === 'PENDING' || cv.parsingStatus === 'PROCESSING'
   );
 
+  // Real-time CV parsing updates
+  useCVParsingRealtime(
+    // onProgress
+    useCallback((cvId: string, progress: number) => {
+      setCvProgress((prev) => new Map(prev).set(cvId, progress));
+    }, []),
+    // onCompleted
+    useCallback(
+      (cvId: string, fileName: string) => {
+        // Clear progress
+        setCvProgress((prev) => {
+          const next = new Map(prev);
+          next.delete(cvId);
+          return next;
+        });
+        // Show completion animation
+        setRecentlyCompletedIds((prev) => new Set(Array.from(prev).concat(cvId)));
+        setTimeout(() => {
+          setRecentlyCompletedIds((prev) => {
+            const next = new Set(Array.from(prev));
+            next.delete(cvId);
+            return next;
+          });
+        }, 1500);
+        // Show toast
+        toast({
+          title: (
+            <span className="flex items-center gap-2">
+              <AnimatedCheckmark size={18} />
+              {t('toast.parsed.title')}
+            </span>
+          ) as unknown as string,
+          description: t('toast.parsed.description', { fileName }),
+          variant: 'success',
+        });
+        // Refetch to get full data
+        refetch();
+      },
+      [toast, t, refetch]
+    ),
+    // onFailed
+    useCallback(
+      (cvId: string, error: string) => {
+        setCvProgress((prev) => {
+          const next = new Map(prev);
+          next.delete(cvId);
+          return next;
+        });
+        toast({
+          title: t('toast.error.title'),
+          description: error,
+          variant: 'destructive',
+        });
+        // Refetch to get current state
+        refetch();
+      },
+      [toast, t, refetch]
+    ),
+    hasPendingParse ?? false
+  );
+
+  // Polling fallback when realtime is not connected
   usePolling(() => cvApi.list(), {
     interval: 3000,
-    enabled: hasPendingParse ?? false,
+    enabled: (hasPendingParse && !isRealtimeConnected) ?? false,
     shouldStop: (data) =>
       !data.some(
         (cv) =>
@@ -430,6 +500,7 @@ export default function CVsPage() {
                   <CVParsingProgressCard
                     status={cv.parsingStatus}
                     cvId={cv.id}
+                    realtimeProgress={cvProgress.get(cv.id)}
                   />
                 </CardContent>
               )}

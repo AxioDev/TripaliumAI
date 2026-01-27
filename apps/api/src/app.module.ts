@@ -14,6 +14,7 @@ import { LlmModule } from './llm/llm.module';
 import { EmailModule } from './email/email.module';
 import { StorageModule } from './storage/storage.module';
 import { TestModule } from './test/test.module';
+import { RealtimeModule } from './realtime/realtime.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -35,6 +36,7 @@ import { HealthController } from './health.controller';
     // Core modules
     PrismaModule,
     AuthModule,
+    RealtimeModule,
     ProfileModule,
     CvModule,
     CampaignModule,

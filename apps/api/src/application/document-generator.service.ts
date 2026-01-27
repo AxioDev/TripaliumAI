@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
 import { LogService } from '../log/log.service';
@@ -6,6 +6,7 @@ import { OpenAIService } from '../llm/openai.service';
 import { QueueService, JobPayload } from '../queue/queue.service';
 import { ProfileService } from '../profile/profile.service';
 import { StorageService } from '../storage/storage.service';
+import { RealtimeService } from '../realtime/realtime.service';
 import {
   ActionType,
   ApplicationStatus,
@@ -16,9 +17,16 @@ import {
   generatedCoverLetterSchema,
 } from '@tripalium/shared';
 import { Prisma } from '@prisma/client';
+import {
+  PdfGeneratorService,
+  GeneratedCVContent,
+  GeneratedCoverLetterContent,
+} from './pdf-generator.service';
 
 @Injectable()
 export class DocumentGeneratorService implements OnModuleInit {
+  private readonly logger = new Logger(DocumentGeneratorService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly logService: LogService,
@@ -26,6 +34,8 @@ export class DocumentGeneratorService implements OnModuleInit {
     private readonly queueService: QueueService,
     private readonly profileService: ProfileService,
     private readonly storageService: StorageService,
+    private readonly pdfGeneratorService: PdfGeneratorService,
+    private readonly realtimeService: RealtimeService,
   ) {}
 
   onModuleInit() {
@@ -61,6 +71,14 @@ export class DocumentGeneratorService implements OnModuleInit {
       action: ActionType.DOCUMENT_GENERATION_STARTED,
       testMode,
     });
+
+    // Emit document generation started event
+    this.realtimeService.documentGenerationStarted(
+      userId,
+      applicationId,
+      application.jobOffer.title,
+      application.jobOffer.company,
+    );
 
     try {
       // Update status to generating
@@ -119,16 +137,16 @@ export class DocumentGeneratorService implements OnModuleInit {
         requirements: application.jobOffer.requirements,
       };
 
-      // Generate CV
-      const generatedCV = await this.openaiService.generateCV(
+      // Generate CV content using AI
+      const generatedCV = (await this.openaiService.generateCV(
         profileData,
         jobOffer,
         generatedCVSchema,
         'generated_cv',
-      );
+      )) as GeneratedCVContent;
 
-      // Generate Cover Letter
-      const generatedCoverLetter = await this.openaiService.generateCoverLetter(
+      // Generate Cover Letter content using AI
+      const generatedCoverLetter = (await this.openaiService.generateCoverLetter(
         {
           firstName: profile.firstName,
           lastName: profile.lastName,
@@ -138,7 +156,7 @@ export class DocumentGeneratorService implements OnModuleInit {
         jobOffer,
         generatedCoverLetterSchema,
         'generated_cover_letter',
-      );
+      )) as GeneratedCoverLetterContent;
 
       // Mark old documents as not latest
       await this.prisma.generatedDocument.updateMany({
@@ -153,69 +171,35 @@ export class DocumentGeneratorService implements OnModuleInit {
       });
       const nextVersion = (lastDoc?.version || 0) + 1;
 
-      // Save CV document
-      const cvFileName = `CV_${profile.firstName}_${profile.lastName}_${application.jobOffer.company.replace(/\s+/g, '_')}_v${nextVersion}.json`;
-      const cvContent = JSON.stringify(generatedCV, null, 2);
-      const cvFile = await this.storageService.store(
-        Buffer.from(cvContent),
-        cvFileName,
-        'documents',
-        userId,
-      );
-      const cvFilePath = cvFile.path;
+      const companySlug = application.jobOffer.company.replace(/\s+/g, '_');
+      const nameSlug = `${profile.firstName}_${profile.lastName}`;
 
-      await this.prisma.generatedDocument.create({
-        data: {
-          applicationId,
-          userId,
-          type: DocumentType.CV,
-          fileName: cvFileName,
-          filePath: cvFilePath,
-          fileSize: Buffer.from(cvContent).length,
-          mimeType: 'application/json',
-          promptUsed: 'generateCV',
-          modelUsed: 'gpt-4o',
-          inputContext: { profileData, jobOffer } as unknown as Prisma.InputJsonValue,
-          generatedJson: generatedCV as unknown as Prisma.InputJsonValue,
-          version: nextVersion,
-          isLatest: true,
-        },
+      // Generate and save CV (both JSON and PDF)
+      await this.saveDocument({
+        applicationId,
+        userId,
+        type: DocumentType.CV,
+        version: nextVersion,
+        content: generatedCV,
+        profileData,
+        jobOffer,
+        nameSlug,
+        companySlug,
+        profile,
       });
 
-      // Save Cover Letter document
-      const clFileName = `CoverLetter_${profile.firstName}_${profile.lastName}_${application.jobOffer.company.replace(/\s+/g, '_')}_v${nextVersion}.json`;
-      const clContent = JSON.stringify(generatedCoverLetter, null, 2);
-      const clFile = await this.storageService.store(
-        Buffer.from(clContent),
-        clFileName,
-        'documents',
+      // Generate and save Cover Letter (both JSON and PDF)
+      await this.saveDocument({
+        applicationId,
         userId,
-      );
-      const clFilePath = clFile.path;
-
-      await this.prisma.generatedDocument.create({
-        data: {
-          applicationId,
-          userId,
-          type: DocumentType.COVER_LETTER,
-          fileName: clFileName,
-          filePath: clFilePath,
-          fileSize: Buffer.from(clContent).length,
-          mimeType: 'application/json',
-          promptUsed: 'generateCoverLetter',
-          modelUsed: 'gpt-4o',
-          inputContext: {
-            profile: {
-              firstName: profile.firstName,
-              lastName: profile.lastName,
-              summary: profile.summary,
-            },
-            jobOffer,
-          },
-          generatedJson: generatedCoverLetter as unknown as Prisma.InputJsonValue,
-          version: nextVersion,
-          isLatest: true,
-        },
+        type: DocumentType.COVER_LETTER,
+        version: nextVersion,
+        content: generatedCoverLetter,
+        profileData,
+        jobOffer,
+        nameSlug,
+        companySlug,
+        profile,
       });
 
       // Update application status to pending review
@@ -229,13 +213,38 @@ export class DocumentGeneratorService implements OnModuleInit {
         entityType: 'application',
         entityId: applicationId,
         action: ActionType.DOCUMENT_GENERATED,
-        metadata: { version: nextVersion },
+        metadata: { version: nextVersion, formats: ['json', 'pdf'] },
         testMode,
       });
+
+      // Emit CV generated event
+      this.realtimeService.documentGenerated(
+        userId,
+        applicationId,
+        'cv',
+        nextVersion,
+      );
+
+      // Emit cover letter generated event
+      this.realtimeService.documentGenerated(
+        userId,
+        applicationId,
+        'cover_letter',
+        nextVersion,
+      );
+
+      // Emit documents ready event with notification
+      this.realtimeService.documentsReady(
+        userId,
+        applicationId,
+        application.jobOffer.title,
+        application.jobOffer.company,
+      );
 
       return { success: true, version: nextVersion };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Document generation failed: ${errorMessage}`);
 
       await this.prisma.application.update({
         where: { id: applicationId },
@@ -252,7 +261,135 @@ export class DocumentGeneratorService implements OnModuleInit {
         testMode,
       });
 
+      // Emit document generation failed event
+      this.realtimeService.documentGenerationFailed(
+        userId,
+        applicationId,
+        errorMessage,
+      );
+
       throw error;
+    }
+  }
+
+  /**
+   * Save a document in both JSON and PDF formats
+   */
+  private async saveDocument(params: {
+    applicationId: string;
+    userId: string;
+    type: DocumentType;
+    version: number;
+    content: GeneratedCVContent | GeneratedCoverLetterContent;
+    profileData: Record<string, unknown>;
+    jobOffer: Record<string, unknown>;
+    nameSlug: string;
+    companySlug: string;
+    profile: {
+      firstName: string;
+      lastName: string;
+      email: string | null;
+      phone: string | null;
+      location: string | null;
+    };
+  }) {
+    const {
+      applicationId,
+      userId,
+      type,
+      version,
+      content,
+      profileData,
+      jobOffer,
+      nameSlug,
+      companySlug,
+      profile,
+    } = params;
+
+    const typePrefix = type === DocumentType.CV ? 'CV' : 'CoverLetter';
+
+    // Save JSON version
+    const jsonFileName = `${typePrefix}_${nameSlug}_${companySlug}_v${version}.json`;
+    const jsonContent = JSON.stringify(content, null, 2);
+    const jsonFile = await this.storageService.store(
+      Buffer.from(jsonContent),
+      jsonFileName,
+      'documents',
+      userId,
+    );
+
+    await this.prisma.generatedDocument.create({
+      data: {
+        applicationId,
+        userId,
+        type,
+        fileName: jsonFileName,
+        filePath: jsonFile.path,
+        fileSize: Buffer.from(jsonContent).length,
+        mimeType: 'application/json',
+        promptUsed: type === DocumentType.CV ? 'generateCV' : 'generateCoverLetter',
+        modelUsed: 'gpt-4o',
+        inputContext: { profileData, jobOffer } as unknown as Prisma.InputJsonValue,
+        generatedJson: content as unknown as Prisma.InputJsonValue,
+        version,
+        isLatest: true,
+      },
+    });
+
+    // Generate and save PDF version
+    try {
+      let pdfBuffer: Buffer;
+
+      if (type === DocumentType.CV) {
+        pdfBuffer = await this.pdfGeneratorService.generateCVPdf(
+          content as GeneratedCVContent,
+        );
+      } else {
+        pdfBuffer = await this.pdfGeneratorService.generateCoverLetterPdf(
+          content as GeneratedCoverLetterContent,
+          {
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            email: profile.email || undefined,
+            phone: profile.phone || undefined,
+            location: profile.location || undefined,
+          },
+        );
+      }
+
+      const pdfFileName = `${typePrefix}_${nameSlug}_${companySlug}_v${version}.pdf`;
+      const pdfFile = await this.storageService.store(
+        pdfBuffer,
+        pdfFileName,
+        'documents',
+        userId,
+      );
+
+      await this.prisma.generatedDocument.create({
+        data: {
+          applicationId,
+          userId,
+          type,
+          fileName: pdfFileName,
+          filePath: pdfFile.path,
+          fileSize: pdfBuffer.length,
+          mimeType: 'application/pdf',
+          promptUsed: type === DocumentType.CV ? 'generateCV' : 'generateCoverLetter',
+          modelUsed: 'gpt-4o',
+          inputContext: { profileData, jobOffer } as unknown as Prisma.InputJsonValue,
+          generatedJson: content as unknown as Prisma.InputJsonValue,
+          version,
+          isLatest: true,
+        },
+      });
+
+      this.logger.log(`Generated PDF: ${pdfFileName}`);
+    } catch (pdfError) {
+      // Log PDF generation failure but don't fail the whole process
+      // JSON documents are still available
+      this.logger.error(
+        `PDF generation failed for ${type}: ${pdfError instanceof Error ? pdfError.message : 'Unknown error'}`,
+      );
     }
   }
 }

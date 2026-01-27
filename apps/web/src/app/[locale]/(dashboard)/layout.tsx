@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { setRequestLocale } from 'next-intl/server';
 import { authOptions } from '@/lib/auth';
 import { DashboardNav, MobileNav } from '@/components/dashboard/nav';
+import { RealtimeProvider } from '@/components/dashboard/realtime-provider';
 
 export default async function DashboardLayout({
   children,
@@ -21,10 +22,12 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
-      <MobileNav />
-      <DashboardNav />
-      <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
-    </div>
+    <RealtimeProvider>
+      <div className="flex h-screen flex-col md:flex-row overflow-hidden">
+        <MobileNav />
+        <DashboardNav />
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">{children}</main>
+      </div>
+    </RealtimeProvider>
   );
 }

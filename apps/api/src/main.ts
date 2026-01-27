@@ -2,9 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { RedisIoAdapter } from './realtime/redis-adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // WebSocket with Redis adapter for multi-instance scaling
+  const redisAdapter = new RedisIoAdapter(app, process.env.REDIS_URL);
+  await redisAdapter.connectToRedis();
+  app.useWebSocketAdapter(redisAdapter);
 
   // Global prefix
   app.setGlobalPrefix('api');

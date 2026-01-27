@@ -24,41 +24,9 @@ import {
   Key,
   Menu,
 } from 'lucide-react';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { NotificationBell } from '@/components/notifications';
-import { Notification } from '@/components/notifications/notification-types';
-
-// Mock notifications for demo - in production, this would come from an API
-const useMockNotifications = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    // Uncomment to see sample notifications:
-    // {
-    //   id: '1',
-    //   type: 'jobs_discovered',
-    //   title: '5 new jobs found',
-    //   message: 'Your "Frontend Developer" campaign found new matches.',
-    //   read: false,
-    //   createdAt: new Date(Date.now() - 1000 * 60 * 5),
-    //   actionUrl: '/dashboard/campaigns',
-    // },
-  ]);
-
-  const markAsRead = useCallback((id: string) => {
-    setNotifications(prev =>
-      prev.map(n => n.id === id ? { ...n, read: true } : n)
-    );
-  }, []);
-
-  const markAllAsRead = useCallback(() => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  }, []);
-
-  const clearNotification = useCallback((id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  }, []);
-
-  return { notifications, markAsRead, markAllAsRead, clearNotification };
-};
+import { useNotifications } from '@/contexts/notification-context';
 
 const navItems = [
   { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard },
@@ -106,7 +74,7 @@ function NavLink({
 export function DashboardNav() {
   const pathname = usePathname();
   const t = useTranslations('nav');
-  const { notifications, markAsRead, markAllAsRead, clearNotification } = useMockNotifications();
+  const { notifications, markAsRead, markAllAsRead, clearNotification } = useNotifications();
 
   // Remove locale prefix from pathname for comparison
   const pathnameWithoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') || '/';
@@ -154,7 +122,7 @@ export function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const t = useTranslations('nav');
-  const { notifications, markAsRead, markAllAsRead, clearNotification } = useMockNotifications();
+  const { notifications, markAsRead, markAllAsRead, clearNotification } = useNotifications();
 
   // Remove locale prefix from pathname for comparison
   const pathnameWithoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') || '/';

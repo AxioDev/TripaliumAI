@@ -3,6 +3,7 @@ import { Job } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
 import { LogService } from '../log/log.service';
 import { QueueService, JobPayload } from '../queue/queue.service';
+import { RealtimeService } from '../realtime/realtime.service';
 import { ActionType, JobOfferStatus } from '@tripalium/shared';
 import { AdapterRegistry, CampaignSearchCriteria, DiscoveredJob } from './sources';
 import { JobDeduplicationService } from './job-deduplication.service';
@@ -17,6 +18,7 @@ export class JobDiscoveryService implements OnModuleInit {
     private readonly queueService: QueueService,
     private readonly adapterRegistry: AdapterRegistry,
     private readonly deduplicationService: JobDeduplicationService,
+    private readonly realtimeService: RealtimeService,
   ) {}
 
   onModuleInit() {
@@ -47,6 +49,13 @@ export class JobDiscoveryService implements OnModuleInit {
       action: ActionType.JOB_DISCOVERY_STARTED,
       testMode,
     });
+
+    // Emit discovery started event
+    this.realtimeService.jobDiscoveryStarted(
+      campaign.userId,
+      campaignId,
+      campaign.name,
+    );
 
     try {
       // Build search criteria from campaign
@@ -157,13 +166,28 @@ export class JobDiscoveryService implements OnModuleInit {
         select: { id: true },
       });
 
-      // Queue analysis jobs
+      // Queue analysis jobs and emit discovered events
       for (const createdJob of createdJobs) {
         await this.queueService.addJob({
           type: 'job.analyze',
           data: { jobId: createdJob.id, campaignId },
           userId: campaign.userId,
           testMode,
+        });
+      }
+
+      // Emit job discovered events for each new job
+      const createdJobsWithDetails = await this.prisma.jobOffer.findMany({
+        where: { id: { in: createdJobs.map((j) => j.id) } },
+        select: { id: true, title: true, company: true, location: true },
+      });
+
+      for (const job of createdJobsWithDetails) {
+        this.realtimeService.jobDiscovered(campaign.userId, campaignId, {
+          id: job.id,
+          title: job.title,
+          company: job.company,
+          location: job.location || undefined,
         });
       }
 
@@ -182,6 +206,13 @@ export class JobDiscoveryService implements OnModuleInit {
           queryTimeMs: result.metadata.queryTimeMs,
         },
         testMode,
+      });
+
+      // Emit discovery completed event
+      this.realtimeService.jobDiscoveryCompleted(campaign.userId, campaignId, {
+        jobsFound: result.jobs.length,
+        newJobs: newJobs.length,
+        matchedJobs: 0, // Will be updated as jobs are analyzed
       });
 
       return {
