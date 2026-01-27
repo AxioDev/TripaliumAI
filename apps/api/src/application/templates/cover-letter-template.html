@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cover Letter - {{companyName}}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #333;
+      background: #fff;
+      padding: 50px 60px;
+      max-width: 210mm;
+      margin: 0 auto;
+    }
+
+    /* Header with sender info */
+    .sender-info {
+      text-align: right;
+      margin-bottom: 30px;
+      font-size: 10.5pt;
+      color: #4b5563;
+    }
+
+    .sender-name {
+      font-size: 14pt;
+      font-weight: 600;
+      color: #1e40af;
+      margin-bottom: 4px;
+    }
+
+    /* Date */
+    .date {
+      text-align: right;
+      margin-bottom: 30px;
+      font-size: 10.5pt;
+      color: #6b7280;
+    }
+
+    /* Recipient info */
+    .recipient-info {
+      margin-bottom: 24px;
+      font-size: 10.5pt;
+    }
+
+    .recipient-name {
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .company-name {
+      color: #4b5563;
+    }
+
+    /* Salutation */
+    .salutation {
+      margin-bottom: 20px;
+      font-size: 11pt;
+    }
+
+    /* Body paragraphs */
+    .body-content {
+      margin-bottom: 24px;
+    }
+
+    .body-content p {
+      margin-bottom: 16px;
+      text-align: justify;
+      text-indent: 0;
+    }
+
+    /* Closing */
+    .closing {
+      margin-top: 30px;
+    }
+
+    .closing-text {
+      margin-bottom: 40px;
+    }
+
+    .signature {
+      font-style: italic;
+      color: #1e40af;
+      font-size: 12pt;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        padding: 0;
+      }
+    }
+
+    @page {
+      margin: 20mm;
+      size: A4;
+    }
+  </style>
+</head>
+<body>
+  <div class="sender-info">
+    <div class="sender-name">{{senderName}}</div>
+    {{#if senderEmail}}<div>{{senderEmail}}</div>{{/if}}
+    {{#if senderPhone}}<div>{{senderPhone}}</div>{{/if}}
+    {{#if senderLocation}}<div>{{senderLocation}}</div>{{/if}}
+  </div>
+
+  <div class="date">{{date}}</div>
+
+  <div class="recipient-info">
+    {{#if recipientName}}
+    <div class="recipient-name">{{recipientName}}</div>
+    {{/if}}
+    {{#if recipientTitle}}
+    <div>{{recipientTitle}}</div>
+    {{/if}}
+    <div class="company-name">{{companyName}}</div>
+  </div>
+
+  <div class="salutation">
+    {{#if recipientName}}
+    Dear {{recipientName}},
+    {{else}}
+    Dear Hiring Manager,
+    {{/if}}
+  </div>
+
+  <div class="body-content">
+    <p>{{opening}}</p>
+    {{#each body}}
+    <p>{{this}}</p>
+    {{/each}}
+  </div>
+
+  <div class="closing">
+    <p class="closing-text">{{closing}}</p>
+    <div class="signature">{{signature}}</div>
+  </div>
+</body>
+</html>
