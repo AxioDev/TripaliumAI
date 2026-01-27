@@ -415,6 +415,12 @@ export interface JobOffer {
   status: 'DISCOVERED' | 'ANALYZING' | 'MATCHED' | 'REJECTED' | 'APPLIED' | 'EXPIRED' | 'ERROR';
   discoveredAt: string;
   application?: { id: string; status: string } | null;
+  jobSource?: {
+    id: string;
+    name: string;
+    displayName: string;
+    type: 'API' | 'SCRAPER' | 'RSS' | 'MANUAL' | 'MOCK';
+  };
 }
 
 export interface JobSource {
