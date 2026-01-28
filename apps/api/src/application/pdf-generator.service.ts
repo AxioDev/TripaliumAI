@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
 import * as path from 'path';
 import * as fs from 'fs/promises';
+import { CV_TEMPLATES, CVTemplateId } from './templates/template-config';
 
 /**
  * Generated CV content structure
@@ -107,14 +108,66 @@ export class PdfGeneratorService implements OnModuleDestroy {
   }
 
   /**
-   * Generate PDF from CV content
+   * Generate PDF from CV content (uses default professional template)
    */
   async generateCVPdf(content: GeneratedCVContent): Promise<Buffer> {
-    const templatePath = path.join(this.templatesDir, 'cv-template.html');
-    const template = await fs.readFile(templatePath, 'utf-8');
+    return this.generateCVPdfWithTemplate(content, 'professional');
+  }
 
+  /**
+   * Generate PDF from CV content with specific template
+   */
+  async generateCVPdfWithTemplate(
+    content: GeneratedCVContent,
+    templateId: CVTemplateId = 'professional',
+  ): Promise<Buffer> {
+    const templateConfig = CV_TEMPLATES[templateId];
+    const templatePath = path.join(this.templatesDir, templateConfig.file);
+
+    try {
+      const template = await fs.readFile(templatePath, 'utf-8');
+      const html = this.renderTemplate(template, content as unknown as Record<string, unknown>);
+      return this.htmlToPdf(html);
+    } catch (error) {
+      // Fallback to default template if specific one not found
+      this.logger.warn(`Template ${templateId} not found, falling back to professional`);
+      const fallbackPath = path.join(this.templatesDir, 'cv-professional.html');
+      const template = await fs.readFile(fallbackPath, 'utf-8');
+      const html = this.renderTemplate(template, content as unknown as Record<string, unknown>);
+      return this.htmlToPdf(html);
+    }
+  }
+
+  /**
+   * Generate PNG image from CV content (for Canva import)
+   */
+  async generateCVPng(
+    content: GeneratedCVContent,
+    templateId: CVTemplateId = 'professional',
+  ): Promise<Buffer> {
+    const templateConfig = CV_TEMPLATES[templateId];
+    const templatePath = path.join(this.templatesDir, templateConfig.file);
+
+    const template = await fs.readFile(templatePath, 'utf-8');
     const html = this.renderTemplate(template, content as unknown as Record<string, unknown>);
-    return this.htmlToPdf(html);
+
+    const browser = await this.getBrowser();
+    const page = await browser.newPage();
+
+    try {
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+      await page.setViewport({ width: 794, height: 1123 }); // A4 at 96dpi
+
+      const screenshot = await page.screenshot({
+        type: 'png',
+        fullPage: true,
+        omitBackground: false,
+      });
+
+      return Buffer.from(screenshot);
+    } finally {
+      await page.close();
+    }
   }
 
   /**

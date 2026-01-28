@@ -16,10 +16,13 @@ import {
   ApiSecurity,
 } from '@nestjs/swagger';
 import { ApplicationService } from './application.service';
+import { PdfGeneratorService, GeneratedCVContent } from './pdf-generator.service';
+import { CanvaExportService } from './canva-export.service';
 import { CombinedAuthGuard } from '../auth/guards/combined-auth.guard';
 import { RequiredScope } from '../auth/decorators/required-scope.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { ApiKeyScope, ApplicationStatus } from '@tripalium/shared';
+import { ApiKeyScope, ApplicationStatus, DocumentType } from '@tripalium/shared';
+import { CVTemplateId } from './templates/template-config';
 
 @ApiTags('Applications')
 @Controller('applications')
@@ -146,7 +149,11 @@ export class ApplicationController {
 @ApiBearerAuth()
 @ApiSecurity('api-key')
 export class DocumentController {
-  constructor(private readonly applicationService: ApplicationService) {}
+  constructor(
+    private readonly applicationService: ApplicationService,
+    private readonly pdfGeneratorService: PdfGeneratorService,
+    private readonly canvaExportService: CanvaExportService,
+  ) {}
 
   @Get(':id')
   @ApiOperation({ summary: 'Get document metadata' })
@@ -176,5 +183,61 @@ export class DocumentController {
     @Param('id') documentId: string,
   ) {
     return this.applicationService.getDocumentContent(documentId, user.id);
+  }
+
+  @Get(':id/export/png')
+  @ApiOperation({ summary: 'Export CV as PNG (for Canva import)' })
+  async exportPng(
+    @CurrentUser() user: { id: string },
+    @Param('id') documentId: string,
+    @Query('templateId') templateId: string | undefined,
+    @Res() res: Response,
+  ) {
+    const doc = await this.applicationService.getDocument(documentId, user.id);
+
+    if (doc.type !== DocumentType.CV) {
+      res.status(400).json({ error: 'PNG export only available for CV documents' });
+      return;
+    }
+
+    const content = await this.applicationService.getDocumentContent(documentId, user.id);
+    const template = (templateId as CVTemplateId) || (doc.templateId as CVTemplateId) || 'professional';
+
+    const png = await this.pdfGeneratorService.generateCVPng(
+      content.content as unknown as GeneratedCVContent,
+      template,
+    );
+
+    const fileName = doc.fileName.replace('.json', '.png').replace('.pdf', '.png');
+    res.set('Content-Type', 'image/png');
+    res.set('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.send(png);
+  }
+
+  @Get(':id/export/canva')
+  @ApiOperation({ summary: 'Export CV as Canva-compatible JSON template' })
+  async exportCanva(
+    @CurrentUser() user: { id: string },
+    @Param('id') documentId: string,
+    @Query('templateId') templateId: string | undefined,
+  ) {
+    const doc = await this.applicationService.getDocument(documentId, user.id);
+
+    if (doc.type !== DocumentType.CV) {
+      return { error: 'Canva export only available for CV documents' };
+    }
+
+    const content = await this.applicationService.getDocumentContent(documentId, user.id);
+    const template = (templateId as CVTemplateId) || (doc.templateId as CVTemplateId) || 'professional';
+
+    const canvaTemplate = this.canvaExportService.generateCanvaTemplate(
+      content.content as unknown as GeneratedCVContent,
+      template,
+    );
+
+    return {
+      success: true,
+      template: canvaTemplate,
+    };
   }
 }

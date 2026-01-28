@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
 import { LogService } from '../log/log.service';
@@ -6,12 +6,15 @@ import { OpenAIService } from '../llm/openai.service';
 import { QueueService, JobPayload } from '../queue/queue.service';
 import { ProfileService } from '../profile/profile.service';
 import { RealtimeService } from '../realtime/realtime.service';
+import { JobUnderstandingService } from './job-understanding.service';
 import { ActionType, JobOfferStatus, ApplicationStatus } from '@tripalium/shared';
 import { jobAnalysisSchema } from '@tripalium/shared';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class JobAnalyzerService implements OnModuleInit {
+  private readonly logger = new Logger(JobAnalyzerService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly logService: LogService,
@@ -19,6 +22,7 @@ export class JobAnalyzerService implements OnModuleInit {
     private readonly queueService: QueueService,
     private readonly profileService: ProfileService,
     private readonly realtimeService: RealtimeService,
+    private readonly jobUnderstandingService: JobUnderstandingService,
   ) {}
 
   onModuleInit() {
@@ -101,11 +105,34 @@ export class JobAnalyzerService implements OnModuleInit {
         ? JobOfferStatus.MATCHED
         : JobOfferStatus.REJECTED;
 
+      // Perform deep job understanding for matched jobs (will be used in document generation)
+      let jobUnderstanding = null;
+      if (meetsThreshold) {
+        try {
+          this.logger.log(`Performing deep job understanding for matched job: ${jobId}`);
+          jobUnderstanding = await this.jobUnderstandingService.analyzeJobPosting({
+            title: jobOffer.title,
+            company: jobOffer.company,
+            description: jobOffer.description,
+            requirements: jobOffer.requirements,
+            location: jobOffer.location,
+            salary: jobOffer.salary,
+            contractType: jobOffer.contractType,
+            remoteType: jobOffer.remoteType,
+          });
+        } catch (error) {
+          // Log but don't fail the analysis if understanding fails
+          this.logger.warn(`Job understanding failed for ${jobId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+      }
+
       await this.prisma.jobOffer.update({
         where: { id: jobId },
         data: {
           matchScore: analysis.matchScore,
           matchAnalysis: analysis as unknown as Prisma.InputJsonValue,
+          jobUnderstanding: jobUnderstanding as unknown as Prisma.InputJsonValue,
+          discriminationFlags: analysis.discriminationFlags || [],
           status: newStatus,
         },
       });

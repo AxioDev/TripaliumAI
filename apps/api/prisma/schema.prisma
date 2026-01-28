@@ -25,6 +25,12 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  // GDPR Compliance
+  deletedAt            DateTime?
+  consentGiven         Boolean   @default(false)
+  consentGivenAt       DateTime?
+  privacyPolicyVersion String?
+
   // Relations
   profile      Profile?
   apiKeys      ApiKey[]
@@ -80,6 +86,7 @@ model Profile {
   summary        String?  @db.Text
   photoUrl       String?
   motivationText String?  @db.Text
+  preferredCVTemplate String?
 
   embedding Unsupported("vector(1536)")?
 
@@ -241,6 +248,11 @@ model Campaign {
   testMode        Boolean        @default(false)
   autoApply       Boolean        @default(false)
 
+  // Rate limiting & France features
+  maxApplications       Int     @default(50)
+  anonymizeApplications Boolean @default(false)
+  cvTemplateId          String?
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   startedAt DateTime?
@@ -328,9 +340,15 @@ model JobOffer {
   remoteType     String?
   url            String
 
-  matchScore    Int?
-  matchAnalysis Json?
-  embedding     Unsupported("vector(1536)")?
+  // Application contact info (extracted from job posting)
+  applicationEmail String?
+  applicationUrl   String?
+
+  matchScore         Int?
+  matchAnalysis      Json?
+  jobUnderstanding   Json?
+  discriminationFlags String[]
+  embedding          Unsupported("vector(1536)")?
 
   status JobOfferStatus @default(DISCOVERED)
 
@@ -433,6 +451,8 @@ model GeneratedDocument {
   modelUsed     String
   inputContext  Json
   generatedJson Json?
+  qualityScore  Json?
+  templateId    String?
   version       Int          @default(1)
   isLatest      Boolean      @default(true)
   generatedAt   DateTime     @default(now())
@@ -507,6 +527,7 @@ model ActionLog {
   userAgent    String?
   apiKeyId     String?
   testMode     Boolean  @default(false)
+  isSensitive  Boolean  @default(false)
   createdAt    DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)

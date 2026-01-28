@@ -236,6 +236,17 @@ export const jobAnalysisSchema = z.object({
   matchingRequirements: z.array(z.string()),
   missingRequirements: z.array(z.string()),
   redFlags: z.array(z.string()),
+  discriminationFlags: z.array(z.enum([
+    'age_limit',
+    'gender_preference',
+    'origin_requirement',
+    'physical_appearance',
+    'family_status',
+    'religious_requirement',
+    'health_requirement',
+    'other_discrimination',
+  ])).describe('Flags indicating potentially discriminatory requirements in the job posting'),
+  discriminationDetails: z.array(z.string()).describe('Specific text or requirements from the job posting that triggered discrimination flags'),
   recommendation: z.enum([
     'strong_match',
     'good_match',
@@ -316,3 +327,164 @@ export type JobAnalysisSchema = z.infer<typeof jobAnalysisSchema>;
 export type ActionLogQueryInput = z.infer<typeof actionLogQuerySchema>;
 export type GeneratedCV = z.infer<typeof generatedCVSchema>;
 export type GeneratedCoverLetter = z.infer<typeof generatedCoverLetterSchema>;
+
+// =============================================================================
+// Job Understanding Schema (for deep job analysis)
+// =============================================================================
+
+export const jobUnderstandingSchema = z.object({
+  // Core identification
+  roleCategory: z.enum([
+    'engineering',
+    'design',
+    'marketing',
+    'sales',
+    'finance',
+    'operations',
+    'hr',
+    'legal',
+    'executive',
+    'creative',
+    'healthcare',
+    'education',
+    'other',
+  ]).describe('Primary category of the role'),
+  seniorityLevel: z.enum([
+    'intern',
+    'junior',
+    'mid',
+    'senior',
+    'lead',
+    'manager',
+    'director',
+    'executive',
+  ]).describe('Seniority level expected for the role'),
+  industryDomain: z.string().describe('Industry domain, e.g., fintech, healthcare, e-commerce, SaaS'),
+
+  // Company context
+  companySize: z
+    .enum(['startup', 'scaleup', 'enterprise', 'unknown'])
+    .nullable()
+    .describe('Estimated company size based on job posting signals'),
+  companyCulture: z
+    .array(z.string())
+    .describe('Culture signals, e.g., innovative, traditional, fast-paced, collaborative'),
+  companyValues: z
+    .array(z.string())
+    .describe('Values mentioned or implied in the posting'),
+
+  // Role requirements
+  mustHaveSkills: z
+    .array(z.string())
+    .describe('Non-negotiable technical requirements explicitly stated'),
+  niceToHaveSkills: z
+    .array(z.string())
+    .describe('Preferred but not required skills'),
+  softSkillsRequired: z
+    .array(z.string())
+    .describe('Soft skills emphasized, e.g., leadership, communication, problem-solving'),
+
+  // Tone and style
+  postingTone: z
+    .enum(['formal', 'casual', 'technical', 'creative', 'corporate'])
+    .describe('Overall tone of the job posting'),
+  expectedCommunicationStyle: z
+    .enum(['formal', 'friendly', 'direct', 'consultative'])
+    .describe('Expected communication style for applications'),
+
+  // Application strategy
+  keySellingPoints: z
+    .array(z.string())
+    .describe('What this employer values most - emphasize these in application'),
+  potentialConcerns: z
+    .array(z.string())
+    .describe('Potential candidate gaps to address proactively'),
+  uniqueHooks: z
+    .array(z.string())
+    .describe('Specific phrases, technologies, or requirements from the posting to mirror in application'),
+});
+
+export type JobUnderstanding = z.infer<typeof jobUnderstandingSchema>;
+
+// =============================================================================
+// Personalization Quality Score Schema
+// =============================================================================
+
+export const personalizationScoreSchema = z.object({
+  overallScore: z.number().min(0).max(100).describe('Overall personalization quality score'),
+
+  dimensions: z.object({
+    companySpecificity: z
+      .number()
+      .min(0)
+      .max(100)
+      .describe('How specifically does content reference this company?'),
+    roleRelevance: z
+      .number()
+      .min(0)
+      .max(100)
+      .describe('How well does content address this specific role?'),
+    toneAlignment: z
+      .number()
+      .min(0)
+      .max(100)
+      .describe('Does tone match the job posting style?'),
+    uniqueHookUsage: z
+      .number()
+      .min(0)
+      .max(100)
+      .describe('Are specific job posting phrases/requirements mirrored?'),
+    genericPhraseAvoidance: z
+      .number()
+      .min(0)
+      .max(100)
+      .describe('Absence of cliché/generic phrases'),
+  }),
+
+  genericPhrases: z
+    .array(
+      z.object({
+        phrase: z.string(),
+        location: z.enum(['summary', 'experience', 'coverLetter']),
+        suggestion: z.string().describe('Suggested replacement'),
+      }),
+    )
+    .describe('Detected generic phrases with replacement suggestions'),
+
+  improvements: z
+    .array(z.string())
+    .describe('Specific suggestions to increase personalization'),
+
+  verdict: z
+    .enum(['excellent', 'good', 'acceptable', 'needs_improvement', 'rejected'])
+    .describe('Overall verdict on personalization quality'),
+});
+
+export type PersonalizationScore = z.infer<typeof personalizationScoreSchema>;
+
+// =============================================================================
+// Candidate Highlights Schema (for cover letter generation)
+// =============================================================================
+
+export const candidateHighlightsSchema = z.object({
+  relevantAchievements: z
+    .array(z.string())
+    .describe('Specific achievements from candidate profile relevant to this job'),
+  matchingSkills: z
+    .array(z.string())
+    .describe('Skills from candidate that directly match job requirements'),
+  relevantExperience: z
+    .array(
+      z.object({
+        title: z.string(),
+        company: z.string(),
+        relevanceReason: z.string(),
+      }),
+    )
+    .describe('Past experiences most relevant to this specific role'),
+  uniqueValueProposition: z
+    .string()
+    .describe('What makes this candidate uniquely suited for this role'),
+});
+
+export type CandidateHighlights = z.infer<typeof candidateHighlightsSchema>;
