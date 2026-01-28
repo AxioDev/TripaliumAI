@@ -125,7 +125,7 @@ export class ProfileService {
         company: exp.company,
         title: exp.title,
         location: exp.location,
-        startDate: exp.startDate ? new Date(exp.startDate) : null,
+        startDate: new Date(exp.startDate),
         endDate: exp.endDate ? new Date(exp.endDate) : null,
         description: exp.description,
         highlights: exp.highlights || [],
