@@ -162,23 +162,105 @@
     }
   },
   "landing": {
-    "title": "TripaliumAI",
-    "subtitle": "Automatisez votre recherche d'emploi avec la génération de CV assistée par IA et la correspondance intelligente des candidatures. Téléversez votre CV, définissez vos critères, et laissez-nous faire le reste.",
-    "getStarted": "Commencer",
-    "signIn": "Se connecter",
-    "features": {
-      "upload": {
-        "title": "Téléversez votre CV",
-        "description": "Téléversez votre CV existant. Notre IA extrait et structure votre expérience, vos compétences et votre formation."
+    "nav": {
+      "brand": "TripaliumAI",
+      "signIn": "Se connecter",
+      "getStarted": "Commencer"
+    },
+    "hero": {
+      "headline": "Arrêtez d'envoyer des candidatures dans le vide",
+      "subtitle": "Vous avez les compétences. Vous ne devriez pas passer des heures à réécrire votre CV pour chaque offre. TripaliumAI trouve les postes qui vous correspondent, adapte vos documents et postule pour vous.",
+      "ctaPrimary": "Postulez plus intelligemment",
+      "ctaSecondary": "Voir comment ça marche",
+      "trust": "Gratuit pour commencer. Aucune carte bancaire requise."
+    },
+    "problem": {
+      "eyebrow": "La réalité de la recherche d'emploi",
+      "title": "Vous méritez mieux que ça",
+      "subtitle": "Si cela vous semble familier, vous n'êtes pas seul.",
+      "pain1": {
+        "title": "Des heures perdues à se répéter",
+        "description": "Reformater votre CV, réécrire votre lettre de motivation, remplir les mêmes champs encore et encore. Chaque candidature donne l'impression de repartir de zéro."
       },
-      "criteria": {
-        "title": "Définissez vos critères",
-        "description": "Définissez vos postes cibles, lieux et préférences. Nous trouvons automatiquement les opportunités correspondantes."
+      "pain2": {
+        "title": "Des documents passe-partout",
+        "description": "Envoyer le même CV générique partout parce que vous n'avez pas le temps de personnaliser chacun. Vous savez que ça nuit à vos chances, mais que faire d'autre ?"
       },
-      "applications": {
-        "title": "Candidatures intelligentes",
-        "description": "L'IA génère des CV et lettres de motivation personnalisés. Examinez et postulez en un clic."
+      "pain3": {
+        "title": "Le silence après avoir postulé",
+        "description": "Vous faites l'effort, cliquez sur envoyer, et n'entendez plus rien. Difficile de rester motivé quand vos efforts semblent disparaître dans un trou noir."
       }
+    },
+    "howItWorks": {
+      "eyebrow": "Comment ça marche",
+      "title": "Trois étapes. Ensuite, on s'occupe du reste.",
+      "subtitle": "De l'inscription à vos premières candidatures en moins de 10 minutes.",
+      "step1": {
+        "title": "Téléversez votre CV",
+        "description": "Déposez votre CV existant. Notre IA le lit et construit automatiquement votre profil professionnel — compétences, expérience, formation, tout est structuré et prêt."
+      },
+      "step2": {
+        "title": "Dites-nous ce que vous cherchez",
+        "description": "Choisissez vos postes cibles, lieux préférés, fourchette salariale et type de contrat. Configurez une fois, et nous cherchons en continu."
+      },
+      "step3": {
+        "title": "Vérifiez et postulez",
+        "description": "Nous trouvons les offres correspondantes, générons des CV et lettres de motivation adaptés à chacune, et vous les présentons pour validation. Approuvez en un clic."
+      }
+    },
+    "features": {
+      "eyebrow": "Fonctionnalités",
+      "title": "Tout ce dont vous avez besoin, rien de superflu",
+      "subtitle": "Conçu pour les chercheurs d'emploi qui veulent des résultats sans les corvées.",
+      "matching": {
+        "title": "Matching intelligent des offres",
+        "description": "Notre IA compare votre profil à chaque offre d'emploi. Vous définissez le seuil de correspondance — seules les offres pertinentes passent."
+      },
+      "documents": {
+        "title": "Des documents adaptés au poste",
+        "description": "Chaque candidature reçoit un CV et une lettre de motivation conçus spécifiquement pour ce poste. Votre expérience est mise en valeur de la manière la plus pertinente pour chaque employeur."
+      },
+      "control": {
+        "title": "Vous gardez le contrôle",
+        "description": "Rien n'est envoyé sans votre accord. Examinez chaque document, modifiez si vous le souhaitez, puis confirmez. Le mode pratique vous permet de tester tout le processus avant de passer en réel."
+      },
+      "sources": {
+        "title": "Plusieurs sites d'emploi, un seul tableau de bord",
+        "description": "Nous recherchons sur Welcome to the Jungle, Indeed, RemoteOK et plus encore. Toutes vos candidatures suivies au même endroit."
+      }
+    },
+    "stats": {
+      "title": "Conçu pour vous faire gagner du temps",
+      "stat1": {
+        "number": "< 10 min",
+        "label": "Temps de configuration",
+        "description": "De l'inscription à vos premières candidatures automatisées"
+      },
+      "stat2": {
+        "number": "100%",
+        "label": "Votre contrôle",
+        "description": "Chaque candidature validée par vous avant l'envoi"
+      },
+      "stat3": {
+        "number": "5+",
+        "label": "Sources d'emploi",
+        "description": "Indeed, WTTJ, RemoteOK et d'autres recherchés simultanément"
+      }
+    },
+    "finalCta": {
+      "title": "Votre prochain emploi est là, quelque part. Allons le trouver.",
+      "description": "Arrêtez de passer vos soirées à réécrire des lettres de motivation. Configurez votre profil une fois, et laissez TripaliumAI s'occuper du reste.",
+      "cta": "Créer votre compte gratuit"
+    },
+    "footer": {
+      "tagline": "Automatisation de la recherche d'emploi, propulsée par l'IA.",
+      "product": "Produit",
+      "howItWorks": "Comment ça marche",
+      "features": "Fonctionnalités",
+      "legal": "Légal",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "copyright": "\u00a9 {year} TripaliumAI. Tous droits réservés."
     }
   },
   "dashboard": {

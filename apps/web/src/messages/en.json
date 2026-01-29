@@ -162,23 +162,105 @@
     }
   },
   "landing": {
-    "title": "TripaliumAI",
-    "subtitle": "Automate your job search with AI-powered CV generation and smart application matching. Upload your resume, define your criteria, and let us handle the rest.",
-    "getStarted": "Get Started",
-    "signIn": "Sign In",
-    "features": {
-      "upload": {
-        "title": "Upload Your CV",
-        "description": "Upload your existing resume. Our AI extracts and structures your experience, skills, and education."
+    "nav": {
+      "brand": "TripaliumAI",
+      "signIn": "Sign In",
+      "getStarted": "Get Started"
+    },
+    "hero": {
+      "headline": "Stop sending applications into the void",
+      "subtitle": "You have the skills. You shouldn't have to spend hours rewriting your CV for every job. TripaliumAI finds matching positions, tailors your documents, and applies for you.",
+      "ctaPrimary": "Start applying smarter",
+      "ctaSecondary": "See how it works",
+      "trust": "Free to start. No credit card required."
+    },
+    "problem": {
+      "eyebrow": "The reality of job searching",
+      "title": "You deserve better than this",
+      "subtitle": "If any of this sounds familiar, you're not alone.",
+      "pain1": {
+        "title": "Hours lost to repetition",
+        "description": "Reformatting your CV, rewriting your cover letter, filling out the same fields over and over. Every application feels like starting from scratch."
       },
-      "criteria": {
-        "title": "Define Criteria",
-        "description": "Set your target roles, locations, and preferences. We find matching opportunities automatically."
+      "pain2": {
+        "title": "One-size-fits-all documents",
+        "description": "Sending the same generic CV everywhere because you don't have time to tailor each one. You know it hurts your chances, but what else can you do?"
       },
-      "applications": {
-        "title": "Smart Applications",
-        "description": "AI generates tailored CVs and cover letters. Review and apply with one click."
+      "pain3": {
+        "title": "Silence after applying",
+        "description": "You put in the work, click submit, and hear nothing. It's hard to stay motivated when your effort seems to disappear into a black hole."
       }
+    },
+    "howItWorks": {
+      "eyebrow": "How it works",
+      "title": "Three steps. Then let us handle it.",
+      "subtitle": "Get from signup to your first applications in under 10 minutes.",
+      "step1": {
+        "title": "Upload your CV",
+        "description": "Drop in your existing resume. Our AI reads it and builds your professional profile automatically — skills, experience, education, all structured and ready."
+      },
+      "step2": {
+        "title": "Tell us what you're looking for",
+        "description": "Choose your target roles, preferred locations, salary range, and contract type. Set it once, and we search continuously."
+      },
+      "step3": {
+        "title": "Review and apply",
+        "description": "We find matching jobs, generate tailored CVs and cover letters for each one, and present them for your review. Approve with one click."
+      }
+    },
+    "features": {
+      "eyebrow": "Features",
+      "title": "Everything you need, nothing you don't",
+      "subtitle": "Built for job seekers who want results without the busywork.",
+      "matching": {
+        "title": "Intelligent job matching",
+        "description": "Our AI compares your profile against every job posting. You set the match threshold — only relevant positions make it through."
+      },
+      "documents": {
+        "title": "Documents that fit the job",
+        "description": "Each application gets a CV and cover letter crafted specifically for that role. Your experience is highlighted in the way that matters most to each employer."
+      },
+      "control": {
+        "title": "You stay in control",
+        "description": "Nothing gets sent without your approval. Review every document, edit if you want, then confirm. Practice mode lets you test the whole flow before going live."
+      },
+      "sources": {
+        "title": "Multiple job boards, one dashboard",
+        "description": "We search across Welcome to the Jungle, Indeed, RemoteOK, and more. All your applications tracked in one place."
+      }
+    },
+    "stats": {
+      "title": "Built to save you time",
+      "stat1": {
+        "number": "< 10 min",
+        "label": "Setup time",
+        "description": "From signup to your first automated applications"
+      },
+      "stat2": {
+        "number": "100%",
+        "label": "Your control",
+        "description": "Every application reviewed by you before sending"
+      },
+      "stat3": {
+        "number": "5+",
+        "label": "Job sources",
+        "description": "Indeed, WTTJ, RemoteOK, and more searched at once"
+      }
+    },
+    "finalCta": {
+      "title": "Your next job is out there. Let's go find it.",
+      "description": "Stop spending your evenings rewriting cover letters. Set up your profile once, and let TripaliumAI handle the rest.",
+      "cta": "Create your free account"
+    },
+    "footer": {
+      "tagline": "Job search automation, powered by AI.",
+      "product": "Product",
+      "howItWorks": "How it works",
+      "features": "Features",
+      "legal": "Legal",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "copyright": "\u00a9 {year} TripaliumAI. All rights reserved."
     }
   },
   "dashboard": {
