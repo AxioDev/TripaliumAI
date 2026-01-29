@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
@@ -19,7 +19,7 @@ import { useToast } from '@/components/ui/use-toast';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   const [password, setPassword] = useState('');
@@ -31,45 +31,41 @@ export default function ResetPasswordPage() {
 
   if (!token) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">{t('invalidTokenTitle')}</CardTitle>
-            <CardDescription>
-              {t('invalidTokenDescription')}
-            </CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Link href="/forgot-password" className="w-full">
-              <Button variant="outline" className="w-full">
-                {t('requestNewLink')}
-              </Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      </div>
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold">{t('invalidTokenTitle')}</CardTitle>
+          <CardDescription>
+            {t('invalidTokenDescription')}
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <Link href="/forgot-password" className="w-full">
+            <Button variant="outline" className="w-full">
+              {t('requestNewLink')}
+            </Button>
+          </Link>
+        </CardFooter>
+      </Card>
     );
   }
 
   if (isSuccess) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">{t('successTitle')}</CardTitle>
-            <CardDescription>
-              {t('successDescription')}
-            </CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Link href="/login" className="w-full">
-              <Button className="w-full">
-                {t('goToLogin')}
-              </Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      </div>
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold">{t('successTitle')}</CardTitle>
+          <CardDescription>
+            {t('successDescription')}
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <Link href="/login" className="w-full">
+            <Button className="w-full">
+              {t('goToLogin')}
+            </Button>
+          </Link>
+        </CardFooter>
+      </Card>
     );
   }
 
@@ -121,45 +117,53 @@ export default function ResetPasswordPage() {
   };
 
   return (
+    <Card className="w-full max-w-md">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl font-bold">{t('title')}</CardTitle>
+        <CardDescription>
+          {t('description')}
+        </CardDescription>
+      </CardHeader>
+      <form onSubmit={handleSubmit}>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="password">{t('newPassword')}</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder={t('newPasswordPlaceholder')}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+        </CardContent>
+        <CardFooter className="flex flex-col space-y-4">
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? t('submitting') : t('submit')}
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">{t('title')}</CardTitle>
-          <CardDescription>
-            {t('description')}
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="password">{t('newPassword')}</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder={t('newPasswordPlaceholder')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? t('submitting') : t('submit')}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
+      <Suspense>
+        <ResetPasswordForm />
+      </Suspense>
     </div>
   );
 }
