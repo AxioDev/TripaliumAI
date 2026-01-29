@@ -167,11 +167,11 @@ export const cvParseResultSchema = z.object({
   personalInfo: z.object({
     firstName: z.string(),
     lastName: z.string(),
-    email: z.string().email().nullable(),
+    email: z.string().nullable(),
     phone: z.string().nullable(),
     location: z.string().nullable(),
-    linkedIn: z.string().url().nullable(),
-    website: z.string().url().nullable(),
+    linkedIn: z.string().nullable(),
+    website: z.string().nullable(),
   }),
   summary: z.string().nullable(),
   workExperience: z.array(
@@ -265,7 +265,7 @@ export const generatedCVSchema = z.object({
   personalInfo: z.object({
     firstName: z.string(),
     lastName: z.string(),
-    email: z.string().email(),
+    email: z.string(),
     phone: z.string().nullable(),
     location: z.string().nullable(),
     linkedIn: z.string().nullable(),
