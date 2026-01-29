@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
 export interface LogEntry {
-  userId?: string;
+  userId?: string | null;
   entityType: string;
   entityId?: string;
   action: string;
@@ -14,6 +14,7 @@ export interface LogEntry {
   userAgent?: string;
   apiKeyId?: string;
   testMode?: boolean;
+  isSensitive?: boolean;
 }
 
 export interface LogQueryParams {
@@ -34,7 +35,7 @@ export class LogService {
   async log(entry: LogEntry) {
     return this.prisma.actionLog.create({
       data: {
-        userId: entry.userId,
+        userId: entry.userId || undefined,
         entityType: entry.entityType,
         entityId: entry.entityId,
         action: entry.action,
@@ -45,7 +46,19 @@ export class LogService {
         userAgent: entry.userAgent,
         apiKeyId: entry.apiKeyId,
         testMode: entry.testMode || false,
+        isSensitive: entry.isSensitive || false,
       },
+    });
+  }
+
+  /**
+   * Log a sensitive action (GDPR compliance, security events)
+   * These logs are retained for 7 years per legal requirements
+   */
+  async logSensitive(entry: Omit<LogEntry, 'isSensitive'>) {
+    return this.log({
+      ...entry,
+      isSensitive: true,
     });
   }
 

@@ -32,13 +32,15 @@ export class JobController {
     @CurrentUser() user: { id: string },
     @Param('campaignId') campaignId: string,
     @Query('status') status?: JobOfferStatus,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
+    @Query('page') pageStr?: string,
+    @Query('limit') limitStr?: string,
   ) {
+    const page = pageStr ? parseInt(pageStr, 10) : 1;
+    const limit = limitStr ? Math.min(parseInt(limitStr, 10), 100) : 20;
     return this.jobService.listJobOffers(campaignId, user.id, {
       status,
-      page,
-      limit: Math.min(limit || 20, 100),
+      page: isNaN(page) ? 1 : page,
+      limit: isNaN(limit) ? 20 : limit,
     });
   }
 

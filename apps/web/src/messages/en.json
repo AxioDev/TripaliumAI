@@ -77,6 +77,7 @@
       "password": "Password",
       "submit": "Sign in",
       "submitting": "Signing in...",
+      "forgotPassword": "Forgot password?",
       "noAccount": "Don't have an account?",
       "signUp": "Sign up",
       "toast": {
@@ -84,6 +85,46 @@
           "title": "Error",
           "invalidCredentials": "Invalid email or password",
           "generic": "Something went wrong"
+        }
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "description": "Enter your email address and we'll send you a link to reset your password.",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "backToLogin": "Back to sign in",
+      "successTitle": "Check your email",
+      "successDescription": "If an account with that email exists, we've sent a password reset link. Please check your inbox and spam folder.",
+      "toast": {
+        "error": {
+          "title": "Error",
+          "generic": "Something went wrong. Please try again."
+        }
+      }
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "description": "Enter your new password below.",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "At least 8 characters",
+      "confirmPassword": "Confirm Password",
+      "submit": "Reset Password",
+      "submitting": "Resetting...",
+      "invalidTokenTitle": "Invalid or expired link",
+      "invalidTokenDescription": "This password reset link is invalid or has expired. Please request a new one.",
+      "requestNewLink": "Request a new reset link",
+      "successTitle": "Password updated",
+      "successDescription": "Your password has been successfully reset. You can now sign in with your new password.",
+      "goToLogin": "Sign in",
+      "toast": {
+        "error": {
+          "title": "Error",
+          "passwordsNoMatch": "Passwords do not match",
+          "passwordTooShort": "Password must be at least 8 characters",
+          "generic": "Failed to reset password. The link may have expired."
         }
       }
     },
@@ -99,6 +140,12 @@
       "submitting": "Creating account...",
       "hasAccount": "Already have an account?",
       "signIn": "Sign in",
+      "consent": {
+        "text": "I agree to the",
+        "privacyPolicy": "Privacy Policy",
+        "and": "and",
+        "termsOfService": "Terms of Service"
+      },
       "toast": {
         "success": {
           "title": "Success",
@@ -108,6 +155,7 @@
           "title": "Error",
           "passwordsNoMatch": "Passwords do not match",
           "passwordTooShort": "Password must be at least 8 characters",
+          "consentRequired": "You must agree to the Privacy Policy and Terms of Service",
           "generic": "Signup failed"
         }
       }
@@ -260,7 +308,11 @@
         "salaryMax": "Maximum Salary",
         "currency": "Currency",
         "remoteWork": "Remote Work",
-        "remoteWorkHint": "Include remote positions in search"
+        "remoteWorkHint": "Include remote positions in search",
+        "anonymize": "Anonymous Applications",
+        "anonymizeRecommended": "Recommended",
+        "anonymizeHint": "Removes personal identifying information from your applications to help prevent discrimination. Your name, photo, and exact dates are removed while keeping your skills and experience visible.",
+        "anonymizeDescription": "Help prevent discrimination by anonymizing your applications (French law compliant)"
       },
       "matching": {
         "title": "Matching Settings",
@@ -276,9 +328,23 @@
         "autoApplyBeta": "Beta",
         "autoApplyHint": "When enabled, we'll automatically generate application documents for matching jobs. You'll still need to review and approve before anything is sent.",
         "autoApplyDescription": "Automatically apply to jobs above threshold (requires review)",
+        "autoApplyDisabledInProduction": "Auto-apply is disabled in production mode for safety",
         "practiceMode": "Practice Mode",
         "practiceModeHint": "Perfect for testing! Documents are created but never actually sent to employers. Turn this off when you're ready to apply for real.",
-        "practiceModeDescription": "Practice mode: documents are generated but never sent to employers"
+        "practiceModeDescription": "Practice mode: documents are generated but never sent to employers",
+        "productionWarning": "Production Mode Active",
+        "productionWarningDescription": "Applications created in this campaign may be sent to real employers. Make sure to review all documents carefully before confirming."
+      },
+      "productionConfirm": {
+        "title": "Create Production Campaign?",
+        "description": "You are about to create a campaign in production mode. This means:",
+        "consequences": {
+          "realApplications": "Applications can be sent to real employers",
+          "visibleToEmployers": "Your information will be visible to potential employers",
+          "cannotUndo": "Submitted applications cannot be recalled"
+        },
+        "confirmQuestion": "Are you sure you want to proceed?",
+        "confirm": "Yes, Create Campaign"
       },
       "sources": {
         "title": "Job Sources",
@@ -786,6 +852,32 @@
       "title": "Language",
       "subtitle": "Choose your preferred language"
     },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "subtitle": "Irreversible account actions",
+      "exportData": "Export My Data",
+      "exportDataDescription": "Download a copy of all your personal data (GDPR Article 20)",
+      "exportDataHint": "Includes profile, CVs, campaigns, applications, and activity logs",
+      "deleteAccount": "Delete Account",
+      "deleteAccountDescription": "Permanently delete your account and all associated data",
+      "deleteAccountHint": "This action cannot be undone. All your data will be permanently removed."
+    },
+    "deleteDialog": {
+      "title": "Delete Account",
+      "description": "Are you sure you want to permanently delete your account? This will remove:",
+      "consequences": {
+        "profile": "Your profile and personal information",
+        "cvs": "All uploaded CVs and documents",
+        "campaigns": "All campaigns and discovered jobs",
+        "applications": "All applications and generated documents",
+        "logs": "Your activity history"
+      },
+      "warning": "This action cannot be undone.",
+      "confirmLabel": "Type DELETE to confirm",
+      "confirmPlaceholder": "DELETE",
+      "cancel": "Cancel",
+      "confirm": "Delete My Account"
+    },
     "toast": {
       "saved": {
         "title": "Settings saved",
@@ -795,10 +887,20 @@
         "title": "Password updated",
         "description": "Your password has been changed successfully."
       },
+      "dataExported": {
+        "title": "Data exported",
+        "description": "Your data has been downloaded."
+      },
+      "accountDeleted": {
+        "title": "Account deleted",
+        "description": "Your account has been permanently deleted."
+      },
       "error": {
         "title": "Error",
         "passwordsNoMatch": "New passwords do not match",
-        "passwordTooShort": "Password must be at least 8 characters"
+        "passwordTooShort": "Password must be at least 8 characters",
+        "exportFailed": "Failed to export data",
+        "deleteFailed": "Failed to delete account"
       }
     }
   },

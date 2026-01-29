@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,9 +15,20 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
 import { LanguageSwitcher } from '@/components/ui/language-switcher';
+import { authApi } from '@/lib/api-client';
 import {
   User,
   Target,
@@ -26,6 +37,9 @@ import {
   Loader2,
   Save,
   Globe,
+  AlertTriangle,
+  Download,
+  Trash2,
 } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -51,6 +65,12 @@ export default function SettingsPage() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [changingPassword, setChangingPassword] = useState(false);
+
+  // Danger zone
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [exportingData, setExportingData] = useState(false);
 
   const handleSavePreferences = async () => {
     setSaving(true);
@@ -95,6 +115,55 @@ export default function SettingsPage() {
         description: t('toast.passwordUpdated.description'),
       });
     }, 500);
+  };
+
+  const handleExportData = async () => {
+    setExportingData(true);
+    try {
+      const data = await authApi.exportData();
+      // Download as JSON file
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tripalium-data-export-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast({
+        title: t('toast.dataExported.title'),
+        description: t('toast.dataExported.description'),
+      });
+    } catch {
+      toast({
+        title: t('toast.error.title'),
+        description: t('toast.error.exportFailed'),
+        variant: 'destructive',
+      });
+    } finally {
+      setExportingData(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    try {
+      await authApi.deleteAccount();
+      toast({
+        title: t('toast.accountDeleted.title'),
+        description: t('toast.accountDeleted.description'),
+      });
+      // Sign out and redirect
+      await signOut({ callbackUrl: '/' });
+    } catch {
+      toast({
+        title: t('toast.error.title'),
+        description: t('toast.error.deleteFailed'),
+        variant: 'destructive',
+      });
+      setDeletingAccount(false);
+    }
   };
 
   return (
@@ -348,6 +417,116 @@ export default function SettingsPage() {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Danger Zone */}
+      <Card className="border-destructive/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertTriangle className="h-5 w-5" />
+            {t('dangerZone.title')}
+          </CardTitle>
+          <CardDescription>{t('dangerZone.subtitle')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Export Data */}
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="font-medium">{t('dangerZone.exportData')}</div>
+              <p className="text-sm text-muted-foreground">
+                {t('dangerZone.exportDataDescription')}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t('dangerZone.exportDataHint')}
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleExportData}
+              disabled={exportingData}
+            >
+              {exportingData ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              {t('dangerZone.exportData')}
+            </Button>
+          </div>
+
+          <Separator />
+
+          {/* Delete Account */}
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="font-medium text-destructive">{t('dangerZone.deleteAccount')}</div>
+              <p className="text-sm text-muted-foreground">
+                {t('dangerZone.deleteAccountDescription')}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t('dangerZone.deleteAccountHint')}
+              </p>
+            </div>
+            <Button
+              variant="destructive"
+              onClick={() => setShowDeleteDialog(true)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              {t('dangerZone.deleteAccount')}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Delete Account Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              {t('deleteDialog.title')}
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-4">
+                <p>{t('deleteDialog.description')}</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>{t('deleteDialog.consequences.profile')}</li>
+                  <li>{t('deleteDialog.consequences.cvs')}</li>
+                  <li>{t('deleteDialog.consequences.campaigns')}</li>
+                  <li>{t('deleteDialog.consequences.applications')}</li>
+                  <li>{t('deleteDialog.consequences.logs')}</li>
+                </ul>
+                <p className="font-semibold text-destructive">{t('deleteDialog.warning')}</p>
+                <div className="space-y-2">
+                  <Label htmlFor="deleteConfirm">{t('deleteDialog.confirmLabel')}</Label>
+                  <Input
+                    id="deleteConfirm"
+                    value={deleteConfirmText}
+                    onChange={(e) => setDeleteConfirmText(e.target.value)}
+                    placeholder={t('deleteDialog.confirmPlaceholder')}
+                  />
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteConfirmText('')}>
+              {t('deleteDialog.cancel')}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={deleteConfirmText !== 'DELETE' && deleteConfirmText !== 'SUPPRIMER'}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deletingAccount ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="mr-2 h-4 w-4" />
+              )}
+              {t('deleteDialog.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

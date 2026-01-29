@@ -1,4 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { LogService } from '../log/log.service';
 import { StorageService } from '../storage/storage.service';
@@ -9,6 +16,9 @@ import { ActionType, ApplicationStatus } from '@tripalium/shared';
 
 @Injectable()
 export class ApplicationService {
+  private readonly maxApplicationsPerDay: number;
+  private readonly maxApplicationsPerWeek: number;
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly logService: LogService,
@@ -16,7 +26,98 @@ export class ApplicationService {
     private readonly queueService: QueueService,
     private readonly emailService: EmailService,
     private readonly emailTemplateService: EmailTemplateService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.maxApplicationsPerDay = this.configService.get<number>(
+      'MAX_APPLICATIONS_PER_DAY',
+      20,
+    );
+    this.maxApplicationsPerWeek = this.configService.get<number>(
+      'MAX_APPLICATIONS_PER_WEEK',
+      100,
+    );
+  }
+
+  /**
+   * Check rate limits for a user
+   * @throws HttpException if rate limit exceeded
+   */
+  private async checkRateLimits(userId: string, campaignId?: string): Promise<void> {
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    // Count submissions in the last 24 hours
+    const dailyCount = await this.prisma.application.count({
+      where: {
+        userId,
+        testMode: false,
+        submittedAt: { gte: oneDayAgo },
+        status: ApplicationStatus.SUBMITTED,
+      },
+    });
+
+    if (dailyCount >= this.maxApplicationsPerDay) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.TOO_MANY_REQUESTS,
+          message: `Daily application limit reached (${this.maxApplicationsPerDay}/day). Please try again tomorrow.`,
+          error: 'Too Many Requests',
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
+    // Count submissions in the last week
+    const weeklyCount = await this.prisma.application.count({
+      where: {
+        userId,
+        testMode: false,
+        submittedAt: { gte: oneWeekAgo },
+        status: ApplicationStatus.SUBMITTED,
+      },
+    });
+
+    if (weeklyCount >= this.maxApplicationsPerWeek) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.TOO_MANY_REQUESTS,
+          message: `Weekly application limit reached (${this.maxApplicationsPerWeek}/week). Please try again next week.`,
+          error: 'Too Many Requests',
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
+    // Check campaign-specific limit if provided
+    if (campaignId) {
+      const campaign = await this.prisma.campaign.findUnique({
+        where: { id: campaignId },
+        select: { maxApplications: true },
+      });
+
+      if (campaign) {
+        const campaignCount = await this.prisma.application.count({
+          where: {
+            campaignId,
+            testMode: false,
+            status: ApplicationStatus.SUBMITTED,
+          },
+        });
+
+        if (campaignCount >= campaign.maxApplications) {
+          throw new HttpException(
+            {
+              statusCode: HttpStatus.TOO_MANY_REQUESTS,
+              message: `Campaign application limit reached (${campaign.maxApplications}). Create a new campaign to continue applying.`,
+              error: 'Too Many Requests',
+            },
+            HttpStatus.TOO_MANY_REQUESTS,
+          );
+        }
+      }
+    }
+  }
 
   async getApplication(applicationId: string, userId: string) {
     const application = await this.prisma.application.findFirst({
@@ -244,7 +345,7 @@ export class ApplicationService {
   async sendApplicationEmail(
     applicationId: string,
     userId: string,
-    recipientEmail: string,
+    recipientEmail?: string,
     customMessage?: string,
   ) {
     const application = await this.getApplication(applicationId, userId);
@@ -257,6 +358,25 @@ export class ApplicationService {
     ) {
       throw new BadRequestException(
         'Application must be ready to submit or already submitted to send email',
+      );
+    }
+
+    // Check rate limits for production applications
+    if (!application.testMode) {
+      await this.checkRateLimits(userId, application.campaignId);
+    }
+
+    // Determine recipient email - use provided email, or fall back to job posting email
+    const jobOffer = await this.prisma.jobOffer.findUnique({
+      where: { id: application.jobOfferId },
+    });
+
+    const finalRecipientEmail =
+      recipientEmail || jobOffer?.applicationEmail;
+
+    if (!finalRecipientEmail) {
+      throw new BadRequestException(
+        'No recipient email provided and no application email found in job posting',
       );
     }
 
@@ -296,9 +416,14 @@ export class ApplicationService {
     const bodyHtml = this.emailTemplateService.generateApplicationHtml(emailData);
     const bodyText = this.emailTemplateService.generateApplicationText(emailData);
 
-    // Get attachments (CV)
+    // Get attachments - prefer PDF versions if available
     const attachments: Array<{ filename: string; path: string }> = [];
-    const cvDoc = application.documents.find((d) => d.type === 'CV' && d.isLatest);
+
+    // Find CV document - prefer PDF over JSON
+    const cvDocs = application.documents.filter((d) => d.type === 'CV' && d.isLatest);
+    const cvPdf = cvDocs.find((d) => d.mimeType === 'application/pdf');
+    const cvDoc = cvPdf || cvDocs.find((d) => d.mimeType === 'application/json');
+
     if (cvDoc) {
       attachments.push({
         filename: cvDoc.fileName,
@@ -306,11 +431,24 @@ export class ApplicationService {
       });
     }
 
+    // Also attach cover letter PDF if available
+    const coverLetterDocs = application.documents.filter(
+      (d) => d.type === 'COVER_LETTER' && d.isLatest,
+    );
+    const coverLetterPdf = coverLetterDocs.find((d) => d.mimeType === 'application/pdf');
+
+    if (coverLetterPdf) {
+      attachments.push({
+        filename: coverLetterPdf.fileName,
+        path: this.storageService.getAbsolutePath(coverLetterPdf.filePath),
+      });
+    }
+
     // Queue email
     const emailRecord = await this.emailService.queueEmail(
       userId,
       {
-        to: recipientEmail,
+        to: finalRecipientEmail,
         subject,
         bodyHtml,
         bodyText,
@@ -320,18 +458,53 @@ export class ApplicationService {
       application.testMode,
     );
 
-    // Update application method to EMAIL if not already submitted
-    if (application.status !== ApplicationStatus.SUBMITTED) {
-      await this.prisma.application.update({
-        where: { id: applicationId },
-        data: { method: 'EMAIL' },
-      });
-    }
+    // Update application method to EMAIL and mark as submitting
+    await this.prisma.application.update({
+      where: { id: applicationId },
+      data: {
+        method: 'EMAIL',
+        status:
+          application.status === ApplicationStatus.READY_TO_SUBMIT
+            ? ApplicationStatus.SUBMITTING
+            : application.status,
+      },
+    });
+
+    await this.logService.log({
+      userId,
+      entityType: 'application',
+      entityId: applicationId,
+      action: ActionType.APPLICATION_SUBMITTED,
+      metadata: {
+        method: 'EMAIL',
+        recipient: finalRecipientEmail,
+        attachments: attachments.map((a) => a.filename),
+      },
+      testMode: application.testMode,
+    });
 
     return {
       emailId: emailRecord.id,
       status: emailRecord.status,
       dryRun: emailRecord.dryRun,
+      recipient: finalRecipientEmail,
+    };
+  }
+
+  /**
+   * Get the suggested recipient email for an application
+   */
+  async getSuggestedRecipient(applicationId: string, userId: string) {
+    const application = await this.getApplication(applicationId, userId);
+
+    const jobOffer = await this.prisma.jobOffer.findUnique({
+      where: { id: application.jobOfferId },
+    });
+
+    return {
+      applicationEmail: jobOffer?.applicationEmail || null,
+      applicationUrl: jobOffer?.applicationUrl || null,
+      jobUrl: jobOffer?.url || null,
     };
   }
 

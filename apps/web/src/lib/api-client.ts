@@ -107,10 +107,10 @@ export async function apiRequest<T>(
 // ============================================================================
 
 export const authApi = {
-  signup: (email: string, password: string) =>
+  signup: (email: string, password: string, consentGiven: boolean, privacyPolicyVersion?: string) =>
     apiRequest<{ accessToken: string; user: { id: string; email: string } }>(
       '/auth/signup',
-      { method: 'POST', body: { email, password } }
+      { method: 'POST', body: { email, password, consentGiven, privacyPolicyVersion } }
     ),
 
   login: (email: string, password: string) =>
@@ -120,6 +120,24 @@ export const authApi = {
     ),
 
   me: () => apiRequest<{ id: string; email: string }>('/auth/me'),
+
+  deleteAccount: () =>
+    apiRequest<{ success: boolean }>('/auth/account', { method: 'DELETE' }),
+
+  exportData: () =>
+    apiRequest<Record<string, unknown>>('/auth/data-export'),
+
+  forgotPassword: (email: string) =>
+    apiRequest<{ message: string }>('/auth/forgot-password', {
+      method: 'POST',
+      body: { email },
+    }),
+
+  resetPassword: (token: string, password: string) =>
+    apiRequest<{ message: string }>('/auth/reset-password', {
+      method: 'POST',
+      body: { token, password },
+    }),
 };
 
 // ============================================================================
@@ -363,6 +381,8 @@ export interface CreateCampaignData {
   targetLocations: string[];
   contractTypes?: string[];
   salaryMin?: number;
+  maxApplications?: number;
+  anonymizeApplications?: boolean;
   salaryMax?: number;
   salaryCurrency?: string;
   remoteOk?: boolean;
@@ -412,6 +432,7 @@ export interface JobOffer {
   remoteType: string | null;
   url: string;
   matchScore: number | null;
+  discriminationFlags?: string[];
   status: 'DISCOVERED' | 'ANALYZING' | 'MATCHED' | 'REJECTED' | 'APPLIED' | 'EXPIRED' | 'ERROR';
   discoveredAt: string;
   application?: { id: string; status: string } | null;

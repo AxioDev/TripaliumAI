@@ -15,6 +15,7 @@ import { EmailModule } from './email/email.module';
 import { StorageModule } from './storage/storage.module';
 import { TestModule } from './test/test.module';
 import { RealtimeModule } from './realtime/realtime.module';
+import { RetentionModule } from './retention/retention.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -48,6 +49,7 @@ import { HealthController } from './health.controller';
     EmailModule,
     StorageModule,
     TestModule,
+    RetentionModule,
   ],
   controllers: [HealthController],
 })

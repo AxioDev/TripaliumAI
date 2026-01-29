@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,7 +28,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skill } from '@/lib/api-client';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Loader2 } from 'lucide-react';
 
 interface SkillsEditorProps {
   skills: Skill[];
@@ -49,20 +50,21 @@ const emptyForm: SkillFormData = {
   yearsOfExp: '',
 };
 
-const skillLevels = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
-const skillCategories = [
-  'Programming Languages',
-  'Frameworks',
-  'Databases',
-  'DevOps',
-  'Cloud',
-  'Tools',
-  'Soft Skills',
-  'Languages',
-  'Other',
-];
+const skillLevelKeys = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
+const skillCategoryKeys = [
+  'programmingLanguages',
+  'frameworks',
+  'databases',
+  'devops',
+  'cloud',
+  'tools',
+  'softSkills',
+  'languages',
+  'other',
+] as const;
 
 export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
+  const t = useTranslations('profile');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState<SkillFormData>(emptyForm);
   const [localSkills, setLocalSkills] = useState(skills);
@@ -101,10 +103,28 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
     setHasChanges(false);
   };
 
+  // Get translated category name
+  const getCategoryLabel = (category: string | null): string => {
+    if (!category) return t('skills.categories.other');
+    const key = skillCategoryKeys.find(
+      (k) => t(`skills.categories.${k}`) === category || k === category.toLowerCase().replace(/\s/g, '')
+    );
+    return key ? t(`skills.categories.${key}`) : category;
+  };
+
+  // Get translated level name
+  const getLevelLabel = (level: string | null): string => {
+    if (!level) return '';
+    const key = skillLevelKeys.find(
+      (k) => t(`skills.levels.${k}`) === level || k === level.toLowerCase()
+    );
+    return key ? t(`skills.levels.${key}`) : level;
+  };
+
   // Group skills by category
   const groupedSkills = localSkills.reduce(
     (acc, skill) => {
-      const cat = skill.category || 'Other';
+      const cat = skill.category || 'other';
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(skill);
       return acc;
@@ -116,23 +136,25 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Skills</CardTitle>
-          <CardDescription>{localSkills.length} skill(s)</CardDescription>
+          <CardTitle>{t('skills.title')}</CardTitle>
+          <CardDescription>
+            {t('skills.count', { count: localSkills.length })}
+          </CardDescription>
         </div>
         <Button onClick={() => setIsDialogOpen(true)} size="sm">
-          <Plus className="h-4 w-4 mr-1" /> Add
+          <Plus className="h-4 w-4 mr-1" /> {t('add')}
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
         {localSkills.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No skills added. Upload a CV to extract your skills or add manually.
+            {t('skills.empty')}
           </p>
         ) : (
           Object.entries(groupedSkills).map(([category, categorySkills]) => (
             <div key={category}>
               <h4 className="text-sm font-medium text-muted-foreground mb-2">
-                {category}
+                {getCategoryLabel(category)}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {categorySkills.map((skill, index) => {
@@ -145,7 +167,7 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
                       {skill.name}
                       {skill.level && (
                         <span className="text-muted-foreground text-xs">
-                          ({skill.level})
+                          ({getLevelLabel(skill.level)})
                         </span>
                       )}
                       <button
@@ -165,7 +187,14 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
         {hasChanges && (
           <div className="flex justify-end pt-4 border-t">
             <Button onClick={handleSaveAll} disabled={isLoading}>
-              {isLoading ? 'Saving...' : 'Save Changes'}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('saving')}
+                </>
+              ) : (
+                t('saveChanges')
+              )}
             </Button>
           </div>
         )}
@@ -174,27 +203,27 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Add Skill</DialogTitle>
+            <DialogTitle>{t('skills.addTitle')}</DialogTitle>
             <DialogDescription>
-              Add a new skill to your profile
+              {t('skills.dialogDescription')}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Skill Name</Label>
+              <Label htmlFor="name">{t('skills.name')}</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                placeholder="e.g., React, Python, Project Management"
+                placeholder={t('skills.namePlaceholder')}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="category">{t('skills.category')}</Label>
               <Select
                 value={formData.category}
                 onValueChange={(value) =>
@@ -202,12 +231,12 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
+                  <SelectValue placeholder={t('skills.categoryPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {skillCategories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
+                  {skillCategoryKeys.map((key) => (
+                    <SelectItem key={key} value={key}>
+                      {t(`skills.categories.${key}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -216,7 +245,7 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="level">Proficiency Level</Label>
+                <Label htmlFor="level">{t('skills.level')}</Label>
                 <Select
                   value={formData.level}
                   onValueChange={(value) =>
@@ -224,12 +253,12 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select level" />
+                    <SelectValue placeholder={t('skills.levelPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
-                    {skillLevels.map((level) => (
-                      <SelectItem key={level} value={level}>
-                        {level}
+                    {skillLevelKeys.map((key) => (
+                      <SelectItem key={key} value={key}>
+                        {t(`skills.levels.${key}`)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -237,7 +266,7 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="yearsOfExp">Years of Experience</Label>
+                <Label htmlFor="yearsOfExp">{t('skills.yearsOfExp')}</Label>
                 <Input
                   id="yearsOfExp"
                   type="number"
@@ -255,10 +284,10 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button onClick={handleAddSkill} disabled={!formData.name.trim()}>
-              Add Skill
+              {t('skills.addSkill')}
             </Button>
           </DialogFooter>
         </DialogContent>

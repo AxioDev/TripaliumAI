@@ -6,6 +6,7 @@ import { Link, useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Card,
   CardContent,
@@ -17,11 +18,13 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const PRIVACY_POLICY_VERSION = '1.0';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [consentGiven, setConsentGiven] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -29,6 +32,15 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!consentGiven) {
+      toast({
+        title: t('toast.error.title'),
+        description: t('toast.error.consentRequired'),
+        variant: 'destructive',
+      });
+      return;
+    }
 
     if (password !== confirmPassword) {
       toast({
@@ -56,7 +68,12 @@ export default function SignupPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email,
+          password,
+          consentGiven,
+          privacyPolicyVersion: PRIVACY_POLICY_VERSION,
+        }),
       });
 
       if (!response.ok) {
@@ -124,9 +141,31 @@ export default function SignupPage() {
                 required
               />
             </div>
+            <div className="flex items-start space-x-2">
+              <Checkbox
+                id="consent"
+                checked={consentGiven}
+                onCheckedChange={(checked) => setConsentGiven(checked === true)}
+              />
+              <div className="grid gap-1.5 leading-none">
+                <Label
+                  htmlFor="consent"
+                  className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer"
+                >
+                  {t('consent.text')}{' '}
+                  <Link href="/privacy" className="text-primary hover:underline" target="_blank">
+                    {t('consent.privacyPolicy')}
+                  </Link>{' '}
+                  {t('consent.and')}{' '}
+                  <Link href="/terms" className="text-primary hover:underline" target="_blank">
+                    {t('consent.termsOfService')}
+                  </Link>
+                </Label>
+              </div>
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading || !consentGiven}>
               {isLoading ? t('submitting') : t('submit')}
             </Button>
             <p className="text-sm text-muted-foreground text-center">

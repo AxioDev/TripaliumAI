@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { Link, useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,34 +16,28 @@ import {
 } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 
-export default function LoginPage() {
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
-  const t = useTranslations('auth.login');
+  const t = useTranslations('auth.forgotPassword');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
+      await fetch(`${API_URL}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       });
 
-      if (result?.error) {
-        toast({
-          title: t('toast.error.title'),
-          description: t('toast.error.invalidCredentials'),
-          variant: 'destructive',
-        });
-      } else {
-        router.push('/dashboard');
-      }
+      // Always show success regardless of response to prevent email enumeration
+      setIsSubmitted(true);
     } catch {
       toast({
         title: t('toast.error.title'),
@@ -55,6 +48,28 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold">{t('successTitle')}</CardTitle>
+            <CardDescription>
+              {t('successDescription')}
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <Link href="/login" className="w-full">
+              <Button variant="outline" className="w-full">
+                {t('backToLogin')}
+              </Button>
+            </Link>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -78,30 +93,14 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">{t('password')}</Label>
-                <Link href="/forgot-password" className="text-sm text-primary hover:underline">
-                  {t('forgotPassword')}
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? t('submitting') : t('submit')}
             </Button>
             <p className="text-sm text-muted-foreground text-center">
-              {t('noAccount')}{' '}
-              <Link href="/signup" className="text-primary hover:underline">
-                {t('signUp')}
+              <Link href="/login" className="text-primary hover:underline">
+                {t('backToLogin')}
               </Link>
             </p>
           </CardFooter>

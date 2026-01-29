@@ -77,6 +77,7 @@
       "password": "Mot de passe",
       "submit": "Se connecter",
       "submitting": "Connexion en cours...",
+      "forgotPassword": "Mot de passe oubli\u00e9 ?",
       "noAccount": "Vous n'avez pas de compte ?",
       "signUp": "S'inscrire",
       "toast": {
@@ -87,8 +88,48 @@
         }
       }
     },
+    "forgotPassword": {
+      "title": "Mot de passe oubli\u00e9 ?",
+      "description": "Entrez votre adresse e-mail et nous vous enverrons un lien pour r\u00e9initialiser votre mot de passe.",
+      "email": "E-mail",
+      "emailPlaceholder": "vous@exemple.com",
+      "submit": "Envoyer le lien",
+      "submitting": "Envoi en cours...",
+      "backToLogin": "Retour \u00e0 la connexion",
+      "successTitle": "V\u00e9rifiez votre e-mail",
+      "successDescription": "Si un compte avec cet e-mail existe, nous avons envoy\u00e9 un lien de r\u00e9initialisation. V\u00e9rifiez votre bo\u00eete de r\u00e9ception et votre dossier spam.",
+      "toast": {
+        "error": {
+          "title": "Erreur",
+          "generic": "Une erreur s'est produite. Veuillez r\u00e9essayer."
+        }
+      }
+    },
+    "resetPassword": {
+      "title": "D\u00e9finir un nouveau mot de passe",
+      "description": "Entrez votre nouveau mot de passe ci-dessous.",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordPlaceholder": "Au moins 8 caract\u00e8res",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "R\u00e9initialiser le mot de passe",
+      "submitting": "R\u00e9initialisation...",
+      "invalidTokenTitle": "Lien invalide ou expir\u00e9",
+      "invalidTokenDescription": "Ce lien de r\u00e9initialisation est invalide ou a expir\u00e9. Veuillez en demander un nouveau.",
+      "requestNewLink": "Demander un nouveau lien",
+      "successTitle": "Mot de passe mis \u00e0 jour",
+      "successDescription": "Votre mot de passe a \u00e9t\u00e9 r\u00e9initialis\u00e9 avec succ\u00e8s. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+      "goToLogin": "Se connecter",
+      "toast": {
+        "error": {
+          "title": "Erreur",
+          "passwordsNoMatch": "Les mots de passe ne correspondent pas",
+          "passwordTooShort": "Le mot de passe doit contenir au moins 8 caract\u00e8res",
+          "generic": "\u00c9chec de la r\u00e9initialisation. Le lien a peut-\u00eatre expir\u00e9."
+        }
+      }
+    },
     "signup": {
-      "title": "Créer un compte",
+      "title": "Cr\u00e9er un compte",
       "description": "Entrez votre e-mail et mot de passe pour créer votre compte",
       "email": "E-mail",
       "emailPlaceholder": "vous@exemple.com",
@@ -99,6 +140,12 @@
       "submitting": "Création du compte...",
       "hasAccount": "Vous avez déjà un compte ?",
       "signIn": "Se connecter",
+      "consent": {
+        "text": "J'accepte la",
+        "privacyPolicy": "Politique de confidentialité",
+        "and": "et les",
+        "termsOfService": "Conditions d'utilisation"
+      },
       "toast": {
         "success": {
           "title": "Succès",
@@ -108,6 +155,7 @@
           "title": "Erreur",
           "passwordsNoMatch": "Les mots de passe ne correspondent pas",
           "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
+          "consentRequired": "Vous devez accepter la Politique de confidentialité et les Conditions d'utilisation",
           "generic": "L'inscription a échoué"
         }
       }
@@ -276,9 +324,27 @@
         "autoApplyBeta": "Bêta",
         "autoApplyHint": "Lorsque activé, nous générerons automatiquement les documents de candidature pour les emplois correspondants. Vous devrez toujours les examiner et les approuver avant tout envoi.",
         "autoApplyDescription": "Postuler automatiquement aux emplois au-dessus du seuil (nécessite révision)",
+        "autoApplyDisabledInProduction": "La candidature automatique est désactivée en mode production pour des raisons de sécurité",
         "practiceMode": "Mode pratique",
         "practiceModeHint": "Parfait pour les tests ! Les documents sont créés mais jamais envoyés aux employeurs. Désactivez cette option quand vous êtes prêt à postuler pour de vrai.",
-        "practiceModeDescription": "Mode pratique : les documents sont générés mais jamais envoyés aux employeurs"
+        "practiceModeDescription": "Mode pratique : les documents sont générés mais jamais envoyés aux employeurs",
+        "productionWarning": "Mode production actif",
+        "productionWarningDescription": "Les candidatures créées dans cette campagne peuvent être envoyées à de vrais employeurs. Assurez-vous de réviser tous les documents attentivement avant de confirmer.",
+        "anonymize": "Candidatures anonymes",
+        "anonymizeRecommended": "Recommandé",
+        "anonymizeHint": "Supprime les informations personnelles identifiables de vos candidatures pour aider à prévenir la discrimination. Conforme à la réglementation française (CNIL).",
+        "anonymizeDescription": "Aide à prévenir la discrimination en anonymisant vos candidatures (conforme à la loi française)"
+      },
+      "productionConfirm": {
+        "title": "Créer une campagne en production ?",
+        "description": "Vous êtes sur le point de créer une campagne en mode production. Cela signifie :",
+        "consequences": {
+          "realApplications": "Les candidatures peuvent être envoyées à de vrais employeurs",
+          "visibleToEmployers": "Vos informations seront visibles par les employeurs potentiels",
+          "cannotUndo": "Les candidatures soumises ne peuvent pas être rappelées"
+        },
+        "confirmQuestion": "Êtes-vous sûr de vouloir continuer ?",
+        "confirm": "Oui, créer la campagne"
       },
       "sources": {
         "title": "Sources d'emploi",
@@ -786,6 +852,32 @@
       "title": "Langue",
       "subtitle": "Choisissez votre langue préférée"
     },
+    "dangerZone": {
+      "title": "Zone de danger",
+      "subtitle": "Actions irréversibles sur le compte",
+      "exportData": "Exporter mes données",
+      "exportDataDescription": "Téléchargez une copie de toutes vos données personnelles (RGPD Article 20)",
+      "exportDataHint": "Inclut le profil, les CV, les campagnes, les candidatures et les journaux d'activité",
+      "deleteAccount": "Supprimer le compte",
+      "deleteAccountDescription": "Supprimer définitivement votre compte et toutes les données associées",
+      "deleteAccountHint": "Cette action est irréversible. Toutes vos données seront définitivement supprimées."
+    },
+    "deleteDialog": {
+      "title": "Supprimer le compte",
+      "description": "Êtes-vous sûr de vouloir supprimer définitivement votre compte ? Cela supprimera :",
+      "consequences": {
+        "profile": "Votre profil et vos informations personnelles",
+        "cvs": "Tous les CV téléversés et les documents",
+        "campaigns": "Toutes les campagnes et les emplois découverts",
+        "applications": "Toutes les candidatures et les documents générés",
+        "logs": "Votre historique d'activité"
+      },
+      "warning": "Cette action est irréversible.",
+      "confirmLabel": "Tapez SUPPRIMER pour confirmer",
+      "confirmPlaceholder": "SUPPRIMER",
+      "cancel": "Annuler",
+      "confirm": "Supprimer mon compte"
+    },
     "toast": {
       "saved": {
         "title": "Paramètres enregistrés",
@@ -795,10 +887,20 @@
         "title": "Mot de passe mis à jour",
         "description": "Votre mot de passe a été modifié avec succès."
       },
+      "dataExported": {
+        "title": "Données exportées",
+        "description": "Vos données ont été téléchargées."
+      },
+      "accountDeleted": {
+        "title": "Compte supprimé",
+        "description": "Votre compte a été définitivement supprimé."
+      },
       "error": {
         "title": "Erreur",
         "passwordsNoMatch": "Les nouveaux mots de passe ne correspondent pas",
-        "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères"
+        "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
+        "exportFailed": "Échec de l'exportation des données",
+        "deleteFailed": "Échec de la suppression du compte"
       }
     }
   },

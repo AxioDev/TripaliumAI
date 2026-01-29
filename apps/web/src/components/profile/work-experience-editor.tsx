@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,7 +21,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { WorkExperience } from '@/lib/api-client';
-import { Plus, Pencil, Trash2, GripVertical } from 'lucide-react';
+import { Plus, Pencil, Trash2, GripVertical, Loader2 } from 'lucide-react';
 
 interface WorkExperienceEditorProps {
   experiences: WorkExperience[];
@@ -53,6 +54,7 @@ export function WorkExperienceEditor({
   onSave,
   isLoading,
 }: WorkExperienceEditorProps) {
+  const t = useTranslations('profile');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState<ExperienceFormData>(emptyForm);
@@ -127,28 +129,28 @@ export function WorkExperienceEditor({
   };
 
   const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return 'Present';
+    if (!dateStr) return t('present');
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
   };
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Work Experience</CardTitle>
+          <CardTitle>{t('experience.title')}</CardTitle>
           <CardDescription>
-            {localExperiences.length} position(s)
+            {t('experience.count', { count: localExperiences.length })}
           </CardDescription>
         </div>
         <Button onClick={openAddDialog} size="sm">
-          <Plus className="h-4 w-4 mr-1" /> Add
+          <Plus className="h-4 w-4 mr-1" /> {t('add')}
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
         {localExperiences.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No work experience added. Upload a CV to extract your experience or add manually.
+            {t('experience.empty')}
           </p>
         ) : (
           localExperiences.map((exp, index) => (
@@ -182,7 +184,7 @@ export function WorkExperienceEditor({
                     ))}
                     {exp.highlights.length > 3 && (
                       <li className="text-muted-foreground">
-                        +{exp.highlights.length - 3} more
+                        {t('more', { count: exp.highlights.length - 3 })}
                       </li>
                     )}
                   </ul>
@@ -211,7 +213,14 @@ export function WorkExperienceEditor({
         {hasChanges && (
           <div className="flex justify-end pt-4 border-t">
             <Button onClick={handleSaveAll} disabled={isLoading}>
-              {isLoading ? 'Saving...' : 'Save Changes'}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('saving')}
+                </>
+              ) : (
+                t('saveChanges')
+              )}
             </Button>
           </div>
         )}
@@ -221,54 +230,54 @@ export function WorkExperienceEditor({
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editIndex !== null ? 'Edit Experience' : 'Add Experience'}
+              {editIndex !== null ? t('experience.editTitle') : t('experience.addTitle')}
             </DialogTitle>
             <DialogDescription>
-              Enter the details of your work experience
+              {t('experience.dialogDescription')}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="title">Job Title</Label>
+                <Label htmlFor="title">{t('experience.jobTitle')}</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) =>
                     setFormData({ ...formData, title: e.target.value })
                   }
-                  placeholder="Software Engineer"
+                  placeholder={t('experience.jobTitlePlaceholder')}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="company">Company</Label>
+                <Label htmlFor="company">{t('experience.company')}</Label>
                 <Input
                   id="company"
                   value={formData.company}
                   onChange={(e) =>
                     setFormData({ ...formData, company: e.target.value })
                   }
-                  placeholder="Acme Inc"
+                  placeholder={t('experience.companyPlaceholder')}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="location">{t('experience.location')}</Label>
               <Input
                 id="location"
                 value={formData.location}
                 onChange={(e) =>
                   setFormData({ ...formData, location: e.target.value })
                 }
-                placeholder="Paris, France"
+                placeholder={t('experience.locationPlaceholder')}
               />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="startDate">Start Date</Label>
+                <Label htmlFor="startDate">{t('experience.startDate')}</Label>
                 <Input
                   id="startDate"
                   type="month"
@@ -279,7 +288,7 @@ export function WorkExperienceEditor({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="endDate">End Date</Label>
+                <Label htmlFor="endDate">{t('experience.endDate')}</Label>
                 <Input
                   id="endDate"
                   type="month"
@@ -287,13 +296,13 @@ export function WorkExperienceEditor({
                   onChange={(e) =>
                     setFormData({ ...formData, endDate: e.target.value })
                   }
-                  placeholder="Leave empty for current"
+                  placeholder={t('experience.endDateHint')}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t('experience.description')}</Label>
               <textarea
                 id="description"
                 className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -301,12 +310,12 @@ export function WorkExperienceEditor({
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                placeholder="Brief description of your role..."
+                placeholder={t('experience.descriptionPlaceholder')}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="highlights">Key Achievements (one per line)</Label>
+              <Label htmlFor="highlights">{t('experience.highlights')}</Label>
               <textarea
                 id="highlights"
                 className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -314,20 +323,20 @@ export function WorkExperienceEditor({
                 onChange={(e) =>
                   setFormData({ ...formData, highlights: e.target.value })
                 }
-                placeholder="Led team of 5 engineers&#10;Increased performance by 40%&#10;Implemented CI/CD pipeline"
+                placeholder={t('experience.highlightsPlaceholder')}
               />
             </div>
           </div>
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               onClick={handleSaveItem}
               disabled={!formData.title || !formData.company}
             >
-              {editIndex !== null ? 'Update' : 'Add'}
+              {editIndex !== null ? t('update') : t('add')}
             </Button>
           </DialogFooter>
         </DialogContent>

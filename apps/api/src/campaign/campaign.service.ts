@@ -17,6 +17,8 @@ interface CreateCampaignData {
   testMode?: boolean;
   autoApply?: boolean;
   jobSourceIds?: string[];
+  maxApplications?: number;
+  anonymizeApplications?: boolean;
 }
 
 @Injectable()
@@ -28,6 +30,13 @@ export class CampaignService {
   ) {}
 
   async createCampaign(userId: string, data: CreateCampaignData) {
+    // Safety validation: Block autoApply in production mode (testMode=false)
+    if (data.autoApply && data.testMode === false) {
+      throw new BadRequestException(
+        'Auto-apply is not allowed in production mode. Enable practice mode or disable auto-apply.',
+      );
+    }
+
     const campaign = await this.prisma.campaign.create({
       data: {
         userId,
@@ -43,6 +52,8 @@ export class CampaignService {
         matchThreshold: data.matchThreshold || 60,
         testMode: data.testMode ?? false,
         autoApply: data.autoApply ?? false,
+        maxApplications: data.maxApplications ?? 50,
+        anonymizeApplications: data.anonymizeApplications ?? false,
       },
     });
 
@@ -56,13 +67,25 @@ export class CampaignService {
       });
     }
 
-    await this.logService.log({
-      userId,
-      entityType: 'campaign',
-      entityId: campaign.id,
-      action: ActionType.CAMPAIGN_CREATED,
-      metadata: { name: data.name },
-    });
+    // Log with isSensitive=true for production campaigns
+    const isProductionCampaign = data.testMode === false;
+    if (isProductionCampaign) {
+      await this.logService.logSensitive({
+        userId,
+        entityType: 'campaign',
+        entityId: campaign.id,
+        action: ActionType.CAMPAIGN_CREATED,
+        metadata: { name: data.name, testMode: false },
+      });
+    } else {
+      await this.logService.log({
+        userId,
+        entityType: 'campaign',
+        entityId: campaign.id,
+        action: ActionType.CAMPAIGN_CREATED,
+        metadata: { name: data.name },
+      });
+    }
 
     return campaign;
   }

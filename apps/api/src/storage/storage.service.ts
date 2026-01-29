@@ -102,6 +102,21 @@ export class StorageService implements OnModuleInit {
     return path.join(this.storagePath, relativePath);
   }
 
+  /**
+   * Delete all files for a user
+   */
+  async deleteUserFiles(userId: string): Promise<void> {
+    const categories = ['cvs', 'documents', 'photos'];
+    for (const category of categories) {
+      const userDir = path.join(this.storagePath, category, userId);
+      try {
+        await fs.rm(userDir, { recursive: true, force: true });
+      } catch {
+        // Ignore if directory doesn't exist
+      }
+    }
+  }
+
   private getMimeType(ext: string): string {
     const mimeTypes: Record<string, string> = {
       '.pdf': 'application/pdf',

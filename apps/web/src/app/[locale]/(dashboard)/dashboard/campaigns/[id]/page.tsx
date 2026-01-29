@@ -47,7 +47,14 @@ import {
   Rss,
   Database,
   TestTube2,
+  ShieldAlert,
 } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { formatDistanceToNow } from 'date-fns';
 import { fr, enUS } from 'date-fns/locale';
 import { useLocale } from 'next-intl';
@@ -127,6 +134,56 @@ function SourceBadge({ source }: { source?: { name: string; displayName: string;
       {config.icon}
       {config.label}
     </span>
+  );
+}
+
+// Discrimination flag labels
+const discriminationLabels: Record<string, string> = {
+  age_limit: 'Age restriction',
+  gender_preference: 'Gender preference',
+  origin_requirement: 'Origin/nationality requirement',
+  physical_appearance: 'Physical appearance requirement',
+  family_status: 'Family status preference',
+  religious_requirement: 'Religious requirement',
+  health_requirement: 'Health/disability requirement',
+  other_discrimination: 'Other discriminatory requirement',
+};
+
+const discriminationLabelsFr: Record<string, string> = {
+  age_limit: 'Restriction d\'âge',
+  gender_preference: 'Préférence de genre',
+  origin_requirement: 'Exigence d\'origine/nationalité',
+  physical_appearance: 'Exigence d\'apparence physique',
+  family_status: 'Préférence de situation familiale',
+  religious_requirement: 'Exigence religieuse',
+  health_requirement: 'Exigence de santé/handicap',
+  other_discrimination: 'Autre exigence discriminatoire',
+};
+
+function DiscriminationBadge({ flags, locale }: { flags?: string[]; locale: string }) {
+  if (!flags || flags.length === 0) return null;
+
+  const labels = locale === 'fr' ? discriminationLabelsFr : discriminationLabels;
+  const flagLabels = flags.map((flag) => labels[flag] || flag).join(', ');
+  const tooltipTitle = locale === 'fr'
+    ? 'Avertissement : Cette offre peut contenir des critères discriminatoires'
+    : 'Warning: This job posting may contain discriminatory criteria';
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-red-100 text-red-800 cursor-help">
+            <ShieldAlert className="h-3 w-3" />
+            {locale === 'fr' ? 'Attention' : 'Warning'}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="max-w-xs">
+          <p className="font-medium mb-1">{tooltipTitle}</p>
+          <p className="text-xs text-muted-foreground">{flagLabels}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 
@@ -536,6 +593,9 @@ export default function CampaignDetailPage() {
                             )}
                             {job.jobSource && (
                               <SourceBadge source={job.jobSource} />
+                            )}
+                            {job.discriminationFlags && job.discriminationFlags.length > 0 && (
+                              <DiscriminationBadge flags={job.discriminationFlags} locale={locale} />
                             )}
                           </div>
                           <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">

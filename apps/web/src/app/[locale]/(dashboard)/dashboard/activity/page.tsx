@@ -38,6 +38,8 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
+import { fr, enUS } from 'date-fns/locale';
+import { useLocale } from 'next-intl';
 
 const entityTypeIcons: Record<string, React.ReactNode> = {
   user: <User className="h-4 w-4" />,
@@ -126,9 +128,26 @@ export default function ActivityPage() {
   const t = useTranslations('activity');
   const tCommon = useTranslations('common');
   const tDashboard = useTranslations('dashboard');
+  const locale = useLocale();
+  const dateLocale = locale === 'fr' ? fr : enUS;
   const [entityType, setEntityType] = useState<string>('all');
   const [page, setPage] = useState(1);
   const limit = 20;
+
+  // Get translated entity type name
+  const getEntityTypeName = (type: string) => {
+    const typeMap: Record<string, string> = {
+      user: t('entityTypes.user'),
+      profile: t('entityTypes.profile'),
+      cv: t('entityTypes.cv'),
+      campaign: t('entityTypes.campaign'),
+      job_offer: t('entityTypes.job_offer'),
+      application: t('entityTypes.application'),
+      email: t('entityTypes.email'),
+      api_key: t('entityTypes.api_key'),
+    };
+    return typeMap[type] || type.replace('_', ' ');
+  };
 
   const {
     data: logsData,
@@ -236,7 +255,7 @@ export default function ActivityPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="flex items-center gap-1 text-sm font-medium">
                           {icon}
-                          <span className="capitalize">{log.entityType.replace('_', ' ')}</span>
+                          <span>{getEntityTypeName(log.entityType)}</span>
                         </span>
                         <span className={`text-xs px-2 py-0.5 rounded ${actionColor}`}>
                           {actionKey ? tDashboard(`actions.${actionKey}`) : formatAction(log.action)}
@@ -263,7 +282,7 @@ export default function ActivityPage() {
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground whitespace-nowrap">
-                      {formatDistanceToNow(new Date(log.createdAt), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(log.createdAt), { addSuffix: true, locale: dateLocale })}
                     </div>
                   </div>
                 );

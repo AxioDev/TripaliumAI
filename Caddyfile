@@ -1,5 +1,16 @@
 tripalium.projets.work {
-    # NextAuth routes (handled by Next.js)
+    # Backend API auth routes (login, signup, etc.)
+    handle /api/auth/login {
+        reverse_proxy api:3001
+    }
+    handle /api/auth/signup {
+        reverse_proxy api:3001
+    }
+    handle /api/auth/api-keys* {
+        reverse_proxy api:3001
+    }
+
+    # NextAuth routes (session, callback, etc.)
     handle /api/auth/* {
         reverse_proxy web:3000
     }

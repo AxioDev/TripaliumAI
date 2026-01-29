@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,7 +21,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Education } from '@/lib/api-client';
-import { Plus, Pencil, Trash2, GraduationCap } from 'lucide-react';
+import { Plus, Pencil, Trash2, GraduationCap, Loader2 } from 'lucide-react';
 
 interface EducationEditorProps {
   educations: Education[];
@@ -53,6 +54,7 @@ export function EducationEditor({
   onSave,
   isLoading,
 }: EducationEditorProps) {
+  const t = useTranslations('profile');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState<EducationFormData>(emptyForm);
@@ -126,26 +128,26 @@ export function EducationEditor({
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { year: 'numeric' });
+    return date.toLocaleDateString(undefined, { year: 'numeric' });
   };
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Education</CardTitle>
+          <CardTitle>{t('education.title')}</CardTitle>
           <CardDescription>
-            {localEducations.length} degree(s)
+            {t('education.count', { count: localEducations.length })}
           </CardDescription>
         </div>
         <Button onClick={openAddDialog} size="sm">
-          <Plus className="h-4 w-4 mr-1" /> Add
+          <Plus className="h-4 w-4 mr-1" /> {t('add')}
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
         {localEducations.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No education added. Upload a CV to extract your education or add manually.
+            {t('education.empty')}
           </p>
         ) : (
           localEducations.map((edu, index) => (
@@ -161,7 +163,7 @@ export function EducationEditor({
                   <div>
                     <h4 className="font-medium">
                       {edu.degree}
-                      {edu.field && ` in ${edu.field}`}
+                      {edu.field && ` ${t('education.in')} ${edu.field}`}
                     </h4>
                     <p className="text-sm text-muted-foreground">
                       {edu.institution}
@@ -173,7 +175,7 @@ export function EducationEditor({
                   </span>
                 </div>
                 {edu.gpa && (
-                  <p className="text-sm mt-1">GPA: {edu.gpa}</p>
+                  <p className="text-sm mt-1">{t('education.gpa').replace(' (optional)', '')}: {edu.gpa}</p>
                 )}
                 {edu.description && (
                   <p className="text-sm mt-2 text-muted-foreground">
@@ -204,7 +206,14 @@ export function EducationEditor({
         {hasChanges && (
           <div className="flex justify-end pt-4 border-t">
             <Button onClick={handleSaveAll} disabled={isLoading}>
-              {isLoading ? 'Saving...' : 'Save Changes'}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('saving')}
+                </>
+              ) : (
+                t('saveChanges')
+              )}
             </Button>
           </div>
         )}
@@ -214,54 +223,54 @@ export function EducationEditor({
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editIndex !== null ? 'Edit Education' : 'Add Education'}
+              {editIndex !== null ? t('education.editTitle') : t('education.addTitle')}
             </DialogTitle>
             <DialogDescription>
-              Enter the details of your education
+              {t('education.dialogDescription')}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="institution">Institution</Label>
+              <Label htmlFor="institution">{t('education.institution')}</Label>
               <Input
                 id="institution"
                 value={formData.institution}
                 onChange={(e) =>
                   setFormData({ ...formData, institution: e.target.value })
                 }
-                placeholder="University of Paris"
+                placeholder={t('education.institutionPlaceholder')}
               />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="degree">Degree</Label>
+                <Label htmlFor="degree">{t('education.degree')}</Label>
                 <Input
                   id="degree"
                   value={formData.degree}
                   onChange={(e) =>
                     setFormData({ ...formData, degree: e.target.value })
                   }
-                  placeholder="Bachelor's, Master's, PhD"
+                  placeholder={t('education.degreePlaceholder')}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="field">Field of Study</Label>
+                <Label htmlFor="field">{t('education.field')}</Label>
                 <Input
                   id="field"
                   value={formData.field}
                   onChange={(e) =>
                     setFormData({ ...formData, field: e.target.value })
                   }
-                  placeholder="Computer Science"
+                  placeholder={t('education.fieldPlaceholder')}
                 />
               </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="eduStartDate">Start Year</Label>
+                <Label htmlFor="eduStartDate">{t('education.startYear')}</Label>
                 <Input
                   id="eduStartDate"
                   type="month"
@@ -272,7 +281,7 @@ export function EducationEditor({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="eduEndDate">End Year</Label>
+                <Label htmlFor="eduEndDate">{t('education.endYear')}</Label>
                 <Input
                   id="eduEndDate"
                   type="month"
@@ -285,19 +294,19 @@ export function EducationEditor({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="gpa">GPA (optional)</Label>
+              <Label htmlFor="gpa">{t('education.gpa')}</Label>
               <Input
                 id="gpa"
                 value={formData.gpa}
                 onChange={(e) =>
                   setFormData({ ...formData, gpa: e.target.value })
                 }
-                placeholder="3.8/4.0"
+                placeholder={t('education.gpaPlaceholder')}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="eduDescription">Description (optional)</Label>
+              <Label htmlFor="eduDescription">{t('education.descriptionLabel')}</Label>
               <textarea
                 id="eduDescription"
                 className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -305,20 +314,20 @@ export function EducationEditor({
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                placeholder="Notable achievements, activities, thesis..."
+                placeholder={t('education.descriptionPlaceholder')}
               />
             </div>
           </div>
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               onClick={handleSaveItem}
               disabled={!formData.institution || !formData.degree}
             >
-              {editIndex !== null ? 'Update' : 'Add'}
+              {editIndex !== null ? t('update') : t('add')}
             </Button>
           </DialogFooter>
         </DialogContent>

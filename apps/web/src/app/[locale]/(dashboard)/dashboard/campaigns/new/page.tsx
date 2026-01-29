@@ -20,7 +20,17 @@ import { Confetti } from '@/components/ui/confetti';
 import { AnimatedCheckmark } from '@/components/ui/animated-checkmark';
 import { campaignApi, jobApi, CreateCampaignData, JobSource } from '@/lib/api-client';
 import { useApi, useMutation } from '@/hooks/use-api';
-import { ArrowLeft, Loader2, Plus, X, ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, Plus, X, ChevronDown, ChevronUp, HelpCircle, AlertTriangle } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import {
   Tooltip,
   TooltipContent,
@@ -49,12 +59,15 @@ export default function NewCampaignPage() {
     testMode: true,
     autoApply: false,
     jobSourceIds: [],
+    maxApplications: 50,
+    anonymizeApplications: false,
   });
 
   const [roleInput, setRoleInput] = useState('');
   const [locationInput, setLocationInput] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showProductionConfirm, setShowProductionConfirm] = useState(false);
 
   const createMutation = useMutation(
     (data: CreateCampaignData) => campaignApi.create(data),
@@ -106,6 +119,17 @@ export default function NewCampaignPage() {
       return;
     }
 
+    // If production mode (testMode=false), show confirmation dialog
+    if (!formData.testMode) {
+      setShowProductionConfirm(true);
+      return;
+    }
+
+    await createMutation.mutate(formData);
+  };
+
+  const handleConfirmProduction = async () => {
+    setShowProductionConfirm(false);
     await createMutation.mutate(formData);
   };
 
@@ -428,6 +452,36 @@ export default function NewCampaignPage() {
                 }
               />
             </div>
+
+            <div className="flex items-center justify-between border-t pt-4">
+              <div className="space-y-0.5">
+                <Label className="flex items-center gap-2">
+                  {t('advanced.anonymize')}
+                  <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded">
+                    {t('advanced.anonymizeRecommended')}
+                  </span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p>{t('advanced.anonymizeHint')}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  {t('advanced.anonymizeDescription')}
+                </p>
+              </div>
+              <Switch
+                checked={formData.anonymizeApplications}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, anonymizeApplications: checked })
+                }
+              />
+            </div>
           </CardContent>
         </Card>
 
@@ -496,12 +550,18 @@ export default function NewCampaignPage() {
                 <p className="text-sm text-muted-foreground">
                   {t('automation.autoApplyDescription')}
                 </p>
+                {!formData.testMode && (
+                  <p className="text-xs text-amber-600 dark:text-amber-400">
+                    {t('automation.autoApplyDisabledInProduction')}
+                  </p>
+                )}
               </div>
               <Switch
                 checked={formData.autoApply}
                 onCheckedChange={(checked) =>
                   setFormData({ ...formData, autoApply: checked })
                 }
+                disabled={!formData.testMode}
               />
             </div>
 
@@ -526,11 +586,31 @@ export default function NewCampaignPage() {
               </div>
               <Switch
                 checked={formData.testMode}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, testMode: checked })
-                }
+                onCheckedChange={(checked) => {
+                  // If turning off practice mode, also disable autoApply
+                  if (!checked) {
+                    setFormData({ ...formData, testMode: checked, autoApply: false });
+                  } else {
+                    setFormData({ ...formData, testMode: checked });
+                  }
+                }}
               />
             </div>
+
+            {/* Production mode warning */}
+            {!formData.testMode && (
+              <div className="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                    {t('automation.productionWarning')}
+                  </p>
+                  <p className="text-xs text-amber-700 dark:text-amber-300">
+                    {t('automation.productionWarningDescription')}
+                  </p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -599,6 +679,38 @@ export default function NewCampaignPage() {
           </Button>
         </div>
       </form>
+
+      {/* Production Mode Confirmation Dialog */}
+      <AlertDialog open={showProductionConfirm} onOpenChange={setShowProductionConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              {t('productionConfirm.title')}
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-3">
+                <p>{t('productionConfirm.description')}</p>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>{t('productionConfirm.consequences.realApplications')}</li>
+                  <li>{t('productionConfirm.consequences.visibleToEmployers')}</li>
+                  <li>{t('productionConfirm.consequences.cannotUndo')}</li>
+                </ul>
+                <p className="font-medium">{t('productionConfirm.confirmQuestion')}</p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{tCommon('actions.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmProduction}
+              className="bg-amber-600 hover:bg-amber-700"
+            >
+              {t('productionConfirm.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
