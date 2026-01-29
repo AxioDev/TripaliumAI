@@ -169,7 +169,7 @@ export default function DashboardPage() {
         </div>
         {hasCompletedSetup && (
           <Link href="/dashboard/campaigns/new" className="self-start sm:self-auto">
-            <Button>
+            <Button variant="gradient">
               <Play className="mr-2 h-4 w-4" />
               {t('newCampaign')}
             </Button>
@@ -221,10 +221,12 @@ export default function DashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('stats.cvsUploaded')}</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+              <FileText className="h-4 w-4 text-primary" />
+            </div>
           </CardHeader>
           <CardContent>
             {statsLoading ? (
@@ -241,12 +243,14 @@ export default function DashboardPage() {
             )}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {t('stats.activeCampaigns')}
             </CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-info-muted">
+              <Target className="h-4 w-4 text-info" />
+            </div>
           </CardHeader>
           <CardContent>
             {statsLoading ? (
@@ -265,12 +269,14 @@ export default function DashboardPage() {
             )}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {t('stats.jobsDiscovered')}
             </CardTitle>
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning-muted">
+              <Briefcase className="h-4 w-4 text-warning" />
+            </div>
           </CardHeader>
           <CardContent>
             {statsLoading ? (
@@ -287,12 +293,14 @@ export default function DashboardPage() {
             )}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {t('stats.applications')}
             </CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success-muted">
+              <CheckCircle className="h-4 w-4 text-success" />
+            </div>
           </CardHeader>
           <CardContent>
             {statsLoading ? (
@@ -540,8 +548,8 @@ export default function DashboardPage() {
                   const actionKey = actionKeyMap[log.action];
                   return (
                     <div key={log.id} className="flex items-start gap-3">
-                      <div className="rounded-full bg-muted p-2">
-                        {getActionIcon(log.action)}
+                      <div className="rounded-full bg-primary/10 p-2">
+                        <span className="text-primary">{getActionIcon(log.action)}</span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">

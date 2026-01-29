@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
+import { Sparkles } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -58,8 +59,13 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-brand">
+              <Sparkles className="h-4 w-4 text-white" />
+            </div>
+          </div>
           <CardTitle className="text-2xl font-bold">{t('title')}</CardTitle>
           <CardDescription>
             {t('description')}
@@ -95,7 +101,7 @@ export default function LoginPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" variant="gradient" className="w-full" disabled={isLoading}>
               {isLoading ? t('submitting') : t('submit')}
             </Button>
             <p className="text-sm text-muted-foreground text-center">

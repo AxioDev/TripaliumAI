@@ -65,6 +65,21 @@ const config: Config = {
           foreground: 'hsl(var(--info-foreground))',
           muted: 'hsl(var(--info-muted))',
         },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar-bg))',
+          foreground: 'hsl(var(--sidebar-fg))',
+          'foreground-active': 'hsl(var(--sidebar-fg-active))',
+          muted: 'hsl(var(--sidebar-muted))',
+          accent: 'hsl(var(--sidebar-accent))',
+          border: 'hsl(var(--sidebar-border))',
+        },
+        chart: {
+          1: 'hsl(var(--chart-1))',
+          2: 'hsl(var(--chart-2))',
+          3: 'hsl(var(--chart-3))',
+          4: 'hsl(var(--chart-4))',
+          5: 'hsl(var(--chart-5))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
