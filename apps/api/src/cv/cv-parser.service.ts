@@ -151,6 +151,30 @@ export class CvParserService implements OnModuleInit {
     return outputImages.map((img: Uint8Array) => Buffer.from(img));
   }
 
+  /**
+   * Safely parse a date string from the AI. Returns null if the string
+   * cannot be turned into a valid Date (e.g. empty, garbled, or just a year).
+   * Accepts ISO dates, "Month Year", and bare 4-digit years.
+   */
+  private safeParseDate(value: string | null | undefined): Date | null {
+    if (!value) return null;
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+
+    // Try native parse first (handles ISO 8601 and common formats)
+    const direct = new Date(trimmed);
+    if (!isNaN(direct.getTime())) return direct;
+
+    // Handle bare 4-digit year like "2020"
+    if (/^\d{4}$/.test(trimmed)) return new Date(`${trimmed}-01-01`);
+
+    // Handle "Month Year" like "Jan 2020" or "January 2020"
+    const monthYear = new Date(`${trimmed} 1`);
+    if (!isNaN(monthYear.getTime())) return monthYear;
+
+    return null;
+  }
+
   private async updateProfileFromParsedData(
     userId: string,
     data: {
@@ -224,20 +248,31 @@ export class CvParserService implements OnModuleInit {
       });
     }
 
-    // Update work experiences
+    // Update work experiences (skip entries with unparseable start dates)
     if (data.workExperience.length > 0) {
-      await this.profileService.updateWorkExperiences(
-        userId,
-        data.workExperience.map((exp) => ({
+      const validExperiences = data.workExperience
+        .map((exp) => ({
           company: exp.company,
           title: exp.title,
           location: exp.location || undefined,
-          startDate: new Date(exp.startDate),
-          endDate: exp.endDate ? new Date(exp.endDate) : undefined,
+          startDate: this.safeParseDate(exp.startDate),
+          endDate: this.safeParseDate(exp.endDate),
           description: exp.description,
           highlights: exp.highlights,
-        })),
-      );
+        }))
+        .filter((exp) => exp.startDate !== null) as Array<{
+          company: string;
+          title: string;
+          location: string | undefined;
+          startDate: Date;
+          endDate: Date | undefined;
+          description: string;
+          highlights: string[];
+        }>;
+
+      if (validExperiences.length > 0) {
+        await this.profileService.updateWorkExperiences(userId, validExperiences);
+      }
     }
 
     // Update education
@@ -248,8 +283,8 @@ export class CvParserService implements OnModuleInit {
           institution: edu.institution,
           degree: edu.degree,
           field: edu.field || undefined,
-          startDate: edu.startDate ? new Date(edu.startDate) : undefined,
-          endDate: edu.endDate ? new Date(edu.endDate) : undefined,
+          startDate: this.safeParseDate(edu.startDate) ?? undefined,
+          endDate: this.safeParseDate(edu.endDate) ?? undefined,
           gpa: edu.gpa || undefined,
           description: edu.description || undefined,
         })),
