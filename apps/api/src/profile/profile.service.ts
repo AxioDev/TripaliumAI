@@ -114,19 +114,30 @@ export class ProfileService {
       throw new NotFoundException('Profile not found');
     }
 
+    // Validate dates and filter out entries with invalid startDate
+    const validExperiences = experiences.filter((exp) => {
+      const d = new Date(exp.startDate);
+      return !isNaN(d.getTime());
+    });
+
     // Delete existing and recreate (simpler for POC)
     await this.prisma.workExperience.deleteMany({
       where: { profileId: profile.id },
     });
 
+    if (validExperiences.length === 0) {
+      await this.regenerateEmbedding(userId);
+      return { count: 0 };
+    }
+
     const created = await this.prisma.workExperience.createMany({
-      data: experiences.map((exp, index) => ({
+      data: validExperiences.map((exp, index) => ({
         profileId: profile.id,
         company: exp.company,
         title: exp.title,
         location: exp.location,
         startDate: new Date(exp.startDate),
-        endDate: exp.endDate ? new Date(exp.endDate) : null,
+        endDate: exp.endDate && !isNaN(new Date(exp.endDate).getTime()) ? new Date(exp.endDate) : null,
         description: exp.description,
         highlights: exp.highlights || [],
         sortOrder: index,
@@ -169,8 +180,8 @@ export class ProfileService {
         institution: edu.institution,
         degree: edu.degree,
         field: edu.field,
-        startDate: edu.startDate ? new Date(edu.startDate) : null,
-        endDate: edu.endDate ? new Date(edu.endDate) : null,
+        startDate: edu.startDate && !isNaN(new Date(edu.startDate).getTime()) ? new Date(edu.startDate) : null,
+        endDate: edu.endDate && !isNaN(new Date(edu.endDate).getTime()) ? new Date(edu.endDate) : null,
         gpa: edu.gpa,
         description: edu.description,
         sortOrder: index,
