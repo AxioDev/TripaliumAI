@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { LogService } from '../log/log.service';
 import { QueueService } from '../queue/queue.service';
-import { ActionType, CampaignStatus } from '@tripalium/shared';
+import { BillingService } from '../billing/billing.service';
+import { ActionType, CampaignStatus, UsageAction, PlanTier, PLAN_LIMITS } from '@tripalium/shared';
 
 interface CreateCampaignData {
   name: string;
@@ -27,9 +28,27 @@ export class CampaignService {
     private readonly prisma: PrismaService,
     private readonly logService: LogService,
     private readonly queueService: QueueService,
+    private readonly billingService: BillingService,
   ) {}
 
   async createCampaign(userId: string, data: CreateCampaignData) {
+    // Check entitlement
+    const entitlement = await this.billingService.checkEntitlement(userId, UsageAction.CAMPAIGN_CREATE);
+    if (!entitlement.allowed) {
+      throw new ForbiddenException(entitlement.reason);
+    }
+
+    // Enforce plan restrictions
+    const userPlan = await this.billingService.getUserPlan(userId);
+    const limits = userPlan.limits;
+    if (limits.practiceModeForcedOn) {
+      data.testMode = true;
+      data.autoApply = false;
+    }
+    if (!limits.autoApplyEnabled) {
+      data.autoApply = false;
+    }
+
     // Safety validation: Block autoApply in production mode (testMode=false)
     if (data.autoApply && data.testMode === false) {
       throw new BadRequestException(
@@ -66,6 +85,9 @@ export class CampaignService {
         })),
       });
     }
+
+    // Record billing usage
+    await this.billingService.recordUsage(userId, UsageAction.CAMPAIGN_CREATE, campaign.id);
 
     // Log with isSensitive=true for production campaigns
     const isProductionCampaign = data.testMode === false;
@@ -172,6 +194,12 @@ export class CampaignService {
 
     if (campaign.status === CampaignStatus.ACTIVE) {
       throw new BadRequestException('Campaign already active');
+    }
+
+    // Check active campaign limit
+    const entitlement = await this.billingService.checkEntitlement(userId, UsageAction.CAMPAIGN_ACTIVATE);
+    if (!entitlement.allowed) {
+      throw new ForbiddenException(entitlement.reason);
     }
 
     const updated = await this.prisma.campaign.update({

@@ -11,6 +11,7 @@ import { ApiKeyStrategy } from './strategies/api-key.strategy';
 import { LogModule } from '../log/log.module';
 import { StorageModule } from '../storage/storage.module';
 import { EmailModule } from '../email/email.module';
+import { BillingModule } from '../billing/billing.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { EmailModule } from '../email/email.module';
     LogModule,
     StorageModule,
     EmailModule,
+    BillingModule,
   ],
   controllers: [AuthController, ApiKeyController],
   providers: [AuthService, ApiKeyService, JwtStrategy, ApiKeyStrategy],

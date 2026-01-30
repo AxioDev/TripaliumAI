@@ -4,6 +4,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { authOptions } from '@/lib/auth';
 import { DashboardNav, MobileNav } from '@/components/dashboard/nav';
 import { RealtimeProvider } from '@/components/dashboard/realtime-provider';
+import { SubscriptionProvider } from '@/contexts/subscription-context';
 
 export default async function DashboardLayout({
   children,
@@ -23,11 +24,13 @@ export default async function DashboardLayout({
 
   return (
     <RealtimeProvider>
-      <div className="flex h-screen flex-col md:flex-row">
-        <MobileNav />
-        <DashboardNav />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-muted/30">{children}</main>
-      </div>
+      <SubscriptionProvider>
+        <div className="flex h-screen flex-col md:flex-row">
+          <MobileNav />
+          <DashboardNav />
+          <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-muted/30">{children}</main>
+        </div>
+      </SubscriptionProvider>
     </RealtimeProvider>
   );
 }

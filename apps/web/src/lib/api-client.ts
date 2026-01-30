@@ -713,3 +713,48 @@ export const dashboardApi = {
 
   getRecentActivity: (limit = 10) => logsApi.query({ limit }),
 };
+
+// ============================================================================
+// Billing API
+// ============================================================================
+
+export interface SubscriptionInfo {
+  plan: 'FREE' | 'STARTER' | 'PRO';
+  status: string;
+  limits: {
+    maxCvUploads: number;
+    maxCampaigns: number;
+    maxActiveCampaigns: number;
+    maxDocumentGenerations: number;
+    maxApplicationSubmissions: number;
+    autoApplyEnabled: boolean;
+    allJobSourcesEnabled: boolean;
+    practiceModeForcedOn: boolean;
+    documentGenerationsLifetime: boolean;
+  };
+  currentPeriodStart: string | null;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+}
+
+export interface UsageSummary {
+  cvUploads: { current: number; limit: number };
+  campaigns: { current: number; limit: number };
+  activeCampaigns: { current: number; limit: number };
+  documentGenerations: { current: number; limit: number };
+  applicationSubmissions: { current: number; limit: number };
+}
+
+export const billingApi = {
+  getSubscription: () => apiRequest<SubscriptionInfo>('/billing/subscription'),
+
+  getUsage: () => apiRequest<UsageSummary>('/billing/usage'),
+
+  createCheckout: (plan: 'STARTER' | 'PRO') =>
+    apiRequest<{ url: string }>('/billing/checkout', {
+      method: 'POST',
+      body: { plan },
+    }),
+
+  getPortalUrl: () => apiRequest<{ url: string }>('/billing/portal'),
+};

@@ -38,6 +38,7 @@ export const authOptions: NextAuthOptions = {
             id: data.user.id,
             email: data.user.email,
             accessToken: data.accessToken,
+            plan: data.user.plan || 'FREE',
           };
         } catch (error) {
           console.error('Auth error:', error);
@@ -51,6 +52,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.accessToken = (user as any).accessToken;
         token.userId = user.id;
+        token.plan = (user as any).plan || 'FREE';
       }
       return token;
     },
@@ -58,6 +60,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.accessToken = token.accessToken as string;
         session.user.id = token.userId as string;
+        session.user.plan = (token.plan as string) || 'FREE';
       }
       return session;
     },
@@ -89,6 +92,7 @@ declare module 'next-auth' {
     user: {
       id: string;
       email: string;
+      plan: string;
     };
   }
 }
@@ -97,5 +101,6 @@ declare module 'next-auth/jwt' {
   interface JWT {
     accessToken?: string;
     userId?: string;
+    plan?: string;
   }
 }

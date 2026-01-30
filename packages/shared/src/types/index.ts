@@ -576,3 +576,9 @@ export interface JobSourceInfo {
   supportsAutoApply: boolean;
   isActive: boolean;
 }
+
+// =============================================================================
+// Billing & Subscription (re-export)
+// =============================================================================
+
+export * from './billing';

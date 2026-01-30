@@ -13,7 +13,8 @@ import { LogService } from '../log/log.service';
 import { StorageService } from '../storage/storage.service';
 import { EmailService } from '../email/email.service';
 import { EmailTemplateService } from '../email/email-template.service';
-import { ActionType } from '@tripalium/shared';
+import { ActionType, PlanTier } from '@tripalium/shared';
+import { BillingService } from '../billing/billing.service';
 
 export interface JwtPayload {
   sub: string;
@@ -25,6 +26,7 @@ export interface AuthResponse {
   user: {
     id: string;
     email: string;
+    plan: PlanTier;
   };
 }
 
@@ -38,6 +40,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly emailTemplateService: EmailTemplateService,
+    private readonly billingService: BillingService,
   ) {}
 
   async signup(
@@ -76,6 +79,9 @@ export class AuthService {
       },
     });
 
+    // Initialize billing (FREE plan + Stripe Customer)
+    await this.billingService.initializeUserBilling(user.id, user.email);
+
     // Log action
     await this.logService.log({
       userId: user.id,
@@ -102,6 +108,7 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        plan: PlanTier.FREE,
       },
     };
   }
@@ -131,6 +138,12 @@ export class AuthService {
       action: ActionType.USER_LOGIN,
     });
 
+    // Get user plan
+    const subscription = await this.prisma.subscription.findUnique({
+      where: { userId: user.id },
+      select: { plan: true },
+    });
+
     // Generate token
     const accessToken = this.generateToken(user);
 
@@ -139,19 +152,32 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        plan: (subscription?.plan as PlanTier) || PlanTier.FREE,
       },
     };
   }
 
   async validateUser(userId: string) {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
         email: true,
         createdAt: true,
+        subscription: {
+          select: { plan: true },
+        },
       },
     });
+
+    if (!user) return null;
+
+    return {
+      id: user.id,
+      email: user.email,
+      createdAt: user.createdAt,
+      plan: (user.subscription?.plan as PlanTier) || PlanTier.FREE,
+    };
   }
 
   /**
@@ -171,6 +197,9 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('User not found');
     }
+
+    // 0. Cancel billing (Stripe subscription + local records)
+    await this.billingService.cancelUserBilling(userId);
 
     // 1. Cancel all active campaigns
     await this.prisma.campaign.updateMany({

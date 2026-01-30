@@ -64,7 +64,7 @@ async function bootstrap() {
   // Validate production configuration before starting
   validateProductionConfig();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
 
   // WebSocket with Redis adapter for multi-instance scaling
   const redisAdapter = new RedisIoAdapter(app, process.env.REDIS_URL);

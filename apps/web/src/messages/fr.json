@@ -164,6 +164,7 @@
   "landing": {
     "nav": {
       "brand": "TripaliumAI",
+      "pricing": "Tarifs",
       "signIn": "Se connecter",
       "getStarted": "Commencer"
     },
@@ -256,6 +257,7 @@
       "tagline": "Automatisation de la recherche d'emploi, propulsée par l'IA.",
       "product": "Produit",
       "howItWorks": "Comment ça marche",
+      "pricing": "Tarifs",
       "features": "Fonctionnalités",
       "legal": "Légal",
       "privacy": "Politique de confidentialité",
@@ -894,6 +896,24 @@
       "subtitle": "Informations de votre compte",
       "email": "E-mail"
     },
+    "subscription": {
+      "title": "Abonnement",
+      "subtitle": "Gérez votre plan et votre facturation",
+      "plans": {
+        "free": "Plan Gratuit",
+        "starter": "Plan Starter",
+        "pro": "Plan Pro"
+      },
+      "usage": {
+        "cvUploads": "Téléversements de CV",
+        "campaigns": "Campagnes",
+        "activeCampaigns": "Campagnes actives",
+        "docGenerations": "Générations de documents",
+        "submissions": "Soumissions réelles"
+      },
+      "upgrade": "Passer au plan supérieur",
+      "manageBilling": "Gérer la facturation"
+    },
     "campaignDefaults": {
       "title": "Paramètres de campagne par défaut",
       "subtitle": "Paramètres par défaut pour les nouvelles campagnes",
@@ -1101,6 +1121,49 @@
         "title": "Erreur",
         "loadFailed": "Échec du chargement des journaux d'activité"
       }
+    }
+  },
+  "billing": {
+    "upgrade": "Passer au plan supérieur",
+    "upgrading": "Redirection...",
+    "upgradeDescription": "Débloquez plus de fonctionnalités et des limites plus élevées avec un plan payant.",
+    "cvLimitReached": "Passez au plan supérieur pour téléverser plus de CV",
+    "campaignLimitReached": "Le plan gratuit inclut 1 campagne d'entraînement",
+    "practiceOnly": "Les campagnes réelles nécessitent un plan payant",
+    "submissionsBlocked": "Passez au plan supérieur pour soumettre de vraies candidatures",
+    "docLimitReached": "Vous avez vu ce que Tripalium peut faire. Passez au plan supérieur pour postuler pour de vrai."
+  },
+  "pricing": {
+    "title": "Tarification simple et transparente",
+    "subtitle": "Commencez gratuitement, passez au plan supérieur quand vous êtes prêt à postuler pour de vrai.",
+    "free": "Gratuit",
+    "month": "mois",
+    "popular": "Le plus populaire",
+    "getStarted": "Commencer",
+    "subscribe": "S'abonner",
+    "loading": "Chargement...",
+    "plans": {
+      "free": {
+        "name": "Gratuit",
+        "description": "Essayez tout en mode entraînement. Découvrez comment fonctionne Tripalium avant de vous engager."
+      },
+      "starter": {
+        "name": "Starter",
+        "description": "Pour les chercheurs d'emploi actifs. De vraies candidatures, de vrais résultats."
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "Débit maximal pour les recherches d'emploi intensives."
+      }
+    },
+    "features": {
+      "cvUploads": "téléversements de CV",
+      "campaigns": "campagnes",
+      "activeCampaigns": "campagnes actives",
+      "docGenerations": "générations de documents",
+      "submissions": "soumissions réelles",
+      "autoApply": "Candidature automatique",
+      "allSources": "Toutes les sources d'emploi"
     }
   },
   "metadata": {

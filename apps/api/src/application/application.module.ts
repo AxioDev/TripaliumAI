@@ -13,9 +13,10 @@ import { LlmModule } from '../llm/llm.module';
 import { ProfileModule } from '../profile/profile.module';
 import { QueueModule } from '../queue/queue.module';
 import { JobModule } from '../job/job.module';
+import { BillingModule } from '../billing/billing.module';
 
 @Module({
-  imports: [LogModule, EmailModule, StorageModule, LlmModule, ProfileModule, QueueModule, JobModule],
+  imports: [LogModule, EmailModule, StorageModule, LlmModule, ProfileModule, QueueModule, JobModule, BillingModule],
   controllers: [ApplicationController, DocumentController],
   providers: [
     ApplicationService,

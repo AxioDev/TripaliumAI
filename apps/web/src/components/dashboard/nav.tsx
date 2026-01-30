@@ -28,6 +28,7 @@ import {
 import { useState } from 'react';
 import { NotificationBell } from '@/components/notifications';
 import { useNotifications } from '@/contexts/notification-context';
+import { useSubscription } from '@/contexts/subscription-context';
 
 const navItems = [
   { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard },
@@ -92,6 +93,20 @@ function NavLink({
   );
 }
 
+function PlanBadge() {
+  const { plan } = useSubscription();
+  const planStyles = {
+    FREE: 'bg-sidebar-muted text-sidebar-foreground',
+    STARTER: 'bg-amber-500/20 text-amber-300',
+    PRO: 'bg-purple-500/20 text-purple-300',
+  };
+  return (
+    <div className={cn('mx-3 mb-2 rounded-lg px-3 py-2 text-center text-xs font-medium', planStyles[plan] || planStyles.FREE)}>
+      {plan === 'FREE' ? 'Free Plan' : plan === 'STARTER' ? 'Starter Plan' : 'Pro Plan'}
+    </div>
+  );
+}
+
 export function DashboardNav() {
   const pathname = usePathname();
   const t = useTranslations('nav');
@@ -129,15 +144,18 @@ export function DashboardNav() {
           />
         ))}
       </nav>
-      <div className="border-t border-sidebar-border p-3">
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-3 min-h-[44px] text-sidebar-foreground hover:text-white hover:bg-sidebar-muted"
-          onClick={() => signOut({ callbackUrl: '/login' })}
-        >
-          <LogOut className="h-5 w-5" />
-          {t('signOut')}
-        </Button>
+      <div className="border-t border-sidebar-border pt-2 pb-3">
+        <PlanBadge />
+        <div className="px-3">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 min-h-[44px] text-sidebar-foreground hover:text-white hover:bg-sidebar-muted"
+            onClick={() => signOut({ callbackUrl: '/login' })}
+          >
+            <LogOut className="h-5 w-5" />
+            {t('signOut')}
+          </Button>
+        </div>
       </div>
     </div>
   );

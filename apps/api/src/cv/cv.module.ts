@@ -5,9 +5,10 @@ import { CvParserService } from './cv-parser.service';
 import { LogModule } from '../log/log.module';
 import { StorageModule } from '../storage/storage.module';
 import { ProfileModule } from '../profile/profile.module';
+import { BillingModule } from '../billing/billing.module';
 
 @Module({
-  imports: [LogModule, StorageModule, ProfileModule],
+  imports: [LogModule, StorageModule, ProfileModule, BillingModule],
   controllers: [CvController],
   providers: [CvService, CvParserService],
   exports: [CvService],

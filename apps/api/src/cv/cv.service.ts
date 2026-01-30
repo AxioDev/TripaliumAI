@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService } from '../storage/storage.service';
 import { LogService } from '../log/log.service';
 import { QueueService } from '../queue/queue.service';
-import { ActionType, CVType, ParsingStatus } from '@tripalium/shared';
+import { BillingService } from '../billing/billing.service';
+import { ActionType, CVType, ParsingStatus, UsageAction } from '@tripalium/shared';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -13,12 +14,19 @@ export class CvService {
     private readonly storageService: StorageService,
     private readonly logService: LogService,
     private readonly queueService: QueueService,
+    private readonly billingService: BillingService,
   ) {}
 
   async uploadCv(
     userId: string,
     file: { buffer: Buffer; originalname: string; size: number },
   ) {
+    // Check entitlement
+    const entitlement = await this.billingService.checkEntitlement(userId, UsageAction.CV_UPLOAD);
+    if (!entitlement.allowed) {
+      throw new ForbiddenException(entitlement.reason);
+    }
+
     // Store the file
     const stored = await this.storageService.store(
       file.buffer,
@@ -47,6 +55,9 @@ export class CvService {
       action: ActionType.CV_UPLOADED,
       metadata: { fileName: file.originalname, fileSize: file.size },
     });
+
+    // Record billing usage
+    await this.billingService.recordUsage(userId, UsageAction.CV_UPLOAD, cv.id);
 
     // Queue parsing job
     await this.queueService.addJob({

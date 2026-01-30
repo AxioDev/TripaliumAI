@@ -40,6 +40,7 @@ model User {
   actionLogs          ActionLog[]
   emails              EmailRecord[]
   passwordResetTokens PasswordResetToken[]
+  subscription        Subscription?
 
   @@map("users")
 }
@@ -586,4 +587,70 @@ enum JobStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+// =============================================================================
+// BILLING & SUBSCRIPTIONS
+// =============================================================================
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  stripeCustomerId     String             @unique
+  stripeSubscriptionId String?            @unique
+  stripePriceId        String?
+  plan                 PlanTier           @default(FREE)
+  status               SubscriptionStatus @default(TRIALING)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  usage UsageRecord[]
+
+  @@index([stripeCustomerId])
+  @@index([stripeSubscriptionId])
+  @@map("subscriptions")
+}
+
+model UsageRecord {
+  id             String      @id @default(cuid())
+  subscriptionId String
+  userId         String
+  action         UsageAction
+  entityId       String?
+  periodStart    DateTime
+  periodEnd      DateTime
+  createdAt      DateTime    @default(now())
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, action, periodStart])
+  @@map("usage_records")
+}
+
+enum PlanTier {
+  FREE
+  STARTER
+  PRO
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+  UNPAID
+  PAUSED
+}
+
+enum UsageAction {
+  CV_UPLOAD
+  CAMPAIGN_CREATE
+  CAMPAIGN_ACTIVATE
+  DOCUMENT_GENERATE
+  APPLICATION_SUBMIT
 }

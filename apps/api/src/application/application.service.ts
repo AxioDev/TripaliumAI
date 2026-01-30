@@ -12,7 +12,8 @@ import { StorageService } from '../storage/storage.service';
 import { QueueService } from '../queue/queue.service';
 import { EmailService } from '../email/email.service';
 import { EmailTemplateService } from '../email/email-template.service';
-import { ActionType, ApplicationStatus } from '@tripalium/shared';
+import { ActionType, ApplicationStatus, UsageAction } from '@tripalium/shared';
+import { BillingService } from '../billing/billing.service';
 
 @Injectable()
 export class ApplicationService {
@@ -27,6 +28,7 @@ export class ApplicationService {
     private readonly emailService: EmailService,
     private readonly emailTemplateService: EmailTemplateService,
     private readonly configService: ConfigService,
+    private readonly billingService: BillingService,
   ) {
     this.maxApplicationsPerDay = this.configService.get<number>(
       'MAX_APPLICATIONS_PER_DAY',
@@ -361,8 +363,12 @@ export class ApplicationService {
       );
     }
 
-    // Check rate limits for production applications
+    // Check billing entitlement for submissions
     if (!application.testMode) {
+      const entitlement = await this.billingService.checkEntitlement(userId, UsageAction.APPLICATION_SUBMIT);
+      if (!entitlement.allowed) {
+        throw new BadRequestException(entitlement.reason);
+      }
       await this.checkRateLimits(userId, application.campaignId);
     }
 
@@ -482,6 +488,11 @@ export class ApplicationService {
       },
       testMode: application.testMode,
     });
+
+    // Record billing usage for non-test submissions
+    if (!application.testMode) {
+      await this.billingService.recordUsage(userId, UsageAction.APPLICATION_SUBMIT, applicationId);
+    }
 
     return {
       emailId: emailRecord.id,

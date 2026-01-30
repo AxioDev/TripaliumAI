@@ -16,6 +16,7 @@ import { StorageModule } from './storage/storage.module';
 import { TestModule } from './test/test.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { RetentionModule } from './retention/retention.module';
+import { BillingModule } from './billing/billing.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -50,6 +51,7 @@ import { HealthController } from './health.controller';
     StorageModule,
     TestModule,
     RetentionModule,
+    BillingModule,
   ],
   controllers: [HealthController],
 })

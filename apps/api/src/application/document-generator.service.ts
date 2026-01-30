@@ -12,7 +12,9 @@ import {
   ActionType,
   ApplicationStatus,
   DocumentType,
+  UsageAction,
 } from '@tripalium/shared';
+import { BillingService } from '../billing/billing.service';
 import {
   generatedCVSchema,
   generatedCoverLetterSchema,
@@ -79,6 +81,7 @@ export class DocumentGeneratorService implements OnModuleInit {
     private readonly jobUnderstandingService: JobUnderstandingService,
     private readonly templateSelectorService: TemplateSelectorService,
     private readonly qualityAssessorService: QualityAssessorService,
+    private readonly billingService: BillingService,
   ) {}
 
   onModuleInit() {
@@ -106,6 +109,17 @@ export class DocumentGeneratorService implements OnModuleInit {
     }
 
     const userId = application.userId;
+
+    // Check document generation entitlement
+    const entitlement = await this.billingService.checkEntitlement(userId, UsageAction.DOCUMENT_GENERATE);
+    if (!entitlement.allowed) {
+      this.logger.warn(`Document generation blocked for user ${userId}: ${entitlement.reason}`);
+      await this.prisma.application.update({
+        where: { id: applicationId },
+        data: { status: ApplicationStatus.GENERATION_FAILED },
+      });
+      throw new Error(entitlement.reason);
+    }
 
     await this.logService.log({
       userId,
@@ -369,6 +383,9 @@ export class DocumentGeneratorService implements OnModuleInit {
         application.jobOffer.title,
         application.jobOffer.company,
       );
+
+      // Record billing usage
+      await this.billingService.recordUsage(userId, UsageAction.DOCUMENT_GENERATE, applicationId);
 
       return { success: true, version: nextVersion };
     } catch (error) {

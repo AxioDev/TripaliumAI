@@ -28,7 +28,8 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
 import { LanguageSwitcher } from '@/components/ui/language-switcher';
-import { authApi } from '@/lib/api-client';
+import { authApi, billingApi } from '@/lib/api-client';
+import { useSubscription } from '@/contexts/subscription-context';
 import {
   User,
   Target,
@@ -40,6 +41,8 @@ import {
   AlertTriangle,
   Download,
   Trash2,
+  CreditCard,
+  Sparkles,
 } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -71,6 +74,8 @@ export default function SettingsPage() {
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [exportingData, setExportingData] = useState(false);
+  const [billingLoading, setBillingLoading] = useState(false);
+  const { plan, isPaid, usage, refresh: refreshSubscription } = useSubscription();
 
   const handleSavePreferences = async () => {
     setSaving(true);
@@ -203,6 +208,105 @@ export default function SettingsPage() {
           <div className="space-y-2">
             <Label>{t('account.email')}</Label>
             <Input value={session?.user?.email || ''} disabled />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Subscription */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="h-5 w-5" />
+            {t('subscription.title')}
+          </CardTitle>
+          <CardDescription>{t('subscription.subtitle')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center gap-3">
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${
+              plan === 'PRO'
+                ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
+                : plan === 'STARTER'
+                ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
+                : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+            }`}>
+              <Sparkles className="h-3.5 w-3.5" />
+              {t(`subscription.plans.${plan.toLowerCase()}`)}
+            </span>
+          </div>
+
+          {usage && (
+            <div className="space-y-3">
+              {[
+                { label: t('subscription.usage.cvUploads'), ...usage.cvUploads },
+                { label: t('subscription.usage.campaigns'), ...usage.campaigns },
+                { label: t('subscription.usage.activeCampaigns'), ...usage.activeCampaigns },
+                { label: t('subscription.usage.docGenerations'), ...usage.documentGenerations },
+                { label: t('subscription.usage.submissions'), ...usage.applicationSubmissions },
+              ].map((item) => (
+                <div key={item.label} className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">{item.label}</span>
+                    <span className="font-medium">{item.current} / {item.limit}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-muted">
+                    <div
+                      className={`h-full rounded-full transition-all ${
+                        item.limit > 0 && item.current >= item.limit
+                          ? 'bg-red-500'
+                          : item.limit > 0 && item.current / item.limit > 0.8
+                          ? 'bg-amber-500'
+                          : 'bg-primary'
+                      }`}
+                      style={{ width: `${item.limit > 0 ? Math.min(100, (item.current / item.limit) * 100) : 0}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div>
+            {isPaid ? (
+              <Button
+                variant="outline"
+                disabled={billingLoading}
+                onClick={async () => {
+                  setBillingLoading(true);
+                  try {
+                    const { url } = await billingApi.getPortalUrl();
+                    window.location.href = url;
+                  } catch {
+                    // ignore
+                  } finally {
+                    setBillingLoading(false);
+                  }
+                }}
+              >
+                {billingLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {t('subscription.manageBilling')}
+              </Button>
+            ) : (
+              <Button
+                className="bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
+                disabled={billingLoading}
+                onClick={async () => {
+                  setBillingLoading(true);
+                  try {
+                    const { url } = await billingApi.createCheckout('STARTER');
+                    window.location.href = url;
+                  } catch {
+                    window.location.href = '/pricing';
+                  } finally {
+                    setBillingLoading(false);
+                  }
+                }}
+              >
+                {billingLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                <Sparkles className="mr-2 h-4 w-4" />
+                {t('subscription.upgrade')}
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>

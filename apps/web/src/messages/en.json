@@ -164,6 +164,7 @@
   "landing": {
     "nav": {
       "brand": "TripaliumAI",
+      "pricing": "Pricing",
       "signIn": "Sign In",
       "getStarted": "Get Started"
     },
@@ -256,6 +257,7 @@
       "tagline": "Job search automation, powered by AI.",
       "product": "Product",
       "howItWorks": "How it works",
+      "pricing": "Pricing",
       "features": "Features",
       "legal": "Legal",
       "privacy": "Privacy Policy",
@@ -894,6 +896,24 @@
       "subtitle": "Your account information",
       "email": "Email"
     },
+    "subscription": {
+      "title": "Subscription",
+      "subtitle": "Manage your plan and billing",
+      "plans": {
+        "free": "Free Plan",
+        "starter": "Starter Plan",
+        "pro": "Pro Plan"
+      },
+      "usage": {
+        "cvUploads": "CV uploads",
+        "campaigns": "Campaigns",
+        "activeCampaigns": "Active campaigns",
+        "docGenerations": "Document generations",
+        "submissions": "Real submissions"
+      },
+      "upgrade": "Upgrade Plan",
+      "manageBilling": "Manage Billing"
+    },
     "campaignDefaults": {
       "title": "Campaign Defaults",
       "subtitle": "Default settings for new campaigns",
@@ -1101,6 +1121,49 @@
         "title": "Error",
         "loadFailed": "Failed to load activity logs"
       }
+    }
+  },
+  "billing": {
+    "upgrade": "Upgrade",
+    "upgrading": "Redirecting...",
+    "upgradeDescription": "Unlock more features and higher limits with a paid plan.",
+    "cvLimitReached": "Upgrade to upload more CVs",
+    "campaignLimitReached": "Free plan includes 1 practice campaign",
+    "practiceOnly": "Real campaigns require a paid plan",
+    "submissionsBlocked": "Upgrade to submit real applications",
+    "docLimitReached": "You've seen what Tripalium can do. Upgrade to apply for real."
+  },
+  "pricing": {
+    "title": "Simple, transparent pricing",
+    "subtitle": "Start free, upgrade when you're ready to apply for real.",
+    "free": "Free",
+    "month": "month",
+    "popular": "Most popular",
+    "getStarted": "Get started",
+    "subscribe": "Subscribe",
+    "loading": "Loading...",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "description": "Try everything in practice mode. See how Tripalium works before committing."
+      },
+      "starter": {
+        "name": "Starter",
+        "description": "For active job seekers. Real applications, real results."
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "Maximum throughput for intensive job searches."
+      }
+    },
+    "features": {
+      "cvUploads": "CV uploads",
+      "campaigns": "campaigns",
+      "activeCampaigns": "active campaigns",
+      "docGenerations": "document generations",
+      "submissions": "real submissions",
+      "autoApply": "Auto-apply",
+      "allSources": "All job sources"
     }
   },
   "metadata": {

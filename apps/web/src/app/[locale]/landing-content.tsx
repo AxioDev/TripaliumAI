@@ -37,6 +37,9 @@ export function LandingContent() {
           </div>
           <div className="flex items-center gap-3">
             <LanguageSwitcherMinimal />
+            <Link href="/pricing">
+              <Button variant="ghost" size="sm">{t('nav.pricing')}</Button>
+            </Link>
             <Link href="/login">
               <Button variant="ghost" size="sm">{t('nav.signIn')}</Button>
             </Link>
@@ -302,6 +305,11 @@ export function LandingContent() {
                   >
                     {t('footer.howItWorks')}
                   </button>
+                </li>
+                <li>
+                  <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+                    {t('footer.pricing')}
+                  </Link>
                 </li>
                 <li>
                   <button
