@@ -4,21 +4,34 @@ import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
-  private readonly stripe: Stripe;
+  private readonly stripe: Stripe | null;
   private readonly logger = new Logger(StripeService.name);
 
   constructor(private readonly configService: ConfigService) {
     const secretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
     if (!secretKey) {
       this.logger.warn('STRIPE_SECRET_KEY not configured — Stripe operations will fail');
+      this.stripe = null;
+    } else {
+      this.stripe = new Stripe(secretKey, {
+        apiVersion: '2025-02-24.acacia',
+      });
     }
-    this.stripe = new Stripe(secretKey || '', {
-      apiVersion: '2025-02-24.acacia',
-    });
+  }
+
+  get isConfigured(): boolean {
+    return this.stripe !== null;
+  }
+
+  private getStripe(): Stripe {
+    if (!this.stripe) {
+      throw new Error('Stripe is not configured. Set STRIPE_SECRET_KEY environment variable.');
+    }
+    return this.stripe;
   }
 
   async createCustomer(email: string, metadata?: Record<string, string>): Promise<Stripe.Customer> {
-    return this.stripe.customers.create({
+    return this.getStripe().customers.create({
       email,
       metadata,
     });
@@ -26,7 +39,7 @@ export class StripeService {
 
   async deleteCustomer(customerId: string): Promise<void> {
     try {
-      await this.stripe.customers.del(customerId);
+      await this.getStripe().customers.del(customerId);
     } catch (error) {
       this.logger.error(`Failed to delete Stripe customer ${customerId}: ${error}`);
     }
@@ -39,7 +52,7 @@ export class StripeService {
     cancelUrl: string;
     metadata?: Record<string, string>;
   }): Promise<Stripe.Checkout.Session> {
-    return this.stripe.checkout.sessions.create({
+    return this.getStripe().checkout.sessions.create({
       customer: params.customerId,
       mode: 'subscription',
       line_items: [{ price: params.priceId, quantity: 1 }],
@@ -53,7 +66,7 @@ export class StripeService {
   }
 
   async createPortalSession(customerId: string, returnUrl: string): Promise<Stripe.BillingPortal.Session> {
-    return this.stripe.billingPortal.sessions.create({
+    return this.getStripe().billingPortal.sessions.create({
       customer: customerId,
       return_url: returnUrl,
     });
@@ -61,7 +74,7 @@ export class StripeService {
 
   async cancelSubscription(subscriptionId: string): Promise<void> {
     try {
-      await this.stripe.subscriptions.cancel(subscriptionId);
+      await this.getStripe().subscriptions.cancel(subscriptionId);
     } catch (error) {
       this.logger.error(`Failed to cancel Stripe subscription ${subscriptionId}: ${error}`);
     }
@@ -72,6 +85,6 @@ export class StripeService {
     if (!webhookSecret) {
       throw new Error('STRIPE_WEBHOOK_SECRET not configured');
     }
-    return this.stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+    return this.getStripe().webhooks.constructEvent(payload, signature, webhookSecret);
   }
 }

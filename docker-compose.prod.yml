@@ -102,6 +102,12 @@ services:
       SMTP_FROM: ${SMTP_FROM:-noreply@tripalium.projets.work}
       ENABLE_REAL_EMAIL: ${ENABLE_REAL_EMAIL:-false}
       CORS_ORIGINS: ${CORS_ORIGINS:-https://tripalium.projets.work}
+      FRONTEND_URL: ${NEXTAUTH_URL:-https://tripalium.projets.work}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_STARTER_PRICE_ID: ${STRIPE_STARTER_PRICE_ID:-}
+      STRIPE_PRO_PRICE_ID: ${STRIPE_PRO_PRICE_ID:-}
     volumes:
       - uploads_data:/app/uploads
     healthcheck:
