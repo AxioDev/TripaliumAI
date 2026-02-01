@@ -71,9 +71,10 @@ export class JobDiscoveryService implements OnModuleInit {
       };
 
       // Determine which sources to use
+      // If specific sources selected, use them; otherwise use all available adapters
       const sourceNames = campaign.jobSources.length > 0
         ? campaign.jobSources.map((js) => js.source.name)
-        : this.adapterRegistry.getActiveAdapters().map((a) => a.sourceName);
+        : this.adapterRegistry.getAllAdapters().map((a) => a.sourceName);
 
       if (sourceNames.length === 0) {
         this.logger.warn(`No job sources available for campaign ${campaignId}`);
