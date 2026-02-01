@@ -29,9 +29,10 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
+import { useLocale } from 'next-intl';
 import { useApi } from '@/hooks/use-api';
 import { dashboardApi, DashboardStats, ActionLog, applicationApi, campaignApi, profileApi } from '@/lib/api-client';
-import { formatDistanceToNow } from 'date-fns';
+import { formatRelativeTime } from '@/lib/date-utils';
 import { FocusArea } from '@/components/dashboard/focus-area';
 import { Milestones } from '@/components/dashboard/milestones';
 import { ProfileReadinessWidget } from '@/components/profile/profile-readiness';
@@ -101,6 +102,7 @@ function getStatusColor(status: string) {
 export default function DashboardPage() {
   const t = useTranslations('dashboard');
   const tCommon = useTranslations('common');
+  const locale = useLocale();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState(false);
@@ -556,9 +558,7 @@ export default function DashboardPage() {
                           {actionKey ? t(`actions.${actionKey}`) : log.action.replace(/[._]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(new Date(log.createdAt), {
-                            addSuffix: true,
-                          })}
+                          {formatRelativeTime(log.createdAt, locale)}
                           {log.testMode && (
                             <span className="ml-2 text-orange-600">{t('recentActivity.practice')}</span>
                           )}

@@ -269,6 +269,59 @@
     "title": "Tableau de bord",
     "subtitle": "Votre recherche d'emploi en un coup d'œil",
     "newCampaign": "Nouvelle campagne",
+    "focusArea": {
+      "pendingReview": {
+        "one": "{count} candidature en attente de révision",
+        "other": "{count} candidatures en attente de révision"
+      },
+      "newMatches": {
+        "one": "Votre campagne a trouvé {count} nouvelle correspondance",
+        "other": "Votre campagne a trouvé {count} nouvelles correspondances"
+      },
+      "incompleteProfile": "Profil {pct}% complet",
+      "noCv": "Téléversez votre CV pour commencer",
+      "noCampaign": "Créez une campagne pour commencer à trouver des emplois",
+      "draftCampaign": "Vous avez une campagne en brouillon prête à lancer",
+      "allGood": "Tout est à jour ! Vos campagnes sont en cours d'exécution.",
+      "actions": {
+        "reviewNow": "Réviser maintenant",
+        "viewMatches": "Voir les correspondances",
+        "completeProfile": "Compléter le profil",
+        "uploadCv": "Téléverser le CV",
+        "createCampaign": "Créer une campagne",
+        "launchCampaign": "Lancer la campagne",
+        "viewDashboard": "Voir le tableau de bord"
+      }
+    },
+    "milestones": {
+      "title": "Votre parcours",
+      "of": "{current} sur {total}",
+      "next": "Suivant :",
+      "cvUploaded": {
+        "label": "Premier CV téléversé",
+        "description": "Début de votre parcours de recherche d'emploi"
+      },
+      "profileComplete": {
+        "label": "Profil complet",
+        "description": "Prêt pour les correspondances"
+      },
+      "firstCampaign": {
+        "label": "Première campagne lancée",
+        "description": "Recherche d'opportunités"
+      },
+      "firstMatch": {
+        "label": "Première bonne correspondance (80%+)",
+        "description": "Vous avez trouvé un match parfait"
+      },
+      "firstApplication": {
+        "label": "Première candidature envoyée",
+        "description": "Passage à l'action"
+      },
+      "tenApplications": {
+        "label": "10 candidatures envoyées",
+        "description": "Vous gagnez en dynamique"
+      }
+    },
     "stats": {
       "cvsUploaded": "CV téléversés",
       "cvsUploadedEmpty": "Téléversez votre premier CV pour commencer",
@@ -362,6 +415,46 @@
       "apiKeyCreated": "Clé API créée",
       "apiKeyRevoked": "Clé API révoquée"
     }
+  },
+  "campaignLaunch": {
+    "title": "Lancer la campagne",
+    "description": "Examinez la préparation de votre campagne avant de commencer la recherche d'emploi.",
+    "readiness": {
+      "profile": {
+        "label": "Profil complet",
+        "description": "Votre nom et vos informations de contact sont définis"
+      },
+      "cv": {
+        "label": "CV disponible",
+        "description": "Au moins un CV téléversé"
+      },
+      "roles": {
+        "label": "Postes cibles définis",
+        "description": "Vous avez spécifié les postes à rechercher"
+      },
+      "locations": {
+        "label": "Lieux définis",
+        "description": "Les lieux de recherche sont configurés"
+      }
+    },
+    "progress": "{passed} sur {total} vérifications réussies",
+    "readyToLaunch": "Prêt à lancer",
+    "required": "Requis",
+    "practiceMode": {
+      "title": "Mode pratique activé",
+      "description": "Cette campagne simulera la découverte d'emplois sans vraies candidatures."
+    },
+    "launching": {
+      "title": "Lancement de la campagne",
+      "scanning": "Analyse de {count} offres d'emploi..."
+    },
+    "launched": {
+      "title": "Campagne lancée !",
+      "description": "Nous recherchons maintenant des emplois correspondant à vos critères. Vous serez notifié lorsque de nouvelles correspondances seront trouvées.",
+      "action": "Voir la campagne"
+    },
+    "cancel": "Annuler",
+    "launch": "Lancer la campagne"
   },
   "campaigns": {
     "title": "Campagnes",
@@ -740,9 +833,87 @@
       }
     }
   },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Marquer tout comme lu",
+    "empty": {
+      "title": "Aucune notification",
+      "description": "Nous vous notifierons quand quelque chose se passe"
+    },
+    "actions": {
+      "markAsRead": "Marquer comme lu",
+      "remove": "Supprimer"
+    },
+    "viewAllActivity": "Voir toute l'activité"
+  },
   "profile": {
     "title": "Profil",
     "subtitle": "Gérez vos informations professionnelles",
+    "readiness": {
+      "title": "Préparation du profil",
+      "labels": {
+        "excellent": "Excellent",
+        "strong": "Solide",
+        "good": "Bon",
+        "gettingStarted": "Pour commencer",
+        "needsAttention": "Nécessite attention"
+      },
+      "checks": {
+        "name": {
+          "label": "Nom complet ajouté",
+          "description": "Votre prénom et nom sont définis",
+          "suggestion": "Ajouter votre nom complet"
+        },
+        "contact": {
+          "label": "Informations de contact",
+          "description": "E-mail et numéro de téléphone fournis",
+          "suggestion": "Ajouter e-mail et téléphone"
+        },
+        "location": {
+          "label": "Lieu spécifié",
+          "description": "Votre lieu aide à la correspondance d'emplois",
+          "suggestion": "Ajouter votre lieu",
+          "boost": "+5% correspondances locales"
+        },
+        "summary": {
+          "label": "Résumé professionnel",
+          "description": "Un bref aperçu de votre parcours",
+          "suggestion": "Ajouter un résumé professionnel",
+          "boost": "+15% taux de correspondance"
+        },
+        "experience": {
+          "label": "Expérience professionnelle",
+          "description": "Au moins une entrée d'expérience professionnelle",
+          "suggestion": "Ajouter l'expérience professionnelle",
+          "boost": "+20% taux de correspondance"
+        },
+        "experienceDetails": {
+          "label": "Expérience détaillée",
+          "description": "Descriptions de votre expérience professionnelle",
+          "suggestion": "Ajouter des descriptions à l'expérience"
+        },
+        "education": {
+          "label": "Formation",
+          "description": "Au moins une entrée de formation",
+          "suggestion": "Ajouter la formation"
+        },
+        "skills": {
+          "label": "Compétences documentées",
+          "description": "Au moins 3 compétences répertoriées",
+          "suggestion": "Ajouter au moins 3 compétences",
+          "boost": "+10% correspondances de compétences"
+        }
+      },
+      "sections": {
+        "whatsWorking": "Ce qui fonctionne",
+        "toImprove": "Pour améliorer le taux de correspondance"
+      },
+      "messages": {
+        "strongProfile": "Votre profil est solide ! Complétez les éléments restants pour maximiser votre potentiel de correspondance.",
+        "fullyOptimized": "Votre profil est complètement optimisé !"
+      },
+      "action": "Compléter le profil"
+    },
     "tabs": {
       "personal": "Personnel",
       "experience": "Expérience",

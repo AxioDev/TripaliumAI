@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Profile } from '@/lib/api-client';
 import {
@@ -28,84 +29,86 @@ interface ReadinessCheck {
   boost?: string; // e.g., "+15% matches"
 }
 
-const readinessChecks: ReadinessCheck[] = [
-  {
-    key: 'name',
-    label: 'Full name added',
-    description: 'Your first and last name are set',
-    weight: 10,
-    icon: <User className="h-4 w-4" />,
-    check: (p) => !!(p?.firstName && p?.lastName),
-    suggestion: 'Add your full name',
-  },
-  {
-    key: 'contact',
-    label: 'Contact information',
-    description: 'Email and phone number provided',
-    weight: 10,
-    icon: <User className="h-4 w-4" />,
-    check: (p) => !!(p?.email && p?.phone),
-    suggestion: 'Add email and phone number',
-  },
-  {
-    key: 'location',
-    label: 'Location specified',
-    description: 'Your location helps with job matching',
-    weight: 5,
-    icon: <User className="h-4 w-4" />,
-    check: (p) => !!p?.location,
-    suggestion: 'Add your location',
-    boost: '+5% local matches',
-  },
-  {
-    key: 'summary',
-    label: 'Professional summary',
-    description: 'A brief overview of your background',
-    weight: 15,
-    icon: <FileText className="h-4 w-4" />,
-    check: (p) => !!(p?.summary && p.summary.length >= 50),
-    suggestion: 'Add a professional summary',
-    boost: '+15% match rate',
-  },
-  {
-    key: 'experience',
-    label: 'Work experience',
-    description: 'At least one work experience entry',
-    weight: 25,
-    icon: <Briefcase className="h-4 w-4" />,
-    check: (p) => !!(p?.workExperiences && p.workExperiences.length > 0),
-    suggestion: 'Add work experience',
-    boost: '+20% match rate',
-  },
-  {
-    key: 'experienceDetails',
-    label: 'Detailed experience',
-    description: 'Descriptions for your work experience',
-    weight: 10,
-    icon: <Briefcase className="h-4 w-4" />,
-    check: (p) => !!(p?.workExperiences?.some(w => w.description && w.description.length > 50)),
-    suggestion: 'Add descriptions to work experience',
-  },
-  {
-    key: 'education',
-    label: 'Education background',
-    description: 'At least one education entry',
-    weight: 10,
-    icon: <GraduationCap className="h-4 w-4" />,
-    check: (p) => !!(p?.educations && p.educations.length > 0),
-    suggestion: 'Add education background',
-  },
-  {
-    key: 'skills',
-    label: 'Skills documented',
-    description: 'At least 3 skills listed',
-    weight: 15,
-    icon: <Wrench className="h-4 w-4" />,
-    check: (p) => !!(p?.skills && p.skills.length >= 3),
-    suggestion: 'Add at least 3 skills',
-    boost: '+10% skill matches',
-  },
-];
+function getReadinessChecks(t: ReturnType<typeof useTranslations>): ReadinessCheck[] {
+  return [
+    {
+      key: 'name',
+      label: t('readiness.checks.name.label'),
+      description: t('readiness.checks.name.description'),
+      weight: 10,
+      icon: <User className="h-4 w-4" />,
+      check: (p) => !!(p?.firstName && p?.lastName),
+      suggestion: t('readiness.checks.name.suggestion'),
+    },
+    {
+      key: 'contact',
+      label: t('readiness.checks.contact.label'),
+      description: t('readiness.checks.contact.description'),
+      weight: 10,
+      icon: <User className="h-4 w-4" />,
+      check: (p) => !!(p?.email && p?.phone),
+      suggestion: t('readiness.checks.contact.suggestion'),
+    },
+    {
+      key: 'location',
+      label: t('readiness.checks.location.label'),
+      description: t('readiness.checks.location.description'),
+      weight: 5,
+      icon: <User className="h-4 w-4" />,
+      check: (p) => !!p?.location,
+      suggestion: t('readiness.checks.location.suggestion'),
+      boost: t('readiness.checks.location.boost'),
+    },
+    {
+      key: 'summary',
+      label: t('readiness.checks.summary.label'),
+      description: t('readiness.checks.summary.description'),
+      weight: 15,
+      icon: <FileText className="h-4 w-4" />,
+      check: (p) => !!(p?.summary && p.summary.length >= 50),
+      suggestion: t('readiness.checks.summary.suggestion'),
+      boost: t('readiness.checks.summary.boost'),
+    },
+    {
+      key: 'experience',
+      label: t('readiness.checks.experience.label'),
+      description: t('readiness.checks.experience.description'),
+      weight: 25,
+      icon: <Briefcase className="h-4 w-4" />,
+      check: (p) => !!(p?.workExperiences && p.workExperiences.length > 0),
+      suggestion: t('readiness.checks.experience.suggestion'),
+      boost: t('readiness.checks.experience.boost'),
+    },
+    {
+      key: 'experienceDetails',
+      label: t('readiness.checks.experienceDetails.label'),
+      description: t('readiness.checks.experienceDetails.description'),
+      weight: 10,
+      icon: <Briefcase className="h-4 w-4" />,
+      check: (p) => !!(p?.workExperiences?.some(w => w.description && w.description.length > 50)),
+      suggestion: t('readiness.checks.experienceDetails.suggestion'),
+    },
+    {
+      key: 'education',
+      label: t('readiness.checks.education.label'),
+      description: t('readiness.checks.education.description'),
+      weight: 10,
+      icon: <GraduationCap className="h-4 w-4" />,
+      check: (p) => !!(p?.educations && p.educations.length > 0),
+      suggestion: t('readiness.checks.education.suggestion'),
+    },
+    {
+      key: 'skills',
+      label: t('readiness.checks.skills.label'),
+      description: t('readiness.checks.skills.description'),
+      weight: 15,
+      icon: <Wrench className="h-4 w-4" />,
+      check: (p) => !!(p?.skills && p.skills.length >= 3),
+      suggestion: t('readiness.checks.skills.suggestion'),
+      boost: t('readiness.checks.skills.boost'),
+    },
+  ];
+}
 
 interface ProfileReadinessProps {
   profile: Profile | null;
@@ -120,14 +123,17 @@ export function ProfileReadiness({
   compact = false,
   onNavigate
 }: ProfileReadinessProps) {
+  const t = useTranslations('profile.readiness');
   const [isExpanded, setIsExpanded] = React.useState(!compact);
+
+  const readinessChecks = React.useMemo(() => getReadinessChecks(t), [t]);
 
   const results = React.useMemo(() => {
     return readinessChecks.map(check => ({
       ...check,
       passed: check.check(profile),
     }));
-  }, [profile]);
+  }, [readinessChecks, profile]);
 
   const totalWeight = results.reduce((sum, r) => sum + r.weight, 0);
   const score = results.reduce((sum, r) => sum + (r.passed ? r.weight : 0), 0);
@@ -137,11 +143,11 @@ export function ProfileReadiness({
   const failedChecks = results.filter(r => !r.passed);
 
   const getScoreLabel = (pct: number) => {
-    if (pct >= 90) return 'Excellent';
-    if (pct >= 70) return 'Strong';
-    if (pct >= 50) return 'Good';
-    if (pct >= 30) return 'Getting started';
-    return 'Needs attention';
+    if (pct >= 90) return t('labels.excellent');
+    if (pct >= 70) return t('labels.strong');
+    if (pct >= 50) return t('labels.good');
+    if (pct >= 30) return t('labels.gettingStarted');
+    return t('labels.needsAttention');
   };
 
   const getScoreColor = (pct: number) => {
@@ -199,7 +205,7 @@ export function ProfileReadiness({
             </span>
           </div>
           <div>
-            <h3 className="font-semibold">Profile Readiness</h3>
+            <h3 className="font-semibold">{t('title')}</h3>
             <p className={cn('text-sm', getScoreColor(percentage))}>
               {getScoreLabel(percentage)}
             </p>
@@ -240,7 +246,7 @@ export function ProfileReadiness({
           {passedChecks.length > 0 && (
             <div>
               <h4 className="text-sm font-medium text-muted-foreground mb-2">
-                What&apos;s working
+                {t('sections.whatsWorking')}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {passedChecks.map(check => (
@@ -260,7 +266,7 @@ export function ProfileReadiness({
           {failedChecks.length > 0 && (
             <div>
               <h4 className="text-sm font-medium text-muted-foreground mb-3">
-                To improve match rates
+                {t('sections.toImprove')}
               </h4>
               <div className="space-y-2">
                 {failedChecks.slice(0, 3).map(check => (
@@ -287,14 +293,14 @@ export function ProfileReadiness({
           {/* Percentage complete is already > 70 but not 100 */}
           {percentage >= 70 && percentage < 100 && failedChecks.length > 0 && (
             <p className="text-sm text-muted-foreground">
-              Your profile is strong! Complete the remaining items to maximize your match potential.
+              {t('messages.strongProfile')}
             </p>
           )}
 
           {percentage === 100 && (
             <div className="flex items-center gap-2 text-success">
               <CheckCircle2 className="h-5 w-5" />
-              <span className="font-medium">Your profile is fully optimized!</span>
+              <span className="font-medium">{t('messages.fullyOptimized')}</span>
             </div>
           )}
         </div>
@@ -311,12 +317,15 @@ export function ProfileReadinessWidget({
   profile: Profile | null;
   onViewProfile?: () => void;
 }) {
+  const t = useTranslations('profile.readiness');
+  const readinessChecks = React.useMemo(() => getReadinessChecks(t), [t]);
+
   const results = React.useMemo(() => {
     return readinessChecks.map(check => ({
       ...check,
       passed: check.check(profile),
     }));
-  }, [profile]);
+  }, [readinessChecks, profile]);
 
   const totalWeight = results.reduce((sum, r) => sum + r.weight, 0);
   const score = results.reduce((sum, r) => sum + (r.passed ? r.weight : 0), 0);
@@ -368,7 +377,7 @@ export function ProfileReadinessWidget({
           className="mt-2 w-full text-xs"
           onClick={onViewProfile}
         >
-          Complete Profile
+          {t('action')}
         </Button>
       )}
     </div>

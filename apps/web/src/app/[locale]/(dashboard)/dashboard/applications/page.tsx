@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -37,7 +37,7 @@ import {
   MapPin,
   ExternalLink,
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatRelativeTime } from '@/lib/date-utils';
 
 const statusIcons: Record<string, React.ReactNode> = {
   PENDING_GENERATION: <Loader2 className="h-3 w-3 animate-spin" />,
@@ -78,6 +78,7 @@ const statusKeyMap: Record<string, string> = {
 export default function ApplicationsPage() {
   const { toast } = useToast();
   const t = useTranslations('applications');
+  const locale = useLocale();
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
   // Fetch applications
@@ -298,15 +299,11 @@ export default function ApplicationsPage() {
                       <p className="text-xs text-muted-foreground mt-1">
                         <Clock className="h-3 w-3 inline mr-1" />
                         {t('created')}{' '}
-                        {formatDistanceToNow(new Date(application.createdAt), {
-                          addSuffix: true,
-                        })}
+                        {formatRelativeTime(application.createdAt, locale)}
                         {application.submittedAt && (
                           <span className="ml-2">
                             • {t('stats.submitted')}{' '}
-                            {formatDistanceToNow(new Date(application.submittedAt), {
-                              addSuffix: true,
-                            })}
+                            {formatRelativeTime(application.submittedAt, locale)}
                           </span>
                         )}
                       </p>

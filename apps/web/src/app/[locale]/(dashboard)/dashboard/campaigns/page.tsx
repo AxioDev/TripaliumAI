@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -39,7 +39,7 @@ import {
   CheckCircle,
   Clock,
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatRelativeTime } from '@/lib/date-utils';
 
 const statusIcons: Record<string, React.ReactNode> = {
   DRAFT: <Clock className="h-3 w-3" />,
@@ -69,6 +69,7 @@ export default function CampaignsPage() {
   const { toast } = useToast();
   const t = useTranslations('campaigns');
   const tCommon = useTranslations('common');
+  const locale = useLocale();
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const {
@@ -273,9 +274,7 @@ export default function CampaignsPage() {
                       </div>
                       <div className="text-muted-foreground">
                         {t('created')}{' '}
-                        {formatDistanceToNow(new Date(campaign.createdAt), {
-                          addSuffix: true,
-                        })}
+                        {formatRelativeTime(campaign.createdAt, locale)}
                       </div>
                     </div>
                     <div className="flex items-center gap-1">

@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Dialog,
   DialogContent,
@@ -32,40 +33,42 @@ interface ReadinessItem {
   required: boolean;
 }
 
-const readinessItems: ReadinessItem[] = [
-  {
-    key: 'profile',
-    label: 'Profile Complete',
-    description: 'Your name and contact info are set',
-    check: (p) => !!(p?.firstName && p?.lastName && p?.email),
-    icon: <User className="h-4 w-4" />,
-    required: true,
-  },
-  {
-    key: 'cv',
-    label: 'CV Available',
-    description: 'At least one CV uploaded',
-    check: (p) => !!(p?.workExperiences?.length || p?.skills?.length),
-    icon: <FileText className="h-4 w-4" />,
-    required: false,
-  },
-  {
-    key: 'roles',
-    label: 'Target Roles Set',
-    description: 'You\'ve specified what roles to search for',
-    check: (_, c) => c.targetRoles.length > 0,
-    icon: <Target className="h-4 w-4" />,
-    required: true,
-  },
-  {
-    key: 'locations',
-    label: 'Locations Defined',
-    description: 'Search locations are configured',
-    check: (_, c) => c.targetLocations.length > 0,
-    icon: <MapPin className="h-4 w-4" />,
-    required: true,
-  },
-];
+function getReadinessItems(t: ReturnType<typeof useTranslations>): ReadinessItem[] {
+  return [
+    {
+      key: 'profile',
+      label: t('readiness.profile.label'),
+      description: t('readiness.profile.description'),
+      check: (p) => !!(p?.firstName && p?.lastName && p?.email),
+      icon: <User className="h-4 w-4" />,
+      required: true,
+    },
+    {
+      key: 'cv',
+      label: t('readiness.cv.label'),
+      description: t('readiness.cv.description'),
+      check: (p) => !!(p?.workExperiences?.length || p?.skills?.length),
+      icon: <FileText className="h-4 w-4" />,
+      required: false,
+    },
+    {
+      key: 'roles',
+      label: t('readiness.roles.label'),
+      description: t('readiness.roles.description'),
+      check: (_, c) => c.targetRoles.length > 0,
+      icon: <Target className="h-4 w-4" />,
+      required: true,
+    },
+    {
+      key: 'locations',
+      label: t('readiness.locations.label'),
+      description: t('readiness.locations.description'),
+      check: (_, c) => c.targetLocations.length > 0,
+      icon: <MapPin className="h-4 w-4" />,
+      required: true,
+    },
+  ];
+}
 
 interface CampaignLaunchModalProps {
   open: boolean;
@@ -84,15 +87,18 @@ export function CampaignLaunchModal({
   onLaunch,
   isLaunching,
 }: CampaignLaunchModalProps) {
+  const t = useTranslations('campaignLaunch');
   const [phase, setPhase] = React.useState<'checklist' | 'launching' | 'launched'>('checklist');
   const [scanCount, setScanCount] = React.useState(0);
+
+  const readinessItems = React.useMemo(() => getReadinessItems(t), [t]);
 
   const results = React.useMemo(() => {
     return readinessItems.map(item => ({
       ...item,
       passed: item.check(profile, campaign),
     }));
-  }, [profile, campaign]);
+  }, [readinessItems, profile, campaign]);
 
   const allRequiredPassed = results.filter(r => r.required).every(r => r.passed);
   const passedCount = results.filter(r => r.passed).length;
@@ -149,10 +155,10 @@ export function CampaignLaunchModal({
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Rocket className="h-5 w-5 text-primary" />
-                Launch Campaign
+                {t('title')}
               </DialogTitle>
               <DialogDescription>
-                Review your campaign readiness before starting the job search.
+                {t('description')}
               </DialogDescription>
             </DialogHeader>
 
@@ -189,7 +195,7 @@ export function CampaignLaunchModal({
                           {item.label}
                         </span>
                         {item.required && !item.passed && (
-                          <span className="text-xs text-destructive">Required</span>
+                          <span className="text-xs text-destructive">{t('required')}</span>
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5">
@@ -203,12 +209,12 @@ export function CampaignLaunchModal({
               {/* Progress indicator */}
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
-                  {passedCount} of {results.length} checks passed
+                  {t('progress', { passed: passedCount, total: results.length })}
                 </span>
                 {allRequiredPassed && (
                   <span className="flex items-center gap-1 text-success">
                     <Sparkles className="h-3 w-3" />
-                    Ready to launch
+                    {t('readyToLaunch')}
                   </span>
                 )}
               </div>
@@ -216,9 +222,9 @@ export function CampaignLaunchModal({
               {/* Practice mode notice */}
               {campaign.testMode && (
                 <div className="rounded-lg bg-warning-muted p-3 text-sm">
-                  <p className="font-medium text-warning">Practice Mode Enabled</p>
+                  <p className="font-medium text-warning">{t('practiceMode.title')}</p>
                   <p className="text-warning/80 text-xs mt-1">
-                    This campaign will simulate job discovery without real applications.
+                    {t('practiceMode.description')}
                   </p>
                 </div>
               )}
@@ -226,14 +232,14 @@ export function CampaignLaunchModal({
 
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
+                {t('cancel')}
               </Button>
               <Button
                 onClick={handleLaunch}
                 disabled={!allRequiredPassed || isLaunching}
               >
                 <Rocket className="mr-2 h-4 w-4" />
-                Launch Campaign
+                {t('launch')}
               </Button>
             </div>
           </>
@@ -250,11 +256,11 @@ export function CampaignLaunchModal({
                 </div>
               </div>
             </div>
-            <h3 className="text-lg font-semibold mb-2">Launching Campaign</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('launching.title')}</h3>
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" />
               <span className="tabular-nums">
-                Scanning {scanCount.toLocaleString()} job listings...
+                {t('launching.scanning', { count: scanCount.toLocaleString() })}
               </span>
             </div>
           </div>
@@ -265,13 +271,12 @@ export function CampaignLaunchModal({
             <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-success flex items-center justify-center animate-bounce-in">
               <CheckCircle2 className="h-10 w-10 text-success-foreground" />
             </div>
-            <h3 className="text-lg font-semibold mb-2 text-success">Campaign Launched!</h3>
+            <h3 className="text-lg font-semibold mb-2 text-success">{t('launched.title')}</h3>
             <p className="text-muted-foreground text-sm mb-6">
-              We&apos;re now searching for jobs matching your criteria.
-              You&apos;ll be notified as new matches are found.
+              {t('launched.description')}
             </p>
             <Button onClick={() => onOpenChange(false)}>
-              View Campaign
+              {t('launched.action')}
             </Button>
           </div>
         )}

@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,85 +36,87 @@ interface FocusConfig {
   getLink: () => string;
 }
 
-const focusConfigs: FocusConfig[] = [
-  {
-    type: 'pending_review',
-    priority: 1,
-    icon: <Briefcase className="h-5 w-5" />,
-    bgColor: 'bg-warning-muted',
-    borderColor: 'border-warning/30',
-    textColor: 'text-warning',
-    getMessage: (count) => `${count} application${count === 1 ? '' : 's'} need${count === 1 ? 's' : ''} your review`,
-    getAction: () => 'Review Now',
-    getLink: () => '/dashboard/applications?status=PENDING_REVIEW',
-  },
-  {
-    type: 'new_matches',
-    priority: 2,
-    icon: <Sparkles className="h-5 w-5" />,
-    bgColor: 'bg-success-muted',
-    borderColor: 'border-success/30',
-    textColor: 'text-success',
-    getMessage: (count) => `Your campaign found ${count} new match${count === 1 ? '' : 'es'}`,
-    getAction: () => 'View Matches',
-    getLink: () => '/dashboard/campaigns',
-  },
-  {
-    type: 'incomplete_profile',
-    priority: 3,
-    icon: <User className="h-5 w-5" />,
-    bgColor: 'bg-info-muted',
-    borderColor: 'border-info/30',
-    textColor: 'text-info',
-    getMessage: (pct) => `Profile ${pct}% complete`,
-    getAction: () => 'Complete Profile',
-    getLink: () => '/dashboard/profile',
-  },
-  {
-    type: 'no_cv',
-    priority: 4,
-    icon: <FileText className="h-5 w-5" />,
-    bgColor: 'bg-primary/5',
-    borderColor: 'border-primary/20',
-    textColor: 'text-primary',
-    getMessage: () => 'Upload your CV to get started',
-    getAction: () => 'Upload CV',
-    getLink: () => '/dashboard/cvs',
-  },
-  {
-    type: 'no_campaign',
-    priority: 5,
-    icon: <Target className="h-5 w-5" />,
-    bgColor: 'bg-primary/5',
-    borderColor: 'border-primary/20',
-    textColor: 'text-primary',
-    getMessage: () => 'Create a campaign to start finding jobs',
-    getAction: () => 'Create Campaign',
-    getLink: () => '/dashboard/campaigns/new',
-  },
-  {
-    type: 'draft_campaign',
-    priority: 6,
-    icon: <Target className="h-5 w-5" />,
-    bgColor: 'bg-warning-muted',
-    borderColor: 'border-warning/30',
-    textColor: 'text-warning',
-    getMessage: () => 'You have a draft campaign ready to launch',
-    getAction: () => 'Launch Campaign',
-    getLink: () => '/dashboard/campaigns',
-  },
-  {
-    type: 'all_good',
-    priority: 100,
-    icon: <CheckCircle2 className="h-5 w-5" />,
-    bgColor: 'bg-success-muted',
-    borderColor: 'border-success/30',
-    textColor: 'text-success',
-    getMessage: () => 'All caught up! Your campaigns are running.',
-    getAction: () => 'View Dashboard',
-    getLink: () => '/dashboard',
-  },
-];
+function getFocusConfigs(t: ReturnType<typeof useTranslations>): FocusConfig[] {
+  return [
+    {
+      type: 'pending_review',
+      priority: 1,
+      icon: <Briefcase className="h-5 w-5" />,
+      bgColor: 'bg-warning-muted',
+      borderColor: 'border-warning/30',
+      textColor: 'text-warning',
+      getMessage: (count) => t('focusArea.pendingReview', { count: count || 0 }),
+      getAction: () => t('focusArea.actions.reviewNow'),
+      getLink: () => '/dashboard/applications?status=PENDING_REVIEW',
+    },
+    {
+      type: 'new_matches',
+      priority: 2,
+      icon: <Sparkles className="h-5 w-5" />,
+      bgColor: 'bg-success-muted',
+      borderColor: 'border-success/30',
+      textColor: 'text-success',
+      getMessage: (count) => t('focusArea.newMatches', { count: count || 0 }),
+      getAction: () => t('focusArea.actions.viewMatches'),
+      getLink: () => '/dashboard/campaigns',
+    },
+    {
+      type: 'incomplete_profile',
+      priority: 3,
+      icon: <User className="h-5 w-5" />,
+      bgColor: 'bg-info-muted',
+      borderColor: 'border-info/30',
+      textColor: 'text-info',
+      getMessage: (pct) => t('focusArea.incompleteProfile', { pct: pct || 0 }),
+      getAction: () => t('focusArea.actions.completeProfile'),
+      getLink: () => '/dashboard/profile',
+    },
+    {
+      type: 'no_cv',
+      priority: 4,
+      icon: <FileText className="h-5 w-5" />,
+      bgColor: 'bg-primary/5',
+      borderColor: 'border-primary/20',
+      textColor: 'text-primary',
+      getMessage: () => t('focusArea.noCv'),
+      getAction: () => t('focusArea.actions.uploadCv'),
+      getLink: () => '/dashboard/cvs',
+    },
+    {
+      type: 'no_campaign',
+      priority: 5,
+      icon: <Target className="h-5 w-5" />,
+      bgColor: 'bg-primary/5',
+      borderColor: 'border-primary/20',
+      textColor: 'text-primary',
+      getMessage: () => t('focusArea.noCampaign'),
+      getAction: () => t('focusArea.actions.createCampaign'),
+      getLink: () => '/dashboard/campaigns/new',
+    },
+    {
+      type: 'draft_campaign',
+      priority: 6,
+      icon: <Target className="h-5 w-5" />,
+      bgColor: 'bg-warning-muted',
+      borderColor: 'border-warning/30',
+      textColor: 'text-warning',
+      getMessage: () => t('focusArea.draftCampaign'),
+      getAction: () => t('focusArea.actions.launchCampaign'),
+      getLink: () => '/dashboard/campaigns',
+    },
+    {
+      type: 'all_good',
+      priority: 100,
+      icon: <CheckCircle2 className="h-5 w-5" />,
+      bgColor: 'bg-success-muted',
+      borderColor: 'border-success/30',
+      textColor: 'text-success',
+      getMessage: () => t('focusArea.allGood'),
+      getAction: () => t('focusArea.actions.viewDashboard'),
+      getLink: () => '/dashboard',
+    },
+  ];
+}
 
 interface FocusAreaProps {
   pendingReviewCount: number;
@@ -136,6 +139,9 @@ export function FocusArea({
   hasActiveCampaign,
   className,
 }: FocusAreaProps) {
+  const t = useTranslations('dashboard');
+  const focusConfigs = React.useMemo(() => getFocusConfigs(t), [t]);
+
   // Determine the most important focus
   const focus = React.useMemo(() => {
     if (pendingReviewCount > 0) {
@@ -160,7 +166,7 @@ export function FocusArea({
       return { ...focusConfigs[6] };
     }
     return null;
-  }, [pendingReviewCount, newMatchCount, profileCompleteness, hasCv, hasCampaign, hasDraftCampaign, hasActiveCampaign]);
+  }, [focusConfigs, pendingReviewCount, newMatchCount, profileCompleteness, hasCv, hasCampaign, hasDraftCampaign, hasActiveCampaign]);
 
   if (!focus) return null;
 

@@ -14,7 +14,7 @@ import { Globe } from 'lucide-react';
 
 const localeNames: Record<Locale, string> = {
   en: 'English',
-  fr: 'Francais',
+  fr: 'Français',
 };
 
 export function LanguageSwitcher() {

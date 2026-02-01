@@ -55,9 +55,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { formatDistanceToNow } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
 import { useLocale } from 'next-intl';
+import { formatRelativeTime } from '@/lib/date-utils';
 
 const statusColors: Record<string, string> = {
   DISCOVERED: 'bg-blue-100 text-blue-800',
@@ -194,7 +193,6 @@ export default function CampaignDetailPage() {
   const t = useTranslations('campaigns');
   const tStatus = useTranslations('campaigns.status');
   const locale = useLocale();
-  const dateLocale = locale === 'fr' ? fr : enUS;
   const campaignId = params.id as string;
 
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -629,10 +627,7 @@ export default function CampaignDetailPage() {
                           <p className="text-xs text-muted-foreground mt-1">
                             <Calendar className="h-3 w-3 inline mr-1" />
                             {t('detail.jobs.discovered')}{' '}
-                            {formatDistanceToNow(new Date(job.discoveredAt), {
-                              addSuffix: true,
-                              locale: dateLocale,
-                            })}
+                            {formatRelativeTime(job.discoveredAt, locale)}
                           </p>
                         </div>
                       </div>

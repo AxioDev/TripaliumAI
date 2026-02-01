@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import {
   CheckCircle2,
@@ -41,46 +42,48 @@ export function Milestones({
   tenApplicationsSubmitted,
   className,
 }: MilestonesProps) {
+  const t = useTranslations('dashboard.milestones');
+
   const milestones: Milestone[] = [
     {
       key: 'cv_uploaded',
-      label: 'First CV uploaded',
-      description: 'Started your job search journey',
+      label: t('cvUploaded.label'),
+      description: t('cvUploaded.description'),
       icon: <Upload className="h-4 w-4" />,
       achieved: cvUploaded,
     },
     {
       key: 'profile_complete',
-      label: 'Profile complete',
-      description: 'Ready for matching',
+      label: t('profileComplete.label'),
+      description: t('profileComplete.description'),
       icon: <User className="h-4 w-4" />,
       achieved: profileComplete,
     },
     {
       key: 'first_campaign',
-      label: 'First campaign launched',
-      description: 'Searching for opportunities',
+      label: t('firstCampaign.label'),
+      description: t('firstCampaign.description'),
       icon: <Target className="h-4 w-4" />,
       achieved: firstCampaignLaunched,
     },
     {
       key: 'first_match',
-      label: 'First strong match (80%+)',
-      description: 'Found a great fit',
+      label: t('firstMatch.label'),
+      description: t('firstMatch.description'),
       icon: <Sparkles className="h-4 w-4" />,
       achieved: firstStrongMatch,
     },
     {
       key: 'first_application',
-      label: 'First application sent',
-      description: 'Taking action',
+      label: t('firstApplication.label'),
+      description: t('firstApplication.description'),
       icon: <Send className="h-4 w-4" />,
       achieved: firstApplicationSent,
     },
     {
       key: 'ten_applications',
-      label: '10 applications submitted',
-      description: 'Building momentum',
+      label: t('tenApplications.label'),
+      description: t('tenApplications.description'),
       icon: <Trophy className="h-4 w-4" />,
       achieved: tenApplicationsSubmitted,
     },
@@ -95,9 +98,9 @@ export function Milestones({
   return (
     <div className={cn('rounded-lg border bg-card p-4', className)}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-muted-foreground">Your Journey</h3>
+        <h3 className="text-sm font-medium text-muted-foreground">{t('title')}</h3>
         <span className="text-xs text-muted-foreground">
-          {achievedCount} of {milestones.length}
+          {t('of', { current: achievedCount, total: milestones.length })}
         </span>
       </div>
 
@@ -135,7 +138,7 @@ export function Milestones({
       {/* Next milestone hint */}
       {achievedCount < milestones.length && (
         <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-          <span>Next:</span>
+          <span>{t('next')}</span>
           <span className="font-medium text-foreground">
             {milestones.find(m => !m.achieved)?.label}
           </span>

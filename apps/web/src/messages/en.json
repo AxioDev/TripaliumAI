@@ -269,6 +269,59 @@
     "title": "Dashboard",
     "subtitle": "Your job search at a glance",
     "newCampaign": "New Campaign",
+    "focusArea": {
+      "pendingReview": {
+        "one": "{count} application needs your review",
+        "other": "{count} applications need your review"
+      },
+      "newMatches": {
+        "one": "Your campaign found {count} new match",
+        "other": "Your campaign found {count} new matches"
+      },
+      "incompleteProfile": "Profile {pct}% complete",
+      "noCv": "Upload your CV to get started",
+      "noCampaign": "Create a campaign to start finding jobs",
+      "draftCampaign": "You have a draft campaign ready to launch",
+      "allGood": "All caught up! Your campaigns are running.",
+      "actions": {
+        "reviewNow": "Review Now",
+        "viewMatches": "View Matches",
+        "completeProfile": "Complete Profile",
+        "uploadCv": "Upload CV",
+        "createCampaign": "Create Campaign",
+        "launchCampaign": "Launch Campaign",
+        "viewDashboard": "View Dashboard"
+      }
+    },
+    "milestones": {
+      "title": "Your Journey",
+      "of": "{current} of {total}",
+      "next": "Next:",
+      "cvUploaded": {
+        "label": "First CV uploaded",
+        "description": "Started your job search journey"
+      },
+      "profileComplete": {
+        "label": "Profile complete",
+        "description": "Ready for matching"
+      },
+      "firstCampaign": {
+        "label": "First campaign launched",
+        "description": "Searching for opportunities"
+      },
+      "firstMatch": {
+        "label": "First strong match (80%+)",
+        "description": "Found a great fit"
+      },
+      "firstApplication": {
+        "label": "First application sent",
+        "description": "Taking action"
+      },
+      "tenApplications": {
+        "label": "10 applications submitted",
+        "description": "Building momentum"
+      }
+    },
     "stats": {
       "cvsUploaded": "CVs Uploaded",
       "cvsUploadedEmpty": "Upload your first CV to get started",
@@ -362,6 +415,46 @@
       "apiKeyCreated": "API key created",
       "apiKeyRevoked": "API key revoked"
     }
+  },
+  "campaignLaunch": {
+    "title": "Launch Campaign",
+    "description": "Review your campaign readiness before starting the job search.",
+    "readiness": {
+      "profile": {
+        "label": "Profile Complete",
+        "description": "Your name and contact info are set"
+      },
+      "cv": {
+        "label": "CV Available",
+        "description": "At least one CV uploaded"
+      },
+      "roles": {
+        "label": "Target Roles Set",
+        "description": "You've specified what roles to search for"
+      },
+      "locations": {
+        "label": "Locations Defined",
+        "description": "Search locations are configured"
+      }
+    },
+    "progress": "{passed} of {total} checks passed",
+    "readyToLaunch": "Ready to launch",
+    "required": "Required",
+    "practiceMode": {
+      "title": "Practice Mode Enabled",
+      "description": "This campaign will simulate job discovery without real applications."
+    },
+    "launching": {
+      "title": "Launching Campaign",
+      "scanning": "Scanning {count} job listings..."
+    },
+    "launched": {
+      "title": "Campaign Launched!",
+      "description": "We're now searching for jobs matching your criteria. You'll be notified as new matches are found.",
+      "action": "View Campaign"
+    },
+    "cancel": "Cancel",
+    "launch": "Launch Campaign"
   },
   "campaigns": {
     "title": "Campaigns",
@@ -740,9 +833,87 @@
       }
     }
   },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "empty": {
+      "title": "No notifications",
+      "description": "We'll let you know when something happens"
+    },
+    "actions": {
+      "markAsRead": "Mark as read",
+      "remove": "Remove"
+    },
+    "viewAllActivity": "View all activity"
+  },
   "profile": {
     "title": "Profile",
     "subtitle": "Manage your professional profile information",
+    "readiness": {
+      "title": "Profile Readiness",
+      "labels": {
+        "excellent": "Excellent",
+        "strong": "Strong",
+        "good": "Good",
+        "gettingStarted": "Getting started",
+        "needsAttention": "Needs attention"
+      },
+      "checks": {
+        "name": {
+          "label": "Full name added",
+          "description": "Your first and last name are set",
+          "suggestion": "Add your full name"
+        },
+        "contact": {
+          "label": "Contact information",
+          "description": "Email and phone number provided",
+          "suggestion": "Add email and phone number"
+        },
+        "location": {
+          "label": "Location specified",
+          "description": "Your location helps with job matching",
+          "suggestion": "Add your location",
+          "boost": "+5% local matches"
+        },
+        "summary": {
+          "label": "Professional summary",
+          "description": "A brief overview of your background",
+          "suggestion": "Add a professional summary",
+          "boost": "+15% match rate"
+        },
+        "experience": {
+          "label": "Work experience",
+          "description": "At least one work experience entry",
+          "suggestion": "Add work experience",
+          "boost": "+20% match rate"
+        },
+        "experienceDetails": {
+          "label": "Detailed experience",
+          "description": "Descriptions for your work experience",
+          "suggestion": "Add descriptions to work experience"
+        },
+        "education": {
+          "label": "Education background",
+          "description": "At least one education entry",
+          "suggestion": "Add education background"
+        },
+        "skills": {
+          "label": "Skills documented",
+          "description": "At least 3 skills listed",
+          "suggestion": "Add at least 3 skills",
+          "boost": "+10% skill matches"
+        }
+      },
+      "sections": {
+        "whatsWorking": "What's working",
+        "toImprove": "To improve match rates"
+      },
+      "messages": {
+        "strongProfile": "Your profile is strong! Complete the remaining items to maximize your match potential.",
+        "fullyOptimized": "Your profile is fully optimized!"
+      },
+      "action": "Complete Profile"
+    },
     "tabs": {
       "personal": "Personal",
       "experience": "Experience",

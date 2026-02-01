@@ -51,7 +51,8 @@ import {
   Clock,
   Shield,
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { useLocale } from 'next-intl';
+import { formatRelativeTime } from '@/lib/date-utils';
 
 const scopeColors: Record<string, string> = {
   READ: 'bg-blue-100 text-blue-800',
@@ -71,6 +72,7 @@ export default function ApiKeysPage() {
   const { toast } = useToast();
   const t = useTranslations('apiKeys');
   const tCommon = useTranslations('common');
+  const locale = useLocale();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showKeyDialog, setShowKeyDialog] = useState(false);
   const [newKeyValue, setNewKeyValue] = useState('');
@@ -241,16 +243,16 @@ export default function ApiKeysPage() {
                         <span className="font-mono">{key.keyPrefix}...</span>
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
-                          {t('created')} {formatDistanceToNow(new Date(key.createdAt), { addSuffix: true })}
+                          {t('created')} {formatRelativeTime(key.createdAt, locale)}
                         </span>
                         {key.lastUsedAt && (
                           <span>
-                            {t('lastUsed')} {formatDistanceToNow(new Date(key.lastUsedAt), { addSuffix: true })}
+                            {t('lastUsed')} {formatRelativeTime(key.lastUsedAt, locale)}
                           </span>
                         )}
                         {key.expiresAt && (
                           <span className="text-yellow-600">
-                            {t('expires')} {formatDistanceToNow(new Date(key.expiresAt), { addSuffix: true })}
+                            {t('expires')} {formatRelativeTime(key.expiresAt, locale)}
                           </span>
                         )}
                       </div>

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   FileText,
   Search,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { formatRelativeTime } from '@/lib/date-utils';
 import { Notification, NotificationType } from './notification-types';
 
 const notificationConfig: Record<NotificationType, {
@@ -70,6 +71,8 @@ export function NotificationDropdown({
   onClear,
   onClose,
 }: NotificationDropdownProps) {
+  const t = useTranslations('notifications');
+  const locale = useLocale();
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
@@ -78,7 +81,7 @@ export function NotificationDropdown({
       <div className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <Bell className="h-4 w-4 text-muted-foreground" />
-          <span className="font-medium">Notifications</span>
+          <span className="font-medium">{t('title')}</span>
           {unreadCount > 0 && (
             <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground">
               {unreadCount}
@@ -92,7 +95,7 @@ export function NotificationDropdown({
             onClick={onMarkAllAsRead}
             className="text-xs text-muted-foreground hover:text-foreground"
           >
-            Mark all read
+            {t('markAllRead')}
           </Button>
         )}
       </div>
@@ -102,9 +105,9 @@ export function NotificationDropdown({
         {notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <Bell className="h-8 w-8 text-muted-foreground/50 mb-2" />
-            <p className="text-sm text-muted-foreground">No notifications</p>
+            <p className="text-sm text-muted-foreground">{t('empty.title')}</p>
             <p className="text-xs text-muted-foreground/70">
-              We&apos;ll let you know when something happens
+              {t('empty.description')}
             </p>
           </div>
         ) : (
@@ -153,7 +156,7 @@ export function NotificationDropdown({
                       {notification.message}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground/70">
-                      {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                      {formatRelativeTime(notification.createdAt, locale)}
                     </p>
                   </div>
 
@@ -165,7 +168,7 @@ export function NotificationDropdown({
                         size="icon"
                         className="h-6 w-6"
                         onClick={() => onMarkAsRead(notification.id)}
-                        title="Mark as read"
+                        title={t('actions.markAsRead')}
                       >
                         <Check className="h-3 w-3" />
                       </Button>
@@ -175,7 +178,7 @@ export function NotificationDropdown({
                       size="icon"
                       className="h-6 w-6 text-muted-foreground hover:text-destructive"
                       onClick={() => onClear(notification.id)}
-                      title="Remove"
+                      title={t('actions.remove')}
                     >
                       <X className="h-3 w-3" />
                     </Button>
@@ -200,7 +203,7 @@ export function NotificationDropdown({
             onClick={onClose}
             className="text-xs text-muted-foreground hover:text-foreground hover:underline"
           >
-            View all activity
+            {t('viewAllActivity')}
           </Link>
         </div>
       )}
