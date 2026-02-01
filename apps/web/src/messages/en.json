@@ -1466,6 +1466,73 @@
     },
     "complete": "Complete!"
   },
+  "applicationDetail": {
+    "descriptions": {
+      "pendingGeneration": "AI is generating your tailored CV and cover letter.",
+      "generationFailed": "Document generation failed. Please try again.",
+      "pendingReview": "Please review the generated documents before confirming.",
+      "readyToSubmit": "Application is ready. Mark as submitted after applying externally.",
+      "submitting": "Application is being submitted.",
+      "submitted": "Application has been submitted successfully.",
+      "submissionFailed": "Submission failed. Please try again or submit manually.",
+      "withdrawn": "This application has been withdrawn."
+    },
+    "errors": {
+      "loadFailed": "Failed to load application",
+      "previewFailed": "Failed to load document preview"
+    },
+    "messages": {
+      "confirmed": "Application confirmed",
+      "confirmationDescription": "The application is ready to submit.",
+      "withdrawn": "Application withdrawn",
+      "withdrawalDescription": "The application has been withdrawn.",
+      "regenerating": "Regenerating documents",
+      "regeneratingDescription": "New documents are being generated.",
+      "sendEmailSuccess": "Email sent",
+      "emailSimulated": "Email simulated",
+      "emailSimulationMode": "Your application email has been sent successfully.",
+      "sendEmailFailed": "Failed to send email",
+      "sendEmailFailedDescription": "There was an error sending the email. Please try again.",
+      "invalidEmail": "Please enter a valid email address."
+    },
+    "ui": {
+      "testMode": "Test Mode",
+      "generatedDocuments": "Generated Documents",
+      "documentsDescription": "AI-generated documents tailored for this application",
+      "regenerate": "Regenerate",
+      "generatingDocuments": "Generating your documents...",
+      "noDocuments": "No documents generated yet.",
+      "tailoredResume": "Tailored Resume",
+      "preview": "Preview",
+      "download": "Download",
+      "matchAnalysis": "Match Analysis",
+      "analysis": "Analysis",
+      "matching": "Matching",
+      "missing": "Missing",
+      "redFlags": "Red Flags",
+      "timeline": "Timeline",
+      "created": "Created",
+      "resumePreview": "Resume Preview",
+      "coverLetterPreview": "Cover Letter Preview",
+      "emailModal": {
+        "title": "Send Application via Email",
+        "recipientLabel": "Recipient Email *",
+        "recipientHint": "The email address to send your application to",
+        "messageLabel": "Custom Message (optional)",
+        "messagePlaceholder": "Add a personal note to your application...",
+        "messageHint": "This will replace the generated cover letter content in the email body",
+        "includes": "Email will include:",
+        "includes1": "Professional introduction",
+        "includes2": "Cover letter content (or custom message)",
+        "includes3": "Your resume as attachment",
+        "cancel": "Cancel",
+        "send": "Send Email"
+      },
+      "sentEmails": "Sent Emails",
+      "sentEmailsDescription": "Emails sent for this application",
+      "emailStatusTest": "Test"
+    }
+  },
   "metadata": {
     "title": "TripaliumAI - Job Search Automation",
     "description": "Automate your job search with AI-powered CV generation and applications"

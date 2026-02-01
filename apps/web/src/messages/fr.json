@@ -1466,6 +1466,73 @@
     },
     "complete": "Terminé !"
   },
+  "applicationDetail": {
+    "descriptions": {
+      "pendingGeneration": "L'IA génère votre CV et lettre de motivation personnalisés.",
+      "generationFailed": "La génération du document a échoué. Veuillez réessayer.",
+      "pendingReview": "Veuillez examiner les documents générés avant de confirmer.",
+      "readyToSubmit": "La candidature est prête. Marquez-la comme soumise après candidature externe.",
+      "submitting": "La candidature est en cours d'envoi.",
+      "submitted": "La candidature a été soumise avec succès.",
+      "submissionFailed": "La soumission a échoué. Veuillez réessayer ou envoyer manuellement.",
+      "withdrawn": "Cette candidature a été retirée."
+    },
+    "errors": {
+      "loadFailed": "Erreur lors du chargement de la candidature",
+      "previewFailed": "Erreur lors du chargement de l'aperçu du document"
+    },
+    "messages": {
+      "confirmed": "Candidature confirmée",
+      "confirmationDescription": "La candidature est prête à être soumise.",
+      "withdrawn": "Candidature retirée",
+      "withdrawalDescription": "La candidature a été retirée.",
+      "regenerating": "Régénération des documents",
+      "regeneratingDescription": "De nouveaux documents sont en cours de génération.",
+      "sendEmailSuccess": "E-mail envoyé",
+      "emailSimulated": "E-mail simulé",
+      "emailSimulationMode": "Votre e-mail de candidature a été envoyé avec succès.",
+      "sendEmailFailed": "Erreur lors de l'envoi de l'e-mail",
+      "sendEmailFailedDescription": "Une erreur s'est produite lors de l'envoi de l'e-mail. Veuillez réessayer.",
+      "invalidEmail": "Veuillez entrer une adresse e-mail valide."
+    },
+    "ui": {
+      "testMode": "Mode Test",
+      "generatedDocuments": "Documents Générés",
+      "documentsDescription": "Documents générés par l'IA personnalisés pour cette candidature",
+      "regenerate": "Régénérer",
+      "generatingDocuments": "Génération de vos documents...",
+      "noDocuments": "Aucun document généré pour le moment.",
+      "tailoredResume": "CV Personnalisé",
+      "preview": "Aperçu",
+      "download": "Télécharger",
+      "matchAnalysis": "Analyse de Correspondance",
+      "analysis": "Analyse",
+      "matching": "Correspondant",
+      "missing": "Manquant",
+      "redFlags": "Signaux d'Alerte",
+      "timeline": "Chronologie",
+      "created": "Créé",
+      "resumePreview": "Aperçu du CV",
+      "coverLetterPreview": "Aperçu de la Lettre de Motivation",
+      "emailModal": {
+        "title": "Envoyer la candidature par E-mail",
+        "recipientLabel": "E-mail du destinataire *",
+        "recipientHint": "L'adresse e-mail à laquelle envoyer votre candidature",
+        "messageLabel": "Message personnalisé (optionnel)",
+        "messagePlaceholder": "Ajouter une note personnelle à votre candidature...",
+        "messageHint": "Cela remplacera le contenu de la lettre de motivation générée dans le corps de l'e-mail",
+        "includes": "L'e-mail comprendra :",
+        "includes1": "Introduction professionnelle",
+        "includes2": "Contenu de la lettre de motivation (ou message personnalisé)",
+        "includes3": "Votre CV en pièce jointe",
+        "cancel": "Annuler",
+        "send": "Envoyer l'E-mail"
+      },
+      "sentEmails": "E-mails Envoyés",
+      "sentEmailsDescription": "E-mails envoyés pour cette candidature",
+      "emailStatusTest": "Test"
+    }
+  },
   "metadata": {
     "title": "TripaliumAI - Automatisation de recherche d'emploi",
     "description": "Automatisez votre recherche d'emploi avec la génération de CV et les candidatures assistées par IA"
