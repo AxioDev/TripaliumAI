@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
@@ -17,20 +18,24 @@ interface StagedProgressProps {
   showPercentage?: boolean;
 }
 
-const defaultCVParsingStages: ProgressStage[] = [
-  { threshold: 0, message: 'Reading document structure...', completedMessage: 'Document structure read' },
-  { threshold: 20, message: 'Extracting contact information...', completedMessage: 'Contact information extracted' },
-  { threshold: 40, message: 'Analyzing work experience...', completedMessage: 'Work experience analyzed' },
-  { threshold: 60, message: 'Identifying skills...', completedMessage: 'Skills identified' },
-  { threshold: 80, message: 'Building your profile...', completedMessage: 'Profile built' },
-];
+function getDefaultCVParsingStages(t: ReturnType<typeof useTranslations>): ProgressStage[] {
+  return [
+    { threshold: 0, message: t('stages.readingDocument'), completedMessage: t('stages.documentRead') },
+    { threshold: 20, message: t('stages.extractingContact'), completedMessage: t('stages.contactExtracted') },
+    { threshold: 40, message: t('stages.analyzingExperience'), completedMessage: t('stages.experienceAnalyzed') },
+    { threshold: 60, message: t('stages.identifyingSkills'), completedMessage: t('stages.skillsIdentified') },
+    { threshold: 80, message: t('stages.buildingProfile'), completedMessage: t('stages.profileBuilt') },
+  ];
+}
 
-const defaultDocumentGenerationStages: ProgressStage[] = [
-  { threshold: 0, message: 'Analyzing job requirements...', completedMessage: 'Job requirements analyzed' },
-  { threshold: 25, message: 'Matching your experience...', completedMessage: 'Experience matched' },
-  { threshold: 50, message: 'Crafting tailored CV...', completedMessage: 'CV crafted' },
-  { threshold: 75, message: 'Writing cover letter...', completedMessage: 'Cover letter written' },
-];
+function getDefaultDocumentGenerationStages(t: ReturnType<typeof useTranslations>): ProgressStage[] {
+  return [
+    { threshold: 0, message: t('stages.analyzingRequirements'), completedMessage: t('stages.requirementsAnalyzed') },
+    { threshold: 25, message: t('stages.matchingExperience'), completedMessage: t('stages.experienceMatched') },
+    { threshold: 50, message: t('stages.craftingCv'), completedMessage: t('stages.cvCrafted') },
+    { threshold: 75, message: t('stages.writingLetter'), completedMessage: t('stages.letterWritten') },
+  ];
+}
 
 export function StagedProgress({
   progress,
@@ -38,6 +43,7 @@ export function StagedProgress({
   className,
   showPercentage = true,
 }: StagedProgressProps) {
+  const t = useTranslations('stagedProgress');
   const currentStageIndex = React.useMemo(() => {
     let idx = 0;
     for (let i = stages.length - 1; i >= 0; i--) {
@@ -83,7 +89,7 @@ export function StagedProgress({
             'text-sm font-medium animate-slide-in-up',
             isComplete ? 'text-success' : 'text-foreground'
           )}>
-            {isComplete ? 'Complete!' : currentStage.message}
+            {isComplete ? t('complete') : currentStage.message}
           </span>
         </div>
         {showPercentage && (
@@ -120,11 +126,15 @@ export function StagedProgress({
 
 // Preset components for common use cases
 export function CVParsingProgress({ progress }: { progress: number }) {
-  return <StagedProgress progress={progress} stages={defaultCVParsingStages} />;
+  const t = useTranslations('stagedProgress');
+  const stages = React.useMemo(() => getDefaultCVParsingStages(t), [t]);
+  return <StagedProgress progress={progress} stages={stages} />;
 }
 
 export function DocumentGenerationProgress({ progress }: { progress: number }) {
-  return <StagedProgress progress={progress} stages={defaultDocumentGenerationStages} />;
+  const t = useTranslations('stagedProgress');
+  const stages = React.useMemo(() => getDefaultDocumentGenerationStages(t), [t]);
+  return <StagedProgress progress={progress} stages={stages} />;
 }
 
 // Simulated progress hook for demo/preview purposes

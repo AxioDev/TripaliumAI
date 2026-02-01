@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { CheckCircle2, Sparkles, Rocket, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,6 +24,7 @@ export function SubmissionCelebration({
   onViewApplications,
   onAddNotes,
 }: SubmissionCelebrationProps) {
+  const t = useTranslations('submissionCelebration');
   const [phase, setPhase] = React.useState<'burst' | 'message' | 'actions'>('burst');
 
   React.useEffect(() => {
@@ -77,7 +79,7 @@ export function SubmissionCelebration({
         )}>
           <div className="flex items-center justify-center gap-2 text-success">
             <Sparkles className="h-5 w-5" />
-            <span className="font-medium">Application Sent!</span>
+            <span className="font-medium">{t('title')}</span>
             <Sparkles className="h-5 w-5" />
           </div>
           <h2 className="text-2xl font-bold text-foreground">
@@ -94,17 +96,17 @@ export function SubmissionCelebration({
           phase !== 'actions' ? 'opacity-0' : 'opacity-100 animate-slide-in-up'
         )}>
           <p className="text-sm text-muted-foreground">
-            Track your application progress in your dashboard.
+            {t('description')}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-2 justify-center">
             <Button onClick={onClose}>
-              Continue
+              {t('actions.continue')}
             </Button>
             {onViewApplications && (
               <Button variant="outline" onClick={onViewApplications}>
                 <ExternalLink className="mr-2 h-4 w-4" />
-                View All Applications
+                {t('actions.viewAll')}
               </Button>
             )}
           </div>
@@ -116,7 +118,7 @@ export function SubmissionCelebration({
               className="text-muted-foreground"
               onClick={onAddNotes}
             >
-              Add notes about this application
+              {t('notes')}
             </Button>
           )}
         </div>

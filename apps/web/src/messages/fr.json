@@ -1421,6 +1421,51 @@
     "unread": "non lus",
     "overflow": "9+"
   },
+  "submissionCelebration": {
+    "title": "Candidature envoyée !",
+    "description": "Suivez votre candidature dans votre tableau de bord.",
+    "actions": {
+      "continue": "Continuer",
+      "viewAll": "Voir toutes les candidatures"
+    },
+    "notes": "Ajouter des notes sur cette candidature"
+  },
+  "documentPreview": {
+    "sections": {
+      "summary": "Résumé professionnel",
+      "experience": "Expérience professionnelle",
+      "education": "Éducation",
+      "skills": "Compétences",
+      "languages": "Langues"
+    },
+    "defaults": {
+      "greeting": "Responsable RH",
+      "closing": "Cordialement,"
+    }
+  },
+  "stagedProgress": {
+    "stages": {
+      "readingDocument": "Lecture de la structure du document...",
+      "documentRead": "Structure du document lue",
+      "extractingContact": "Extraction des informations de contact...",
+      "contactExtracted": "Informations de contact extraites",
+      "analyzingExperience": "Analyse de l'expérience professionnelle...",
+      "experienceAnalyzed": "Expérience professionnelle analysée",
+      "identifyingSkills": "Identification des compétences...",
+      "skillsIdentified": "Compétences identifiées",
+      "buildingProfile": "Construction de votre profil...",
+      "profileBuilt": "Profil construit",
+      "analyzingRequirements": "Analyse des exigences du poste...",
+      "requirementsAnalyzed": "Exigences du poste analysées",
+      "matchingExperience": "Correspondance de votre expérience...",
+      "experienceMatched": "Expérience mise en correspondance",
+      "craftingCv": "Création du CV personnalisé...",
+      "cvCrafted": "CV créé",
+      "writingLetter": "Rédaction de la lettre de motivation...",
+      "letterWritten": "Lettre de motivation rédigée"
+    },
+    "complete": "Terminé !"
+  },
   "metadata": {
     "title": "TripaliumAI - Automatisation de recherche d'emploi",
     "description": "Automatisez votre recherche d'emploi avec la génération de CV et les candidatures assistées par IA"

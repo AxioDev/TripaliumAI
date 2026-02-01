@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -69,6 +70,7 @@ function formatDate(dateStr: string | null): string {
 }
 
 export function CVPreview({ data }: { data: GeneratedCV }) {
+  const t = useTranslations('documentPreview');
   return (
     <div className="space-y-6 p-6 bg-white rounded-lg border max-w-3xl">
       {/* Header */}
@@ -107,7 +109,7 @@ export function CVPreview({ data }: { data: GeneratedCV }) {
         <>
           <Separator />
           <div>
-            <h2 className="text-lg font-semibold mb-2">Professional Summary</h2>
+            <h2 className="text-lg font-semibold mb-2">{t('sections.summary')}</h2>
             <p className="text-sm text-muted-foreground">{data.summary}</p>
           </div>
         </>
@@ -120,7 +122,7 @@ export function CVPreview({ data }: { data: GeneratedCV }) {
           <div>
             <h2 className="flex items-center gap-2 text-lg font-semibold mb-4">
               <Briefcase className="h-4 w-4" />
-              Work Experience
+              {t('sections.experience')}
             </h2>
             <div className="space-y-4">
               {data.workExperience.map((exp, i) => (
@@ -158,7 +160,7 @@ export function CVPreview({ data }: { data: GeneratedCV }) {
           <div>
             <h2 className="flex items-center gap-2 text-lg font-semibold mb-4">
               <GraduationCap className="h-4 w-4" />
-              Education
+              {t('sections.education')}
             </h2>
             <div className="space-y-3">
               {data.education.map((edu, i) => (
@@ -189,7 +191,7 @@ export function CVPreview({ data }: { data: GeneratedCV }) {
           <div>
             <h2 className="flex items-center gap-2 text-lg font-semibold mb-3">
               <Code className="h-4 w-4" />
-              Skills
+              {t('sections.skills')}
             </h2>
             <div className="flex flex-wrap gap-2">
               {data.skills.map((skill, i) => (
@@ -209,7 +211,7 @@ export function CVPreview({ data }: { data: GeneratedCV }) {
           <div>
             <h2 className="flex items-center gap-2 text-lg font-semibold mb-3">
               <Languages className="h-4 w-4" />
-              Languages
+              {t('sections.languages')}
             </h2>
             <div className="flex flex-wrap gap-4">
               {data.languages.map((lang, i) => (
@@ -227,6 +229,7 @@ export function CVPreview({ data }: { data: GeneratedCV }) {
 }
 
 export function CoverLetterPreview({ data }: { data: GeneratedCoverLetter }) {
+  const t = useTranslations('documentPreview');
   return (
     <div className="space-y-6 p-6 bg-white rounded-lg border max-w-3xl">
       {/* Recipient */}
@@ -242,7 +245,7 @@ export function CoverLetterPreview({ data }: { data: GeneratedCoverLetter }) {
 
       {/* Greeting */}
       <p>
-        Dear {data.recipientName ? data.recipientName : 'Hiring Manager'},
+        Dear {data.recipientName ? data.recipientName : t('defaults.greeting')},
       </p>
 
       {/* Opening */}
@@ -260,7 +263,7 @@ export function CoverLetterPreview({ data }: { data: GeneratedCoverLetter }) {
 
       {/* Signature */}
       <div className="pt-4">
-        <p>Sincerely,</p>
+        <p>{t('defaults.closing')}</p>
         <p className="font-medium mt-2">{data.signature}</p>
       </div>
     </div>

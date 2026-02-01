@@ -1421,6 +1421,51 @@
     "unread": "unread",
     "overflow": "9+"
   },
+  "submissionCelebration": {
+    "title": "Application Sent!",
+    "description": "Track your application progress in your dashboard.",
+    "actions": {
+      "continue": "Continue",
+      "viewAll": "View All Applications"
+    },
+    "notes": "Add notes about this application"
+  },
+  "documentPreview": {
+    "sections": {
+      "summary": "Professional Summary",
+      "experience": "Work Experience",
+      "education": "Education",
+      "skills": "Skills",
+      "languages": "Languages"
+    },
+    "defaults": {
+      "greeting": "Hiring Manager",
+      "closing": "Sincerely,"
+    }
+  },
+  "stagedProgress": {
+    "stages": {
+      "readingDocument": "Reading document structure...",
+      "documentRead": "Document structure read",
+      "extractingContact": "Extracting contact information...",
+      "contactExtracted": "Contact information extracted",
+      "analyzingExperience": "Analyzing work experience...",
+      "experienceAnalyzed": "Work experience analyzed",
+      "identifyingSkills": "Identifying skills...",
+      "skillsIdentified": "Skills identified",
+      "buildingProfile": "Building your profile...",
+      "profileBuilt": "Profile built",
+      "analyzingRequirements": "Analyzing job requirements...",
+      "requirementsAnalyzed": "Job requirements analyzed",
+      "matchingExperience": "Matching your experience...",
+      "experienceMatched": "Experience matched",
+      "craftingCv": "Crafting tailored CV...",
+      "cvCrafted": "CV crafted",
+      "writingLetter": "Writing cover letter...",
+      "letterWritten": "Cover letter written"
+    },
+    "complete": "Complete!"
+  },
   "metadata": {
     "title": "TripaliumAI - Job Search Automation",
     "description": "Automate your job search with AI-powered CV generation and applications"
