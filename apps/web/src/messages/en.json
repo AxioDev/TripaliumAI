@@ -1380,6 +1380,47 @@
       "allSources": "All job sources"
     }
   },
+  "applicationStrength": {
+    "title": "Application Strength",
+    "labels": {
+      "strongMatch": "Strong match",
+      "documentsTailored": "Documents tailored",
+      "profileComplete": "Profile complete",
+      "requirementsMet": "Key requirements met"
+    },
+    "levels": {
+      "excellent": "Excellent",
+      "strong": "Strong",
+      "good": "Good",
+      "fair": "Fair",
+      "needsWork": "Needs work"
+    },
+    "badge": "% strength"
+  },
+  "discoveryFunnel": {
+    "stages": {
+      "discovered": "Discovered",
+      "matched": "Matched",
+      "applied": "Applied"
+    },
+    "metrics": {
+      "jobs": "jobs",
+      "matchRate": "Match rate:",
+      "applyRate": "Apply rate:"
+    }
+  },
+  "subscription": {
+    "plans": {
+      "free": "Free Plan",
+      "starter": "Starter Plan",
+      "pro": "Pro Plan"
+    }
+  },
+  "notificationBell": {
+    "label": "Notifications",
+    "unread": "unread",
+    "overflow": "9+"
+  },
   "metadata": {
     "title": "TripaliumAI - Job Search Automation",
     "description": "Automate your job search with AI-powered CV generation and applications"

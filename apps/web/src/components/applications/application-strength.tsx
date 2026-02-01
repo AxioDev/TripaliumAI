@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import {
   CheckCircle2,
@@ -21,48 +22,50 @@ interface StrengthFactor {
   weight: number;
 }
 
-const strengthFactors: StrengthFactor[] = [
-  {
-    key: 'match_score',
-    label: 'Strong match',
-    check: (app) => (app.jobOffer?.matchScore ?? 0) >= 70,
-    icon: <Target className="h-3.5 w-3.5" />,
-    weight: 35,
-  },
-  {
-    key: 'documents',
-    label: 'Documents tailored',
-    check: (_, __, docsReady) => docsReady,
-    icon: <FileText className="h-3.5 w-3.5" />,
-    weight: 30,
-  },
-  {
-    key: 'profile_complete',
-    label: 'Profile complete',
-    check: (_, profile) => {
-      if (!profile) return false;
-      const hasBasics = !!(profile.firstName && profile.lastName && profile.email);
-      const hasExperience = !!(profile.workExperiences?.length);
-      const hasSkills = !!(profile.skills?.length && profile.skills.length >= 3);
-      return hasBasics && hasExperience && hasSkills;
+function getStrengthFactors(t: ReturnType<typeof useTranslations>): StrengthFactor[] {
+  return [
+    {
+      key: 'match_score',
+      label: t('labels.strongMatch'),
+      check: (app) => (app.jobOffer?.matchScore ?? 0) >= 70,
+      icon: <Target className="h-3.5 w-3.5" />,
+      weight: 35,
     },
-    icon: <User className="h-3.5 w-3.5" />,
-    weight: 20,
-  },
-  {
-    key: 'requirements_met',
-    label: 'Key requirements met',
-    check: (app) => {
-      const matchAnalysis = app.jobOffer?.matchAnalysis;
-      if (!matchAnalysis) return false;
-      const matching = matchAnalysis.matchingRequirements?.length || 0;
-      const missing = matchAnalysis.missingRequirements?.length || 0;
-      return matching > missing;
+    {
+      key: 'documents',
+      label: t('labels.documentsTailored'),
+      check: (_, __, docsReady) => docsReady,
+      icon: <FileText className="h-3.5 w-3.5" />,
+      weight: 30,
     },
-    icon: <CheckCircle2 className="h-3.5 w-3.5" />,
-    weight: 15,
-  },
-];
+    {
+      key: 'profile_complete',
+      label: t('labels.profileComplete'),
+      check: (_, profile) => {
+        if (!profile) return false;
+        const hasBasics = !!(profile.firstName && profile.lastName && profile.email);
+        const hasExperience = !!(profile.workExperiences?.length);
+        const hasSkills = !!(profile.skills?.length && profile.skills.length >= 3);
+        return hasBasics && hasExperience && hasSkills;
+      },
+      icon: <User className="h-3.5 w-3.5" />,
+      weight: 20,
+    },
+    {
+      key: 'requirements_met',
+      label: t('labels.requirementsMet'),
+      check: (app) => {
+        const matchAnalysis = app.jobOffer?.matchAnalysis;
+        if (!matchAnalysis) return false;
+        const matching = matchAnalysis.matchingRequirements?.length || 0;
+        const missing = matchAnalysis.missingRequirements?.length || 0;
+        return matching > missing;
+      },
+      icon: <CheckCircle2 className="h-3.5 w-3.5" />,
+      weight: 15,
+    },
+  ];
+}
 
 interface ApplicationStrengthProps {
   application: Application;
@@ -77,12 +80,15 @@ export function ApplicationStrength({
   documentsReady,
   className,
 }: ApplicationStrengthProps) {
+  const t = useTranslations('applicationStrength');
+  const strengthFactors = React.useMemo(() => getStrengthFactors(t), [t]);
+
   const results = React.useMemo(() => {
     return strengthFactors.map(factor => ({
       ...factor,
       passed: factor.check(application, profile, documentsReady),
     }));
-  }, [application, profile, documentsReady]);
+  }, [strengthFactors, application, profile, documentsReady]);
 
   const totalWeight = results.reduce((sum, r) => sum + r.weight, 0);
   const score = results.reduce((sum, r) => sum + (r.passed ? r.weight : 0), 0);
@@ -91,11 +97,11 @@ export function ApplicationStrength({
   const passedFactors = results.filter(r => r.passed);
 
   const getStrengthLabel = (pct: number) => {
-    if (pct >= 85) return 'Excellent';
-    if (pct >= 70) return 'Strong';
-    if (pct >= 50) return 'Good';
-    if (pct >= 30) return 'Fair';
-    return 'Needs work';
+    if (pct >= 85) return t('levels.excellent');
+    if (pct >= 70) return t('levels.strong');
+    if (pct >= 50) return t('levels.good');
+    if (pct >= 30) return t('levels.fair');
+    return t('levels.needsWork');
   };
 
   const getStrengthColor = (pct: number) => {
@@ -132,7 +138,7 @@ export function ApplicationStrength({
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <TrendingUp className={cn('h-4 w-4', colors.text)} />
-            <span className="text-sm font-medium">Application Strength</span>
+            <span className="text-sm font-medium">{t('title')}</span>
           </div>
 
           {/* Progress bar */}
@@ -189,12 +195,15 @@ export function ApplicationStrengthBadge({
   profile: Profile | null;
   documentsReady: boolean;
 }) {
+  const t = useTranslations('applicationStrength');
+  const strengthFactors = React.useMemo(() => getStrengthFactors(t), [t]);
+
   const results = React.useMemo(() => {
     return strengthFactors.map(factor => ({
       ...factor,
       passed: factor.check(application, profile, documentsReady),
     }));
-  }, [application, profile, documentsReady]);
+  }, [strengthFactors, application, profile, documentsReady]);
 
   const totalWeight = results.reduce((sum, r) => sum + r.weight, 0);
   const score = results.reduce((sum, r) => sum + (r.passed ? r.weight : 0), 0);
@@ -212,7 +221,7 @@ export function ApplicationStrengthBadge({
       getColor(percentage)
     )}>
       <Sparkles className="h-3 w-3" />
-      {percentage}% strength
+      {percentage}% {t('badge')}
     </span>
   );
 }

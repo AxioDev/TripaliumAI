@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { Search, Target, Send, ChevronRight, TrendingUp, TrendingDown } from 'lucide-react';
 import {
@@ -26,6 +27,37 @@ interface DiscoveryFunnelProps {
   showInsights?: boolean;
 }
 
+function getStages(
+  discovered: number,
+  matched: number,
+  applied: number,
+  t: ReturnType<typeof useTranslations>
+): FunnelStage[] {
+  return [
+    {
+      label: t('stages.discovered'),
+      value: discovered,
+      icon: <Search className="h-4 w-4" />,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-500',
+    },
+    {
+      label: t('stages.matched'),
+      value: matched,
+      icon: <Target className="h-4 w-4" />,
+      color: 'text-green-600',
+      bgColor: 'bg-green-500',
+    },
+    {
+      label: t('stages.applied'),
+      value: applied,
+      icon: <Send className="h-4 w-4" />,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-500',
+    },
+  ];
+}
+
 export function DiscoveryFunnel({
   discovered,
   matched,
@@ -33,29 +65,8 @@ export function DiscoveryFunnel({
   className,
   showInsights = true,
 }: DiscoveryFunnelProps) {
-  const stages: FunnelStage[] = [
-    {
-      label: 'Discovered',
-      value: discovered,
-      icon: <Search className="h-4 w-4" />,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-500',
-    },
-    {
-      label: 'Matched',
-      value: matched,
-      icon: <Target className="h-4 w-4" />,
-      color: 'text-green-600',
-      bgColor: 'bg-green-500',
-    },
-    {
-      label: 'Applied',
-      value: applied,
-      icon: <Send className="h-4 w-4" />,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-500',
-    },
-  ];
+  const t = useTranslations('discoveryFunnel');
+  const stages = React.useMemo(() => getStages(discovered, matched, applied, t), [discovered, matched, applied, t]);
 
   const maxValue = Math.max(discovered, 1);
   const matchRate = discovered > 0 ? Math.round((matched / discovered) * 100) : 0;
@@ -101,7 +112,7 @@ export function DiscoveryFunnel({
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{stage.value} jobs {stage.label.toLowerCase()}</p>
+                    <p>{stage.value} {t('metrics.jobs')} {stage.label.toLowerCase()}</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -124,7 +135,7 @@ export function DiscoveryFunnel({
               <TrendingDown className="h-3 w-3 text-warning" />
             )}
             <span className="text-muted-foreground">
-              Match rate: <span className="font-medium text-foreground">{matchRate}%</span>
+              {t('metrics.matchRate')} <span className="font-medium text-foreground">{matchRate}%</span>
             </span>
           </div>
           {matched > 0 && (
@@ -135,7 +146,7 @@ export function DiscoveryFunnel({
                 <TrendingDown className="h-3 w-3 text-warning" />
               )}
               <span className="text-muted-foreground">
-                Apply rate: <span className="font-medium text-foreground">{applyRate}%</span>
+                {t('metrics.applyRate')} <span className="font-medium text-foreground">{applyRate}%</span>
               </span>
             </div>
           )}

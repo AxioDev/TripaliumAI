@@ -1380,6 +1380,47 @@
       "allSources": "Toutes les sources d'emploi"
     }
   },
+  "applicationStrength": {
+    "title": "Force de candidature",
+    "labels": {
+      "strongMatch": "Correspondance forte",
+      "documentsTailored": "Documents personnalisés",
+      "profileComplete": "Profil complet",
+      "requirementsMet": "Exigences respectées"
+    },
+    "levels": {
+      "excellent": "Excellent",
+      "strong": "Fort",
+      "good": "Bon",
+      "fair": "Acceptable",
+      "needsWork": "À améliorer"
+    },
+    "badge": "% force"
+  },
+  "discoveryFunnel": {
+    "stages": {
+      "discovered": "Découverts",
+      "matched": "Correspondants",
+      "applied": "Candidatures"
+    },
+    "metrics": {
+      "jobs": "offres d'emploi",
+      "matchRate": "Taux de correspondance :",
+      "applyRate": "Taux de candidature :"
+    }
+  },
+  "subscription": {
+    "plans": {
+      "free": "Plan Gratuit",
+      "starter": "Plan Starter",
+      "pro": "Plan Pro"
+    }
+  },
+  "notificationBell": {
+    "label": "Notifications",
+    "unread": "non lus",
+    "overflow": "9+"
+  },
   "metadata": {
     "title": "TripaliumAI - Automatisation de recherche d'emploi",
     "description": "Automatisez votre recherche d'emploi avec la génération de CV et les candidatures assistées par IA"

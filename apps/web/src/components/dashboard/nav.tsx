@@ -95,14 +95,27 @@ function NavLink({
 
 function PlanBadge() {
   const { plan } = useSubscription();
+  const t = useTranslations('subscription.plans');
   const planStyles = {
     FREE: 'bg-sidebar-muted text-sidebar-foreground',
     STARTER: 'bg-amber-500/20 text-amber-300',
     PRO: 'bg-purple-500/20 text-purple-300',
   };
+  const getPlanName = (): string => {
+    switch (plan) {
+      case 'FREE':
+        return t('free');
+      case 'STARTER':
+        return t('starter');
+      case 'PRO':
+        return t('pro');
+      default:
+        return t('free');
+    }
+  };
   return (
     <div className={cn('mx-3 mb-2 rounded-lg px-3 py-2 text-center text-xs font-medium', planStyles[plan] || planStyles.FREE)}>
-      {plan === 'FREE' ? 'Free Plan' : plan === 'STARTER' ? 'Starter Plan' : 'Pro Plan'}
+      {getPlanName()}
     </div>
   );
 }
