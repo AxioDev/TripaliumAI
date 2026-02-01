@@ -626,7 +626,8 @@
         "totalJobs": "Total Jobs",
         "matched": "Matched",
         "applied": "Applied",
-        "rejected": "Rejected"
+        "rejected": "Rejected",
+        "pipeline": "Job Pipeline"
       },
       "readyToStart": {
         "title": "Ready to start?",
