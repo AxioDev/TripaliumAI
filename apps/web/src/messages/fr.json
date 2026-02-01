@@ -668,6 +668,20 @@
         "expired": "Expirée",
         "error": "Erreur"
       },
+      "discriminationWarnings": {
+        "title": "Attention : Cette offre peut contenir des critères discriminatoires",
+        "attention": "Attention",
+        "flags": {
+          "ageLimit": "Restriction d'âge",
+          "genderPreference": "Préférence de genre",
+          "originRequirement": "Exigence d'origine/nationalité",
+          "physicalAppearance": "Exigence d'apparence physique",
+          "familyStatus": "Préférence de situation familiale",
+          "religiousRequirement": "Exigence religieuse",
+          "healthRequirement": "Exigence de santé/handicap",
+          "otherDiscrimination": "Autre exigence discriminatoire"
+        }
+      },
       "toast": {
         "loadError": {
           "title": "Erreur",
@@ -730,6 +744,35 @@
       "submitted": "Envoyée",
       "submissionFailed": "Échec de l'envoi",
       "withdrawn": "Retirée"
+    },
+    "recommendations": {
+      "strongMatch": "Très bonne correspondance",
+      "goodMatch": "Bonne correspondance",
+      "possibleMatch": "Correspondance possible",
+      "weakMatch": "Faible correspondance",
+      "noMatch": "Pas une correspondance"
+    },
+    "actions": {
+      "backToApplications": "Retour aux candidatures",
+      "emailSimulated": "E-mail simulé (Mode Test)",
+      "markAsSubmitted": "Marquer comme envoyée",
+      "sendViaEmail": "Envoyer par e-mail",
+      "viewJob": "Voir l'offre"
+    },
+    "sections": {
+      "jobDetails": "Détails de l'offre",
+      "description": "Description",
+      "requirements": "Exigences"
+    },
+    "validations": {
+      "invalidEmail": "E-mail invalide"
+    },
+    "errors": {
+      "notFound": "Candidature introuvable"
+    },
+    "messages": {
+      "emailSimulationMode": "Mode Test : L'e-mail sera simulé, pas réellement envoyé.",
+      "confirmed": "Confirmée"
     },
     "actions": {
       "confirm": "Confirmer",

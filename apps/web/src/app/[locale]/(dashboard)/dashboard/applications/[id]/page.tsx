@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -56,61 +57,65 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 
-const statusConfig: Record<string, { label: string; color: string; description: string }> = {
-  PENDING_GENERATION: {
-    label: 'Generating Documents',
-    color: 'bg-blue-100 text-blue-800',
-    description: 'AI is generating your tailored CV and cover letter.',
-  },
-  GENERATING: {
-    label: 'Generating Documents',
-    color: 'bg-blue-100 text-blue-800',
-    description: 'AI is generating your tailored CV and cover letter.',
-  },
-  GENERATION_FAILED: {
-    label: 'Generation Failed',
-    color: 'bg-red-100 text-red-800',
-    description: 'Document generation failed. Please try again.',
-  },
-  PENDING_REVIEW: {
-    label: 'Pending Review',
-    color: 'bg-yellow-100 text-yellow-800',
-    description: 'Please review the generated documents before confirming.',
-  },
-  READY_TO_SUBMIT: {
-    label: 'Ready to Submit',
-    color: 'bg-green-100 text-green-800',
-    description: 'Application is ready. Mark as submitted after applying externally.',
-  },
-  SUBMITTING: {
-    label: 'Submitting',
-    color: 'bg-purple-100 text-purple-800',
-    description: 'Application is being submitted.',
-  },
-  SUBMITTED: {
-    label: 'Submitted',
-    color: 'bg-green-100 text-green-800',
-    description: 'Application has been submitted successfully.',
-  },
-  SUBMISSION_FAILED: {
-    label: 'Submission Failed',
-    color: 'bg-red-100 text-red-800',
-    description: 'Submission failed. Please try again or submit manually.',
-  },
-  WITHDRAWN: {
-    label: 'Withdrawn',
-    color: 'bg-gray-100 text-gray-800',
-    description: 'This application has been withdrawn.',
-  },
-};
+function getStatusConfig(t: ReturnType<typeof useTranslations>): Record<string, { label: string; color: string; description: string }> {
+  return {
+    PENDING_GENERATION: {
+      label: t('status.generating'),
+      color: 'bg-blue-100 text-blue-800',
+      description: 'AI is generating your tailored CV and cover letter.',
+    },
+    GENERATING: {
+      label: t('status.generating'),
+      color: 'bg-blue-100 text-blue-800',
+      description: 'AI is generating your tailored CV and cover letter.',
+    },
+    GENERATION_FAILED: {
+      label: t('status.generationFailed'),
+      color: 'bg-red-100 text-red-800',
+      description: 'Document generation failed. Please try again.',
+    },
+    PENDING_REVIEW: {
+      label: t('status.pendingReview'),
+      color: 'bg-yellow-100 text-yellow-800',
+      description: 'Please review the generated documents before confirming.',
+    },
+    READY_TO_SUBMIT: {
+      label: t('status.readyToSubmit'),
+      color: 'bg-green-100 text-green-800',
+      description: 'Application is ready. Mark as submitted after applying externally.',
+    },
+    SUBMITTING: {
+      label: t('status.submitting'),
+      color: 'bg-purple-100 text-purple-800',
+      description: 'Application is being submitted.',
+    },
+    SUBMITTED: {
+      label: t('status.submitted'),
+      color: 'bg-green-100 text-green-800',
+      description: 'Application has been submitted successfully.',
+    },
+    SUBMISSION_FAILED: {
+      label: t('status.submissionFailed'),
+      color: 'bg-red-100 text-red-800',
+      description: 'Submission failed. Please try again or submit manually.',
+    },
+    WITHDRAWN: {
+      label: t('status.withdrawn'),
+      color: 'bg-gray-100 text-gray-800',
+      description: 'This application has been withdrawn.',
+    },
+  };
+}
 
-const recommendationLabels: Record<string, { label: string; color: string }> = {
-  strong_match: { label: 'Strong Match', color: 'text-green-600' },
-  good_match: { label: 'Good Match', color: 'text-blue-600' },
-  possible_match: { label: 'Possible Match', color: 'text-yellow-600' },
-  weak_match: { label: 'Weak Match', color: 'text-orange-600' },
-  no_match: { label: 'Not a Match', color: 'text-red-600' },
-};
+function getRecommendationLabels(t: ReturnType<typeof useTranslations>): Record<string, { label: string; color: string }> {
+  return {
+    strong_match: { label: t('recommendations.strongMatch'), color: 'text-green-600' },
+    good_match: { label: t('recommendations.goodMatch'), color: 'text-blue-600' },
+    possible_match: { label: t('recommendations.possibleMatch'), color: 'text-yellow-600' },
+    weak_match: { label: t('recommendations.weakMatch'), color: 'text-orange-600' },
+    no_match: { label: t('recommendations.noMatch'), color: 'text-red-600' },
+  };
+}
 
 function MatchScoreCircle({ score }: { score: number }) {
   let color = 'text-gray-500';
@@ -154,7 +159,12 @@ export default function ApplicationDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
+  const t = useTranslations('applications');
+  const tCommon = useTranslations('common');
   const applicationId = params.id as string;
+
+  const statusConfig = getStatusConfig(t);
+  const recommendationLabels = getRecommendationLabels(t);
 
   const [previewDoc, setPreviewDoc] = useState<{
     id: string;
@@ -280,9 +290,9 @@ export default function ApplicationDetailPage() {
         setCustomMessage('');
         refetchEmails();
         toast({
-          title: data.dryRun ? 'Email simulated (Test Mode)' : 'Email sent',
+          title: data.dryRun ? t('actions.emailSimulated') : 'Email sent',
           description: data.dryRun
-            ? 'Email was simulated in test mode. No actual email was sent.'
+            ? t('messages.emailSimulationMode')
             : 'Your application email has been sent successfully.',
         });
       },
@@ -299,7 +309,7 @@ export default function ApplicationDetailPage() {
   const handleSendEmail = () => {
     if (!recipientEmail.trim() || !recipientEmail.includes('@')) {
       toast({
-        title: 'Invalid email',
+        title: t('validations.invalidEmail'),
         description: 'Please enter a valid email address.',
         variant: 'destructive',
       });
@@ -319,10 +329,10 @@ export default function ApplicationDetailPage() {
   if (!application) {
     return (
       <div className="text-center py-12">
-        <p className="text-destructive">Application not found</p>
+        <p className="text-destructive">{t('errors.notFound')}</p>
         <Link href="/dashboard/applications">
           <Button variant="outline" className="mt-4">
-            Back to applications
+            {t('actions.backToApplications')}
           </Button>
         </Link>
       </div>
@@ -357,7 +367,7 @@ export default function ApplicationDetailPage() {
               <h1 className="text-3xl font-bold">{application.jobOffer.title}</h1>
               {application.testMode && (
                 <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
-                  Test Mode
+                  {tCommon('status.testing') || 'Test Mode'}
                 </span>
               )}
             </div>
@@ -385,7 +395,7 @@ export default function ApplicationDetailPage() {
               disabled={confirmMutation.isLoading}
             >
               <CheckCircle className="mr-2 h-4 w-4" />
-              Confirm
+              {tCommon('actions.confirm')}
             </Button>
           )}
           {canMarkSubmitted && (
@@ -394,7 +404,7 @@ export default function ApplicationDetailPage() {
               disabled={markSubmittedMutation.isLoading}
             >
               <Send className="mr-2 h-4 w-4" />
-              Mark as Submitted
+              {t('actions.markAsSubmitted')}
             </Button>
           )}
           {canSendEmail && (
@@ -403,7 +413,7 @@ export default function ApplicationDetailPage() {
               onClick={() => setShowEmailDialog(true)}
             >
               <Mail className="mr-2 h-4 w-4" />
-              Send via Email
+              {t('actions.sendViaEmail')}
             </Button>
           )}
           {canWithdraw && (
@@ -413,14 +423,14 @@ export default function ApplicationDetailPage() {
               disabled={withdrawMutation.isLoading}
             >
               <Ban className="mr-2 h-4 w-4" />
-              Withdraw
+              {tCommon('actions.withdraw')}
             </Button>
           )}
           {application.jobOffer.url && (
             <a href={application.jobOffer.url} target="_blank" rel="noopener noreferrer">
               <Button variant="outline">
                 <ExternalLink className="mr-2 h-4 w-4" />
-                View Job
+                {t('actions.viewJob')}
               </Button>
             </a>
           )}
@@ -457,7 +467,7 @@ export default function ApplicationDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Briefcase className="h-5 w-5" />
-                Job Details
+                {t('sections.jobDetails')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -479,7 +489,7 @@ export default function ApplicationDetailPage() {
                 <>
                   <Separator />
                   <div>
-                    <h4 className="font-medium mb-2">Description</h4>
+                    <h4 className="font-medium mb-2">{t('sections.description')}</h4>
                     <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                       {application.jobOffer.description}
                     </p>
@@ -490,7 +500,7 @@ export default function ApplicationDetailPage() {
                 <>
                   <Separator />
                   <div>
-                    <h4 className="font-medium mb-2">Requirements</h4>
+                    <h4 className="font-medium mb-2">{t('sections.requirements')}</h4>
                     <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                       {application.jobOffer.requirements.map((req, i) => (
                         <li key={i}>{req}</li>
@@ -736,7 +746,7 @@ export default function ApplicationDetailPage() {
                   <div className="flex items-start gap-3">
                     <div className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
                     <div>
-                      <p className="text-sm font-medium">Confirmed</p>
+                      <p className="text-sm font-medium">{t('messages.confirmed')}</p>
                       <p className="text-xs text-muted-foreground">
                         {format(new Date(application.confirmedAt), 'PPp')}
                       </p>
@@ -747,7 +757,7 @@ export default function ApplicationDetailPage() {
                   <div className="flex items-start gap-3">
                     <div className="mt-1 h-2 w-2 rounded-full bg-purple-500" />
                     <div>
-                      <p className="text-sm font-medium">Submitted</p>
+                      <p className="text-sm font-medium">{t('status.submitted')}</p>
                       <p className="text-xs text-muted-foreground">
                         {format(new Date(application.submittedAt), 'PPp')}
                       </p>
@@ -783,7 +793,7 @@ export default function ApplicationDetailPage() {
               Send your application directly to the hiring manager or recruiter.
               {application.testMode && (
                 <span className="block mt-2 text-orange-600">
-                  Test Mode: Email will be simulated, not actually sent.
+                  {t('messages.emailSimulationMode')}
                 </span>
               )}
             </DialogDescription>

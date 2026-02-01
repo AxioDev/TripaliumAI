@@ -185,11 +185,11 @@ export default function NewCampaignPage() {
   };
 
   const contractTypeOptions = [
-    { key: 'fullTime', value: 'Full-time' },
-    { key: 'partTime', value: 'Part-time' },
-    { key: 'contract', value: 'Contract' },
-    { key: 'freelance', value: 'Freelance' },
-    { key: 'internship', value: 'Internship' },
+    { key: 'fullTime', value: t('contractTypes.fullTime') },
+    { key: 'partTime', value: t('contractTypes.partTime') },
+    { key: 'contract', value: t('contractTypes.contract') },
+    { key: 'freelance', value: t('contractTypes.freelance') },
+    { key: 'internship', value: t('contractTypes.internship') },
   ];
 
   // Map job source names to translation keys

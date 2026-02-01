@@ -668,6 +668,20 @@
         "expired": "Expired",
         "error": "Error"
       },
+      "discriminationWarnings": {
+        "title": "Warning: This job posting may contain discriminatory criteria",
+        "attention": "Warning",
+        "flags": {
+          "ageLimit": "Age restriction",
+          "genderPreference": "Gender preference",
+          "originRequirement": "Origin/nationality requirement",
+          "physicalAppearance": "Physical appearance requirement",
+          "familyStatus": "Family status preference",
+          "religiousRequirement": "Religious requirement",
+          "healthRequirement": "Health/disability requirement",
+          "otherDiscrimination": "Other discriminatory requirement"
+        }
+      },
       "toast": {
         "loadError": {
           "title": "Error",
@@ -730,6 +744,35 @@
       "submitted": "Sent",
       "submissionFailed": "Sending failed",
       "withdrawn": "Withdrawn"
+    },
+    "recommendations": {
+      "strongMatch": "Strong Match",
+      "goodMatch": "Good Match",
+      "possibleMatch": "Possible Match",
+      "weakMatch": "Weak Match",
+      "noMatch": "Not a Match"
+    },
+    "actions": {
+      "backToApplications": "Back to applications",
+      "emailSimulated": "Email simulated (Test Mode)",
+      "markAsSubmitted": "Mark as Submitted",
+      "sendViaEmail": "Send via Email",
+      "viewJob": "View Job"
+    },
+    "sections": {
+      "jobDetails": "Job Details",
+      "description": "Description",
+      "requirements": "Requirements"
+    },
+    "validations": {
+      "invalidEmail": "Invalid email"
+    },
+    "errors": {
+      "notFound": "Application not found"
+    },
+    "messages": {
+      "emailSimulationMode": "Test Mode: Email will be simulated, not actually sent.",
+      "confirmed": "Confirmed"
     },
     "actions": {
       "confirm": "Confirm",
