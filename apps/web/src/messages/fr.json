@@ -270,14 +270,8 @@
     "subtitle": "Votre recherche d'emploi en un coup d'œil",
     "newCampaign": "Nouvelle campagne",
     "focusArea": {
-      "pendingReview": {
-        "one": "{count} candidature en attente de révision",
-        "other": "{count} candidatures en attente de révision"
-      },
-      "newMatches": {
-        "one": "Votre campagne a trouvé {count} nouvelle correspondance",
-        "other": "Votre campagne a trouvé {count} nouvelles correspondances"
-      },
+      "pendingReview": "{count, plural, one {{count} candidature en attente de révision} other {{count} candidatures en attente de révision}}",
+      "newMatches": "{count, plural, one {Votre campagne a trouvé {count} nouvelle correspondance} other {Votre campagne a trouvé {count} nouvelles correspondances}}",
       "incompleteProfile": "Profil {pct}% complet",
       "noCv": "Téléversez votre CV pour commencer",
       "noCampaign": "Créez une campagne pour commencer à trouver des emplois",

@@ -270,14 +270,8 @@
     "subtitle": "Your job search at a glance",
     "newCampaign": "New Campaign",
     "focusArea": {
-      "pendingReview": {
-        "one": "{count} application needs your review",
-        "other": "{count} applications need your review"
-      },
-      "newMatches": {
-        "one": "Your campaign found {count} new match",
-        "other": "Your campaign found {count} new matches"
-      },
+      "pendingReview": "{count, plural, one {{count} application needs your review} other {{count} applications need your review}}",
+      "newMatches": "{count, plural, one {Your campaign found {count} new match} other {Your campaign found {count} new matches}}",
       "incompleteProfile": "Profile {pct}% complete",
       "noCv": "Upload your CV to get started",
       "noCampaign": "Create a campaign to start finding jobs",
