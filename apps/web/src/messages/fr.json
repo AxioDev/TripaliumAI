@@ -485,7 +485,11 @@
         "salaryMax": "Salaire maximum",
         "currency": "Devise",
         "remoteWork": "Télétravail",
-        "remoteWorkHint": "Inclure les postes à distance dans la recherche"
+        "remoteWorkHint": "Inclure les postes à distance dans la recherche",
+        "anonymize": "Candidatures anonymes",
+        "anonymizeRecommended": "Recommandé",
+        "anonymizeHint": "Supprime les informations personnelles identifiables de vos candidatures pour aider à prévenir la discrimination. Votre nom, photo et dates exactes sont supprimés tout en gardant vos compétences et expérience visibles.",
+        "anonymizeDescription": "Aider à prévenir la discrimination en anonymisant vos candidatures (conforme à la loi française)"
       },
       "matching": {
         "title": "Paramètres de correspondance",
