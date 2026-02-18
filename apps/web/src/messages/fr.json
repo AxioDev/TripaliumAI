@@ -373,6 +373,14 @@
       "running": "En cours",
       "viewAll": "Voir toutes les campagnes"
     },
+    "pipeline": {
+      "title": "Pipeline de candidatures",
+      "subtitle": "Suivi de vos candidatures",
+      "pendingReview": "En attente de revue",
+      "readyToSubmit": "Prêtes à envoyer",
+      "submitted": "Envoyées",
+      "viewAll": "Voir toutes les candidatures"
+    },
     "recentActivity": {
       "title": "Activité récente",
       "subtitle": "Vos dernières actions et mises à jour",
@@ -960,7 +968,8 @@
       "personal": "Personnel",
       "experience": "Expérience",
       "education": "Formation",
-      "skills": "Compétences"
+      "skills": "Compétences",
+      "documents": "Documents"
     },
     "personalInfo": {
       "title": "Informations personnelles",

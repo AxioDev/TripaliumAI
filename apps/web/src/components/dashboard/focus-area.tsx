@@ -80,7 +80,7 @@ function getFocusConfigs(t: ReturnType<typeof useTranslations>): FocusConfig[] {
       textColor: 'text-primary',
       getMessage: () => t('focusArea.noCv'),
       getAction: () => t('focusArea.actions.uploadCv'),
-      getLink: () => '/dashboard/cvs',
+      getLink: () => '/dashboard/profile?tab=documents',
     },
     {
       type: 'no_campaign',

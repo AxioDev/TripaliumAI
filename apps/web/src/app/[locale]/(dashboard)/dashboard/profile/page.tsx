@@ -21,15 +21,19 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { profileApi, Profile } from '@/lib/api-client';
 import { useApi, useMutation } from '@/hooks/use-api';
-import { Loader2, User, Briefcase, GraduationCap, Wrench } from 'lucide-react';
+import { Loader2, User, Briefcase, GraduationCap, Wrench, FileText } from 'lucide-react';
 import { WorkExperienceEditor } from '@/components/profile/work-experience-editor';
 import { EducationEditor } from '@/components/profile/education-editor';
 import { SkillsEditor } from '@/components/profile/skills-editor';
 import { ProfileReadiness } from '@/components/profile/profile-readiness';
+import { CVManager } from '@/components/profile/cv-manager';
+import { useSearchParams } from 'next/navigation';
 
 export default function ProfilePage() {
   const { toast } = useToast();
   const t = useTranslations('profile');
+  const searchParams = useSearchParams();
+  const defaultTab = searchParams.get('tab') || 'personal';
 
   // Fetch profile
   const {
@@ -207,8 +211,8 @@ export default function ProfilePage() {
       {/* Profile Readiness Score */}
       <ProfileReadiness profile={profile ?? null} compact />
 
-      <Tabs defaultValue="personal" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 lg:w-[400px]">
+      <Tabs defaultValue={defaultTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5 lg:w-[500px]">
           <TabsTrigger value="personal" className="flex items-center gap-2">
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">{t('tabs.personal')}</span>
@@ -224,6 +228,10 @@ export default function ProfilePage() {
           <TabsTrigger value="skills" className="flex items-center gap-2">
             <Wrench className="h-4 w-4" />
             <span className="hidden sm:inline">{t('tabs.skills')}</span>
+          </TabsTrigger>
+          <TabsTrigger value="documents" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            <span className="hidden sm:inline">{t('tabs.documents')}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -393,6 +401,11 @@ export default function ProfilePage() {
             }}
             isLoading={skillsMutation.isLoading}
           />
+        </TabsContent>
+
+        {/* Documents Tab */}
+        <TabsContent value="documents">
+          <CVManager />
         </TabsContent>
       </Tabs>
     </div>

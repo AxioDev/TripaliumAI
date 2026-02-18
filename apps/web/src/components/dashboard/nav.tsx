@@ -14,14 +14,11 @@ import {
 } from '@/components/ui/sheet';
 import {
   User,
-  FileText,
   Target,
   Briefcase,
   Settings,
   LogOut,
   LayoutDashboard,
-  Activity,
-  Key,
   Menu,
   Sparkles,
 } from 'lucide-react';
@@ -33,12 +30,8 @@ import { useSubscription } from '@/contexts/subscription-context';
 const navItems = [
   { href: '/dashboard', labelKey: 'dashboard', icon: LayoutDashboard },
   { href: '/dashboard/profile', labelKey: 'profile', icon: User },
-  { href: '/dashboard/cvs', labelKey: 'cvs', icon: FileText },
   { href: '/dashboard/campaigns', labelKey: 'campaigns', icon: Target },
   { href: '/dashboard/applications', labelKey: 'applications', icon: Briefcase },
-  { href: '/dashboard/activity', labelKey: 'activity', icon: Activity },
-  { href: '/dashboard/api-keys', labelKey: 'apiKeys', icon: Key },
-  { href: '/dashboard/settings', labelKey: 'settings', icon: Settings },
 ];
 
 function NavLink({
@@ -144,14 +137,18 @@ export function DashboardNav() {
           onClear={clearNotification}
         />
       </div>
-      <nav className="flex-1 space-y-1 p-3">
+      <nav className="flex-1 space-y-1.5 p-3">
         {navItems.map((item) => (
           <NavLink
             key={item.href}
             href={item.href}
             labelKey={item.labelKey}
             icon={item.icon}
-            isActive={pathnameWithoutLocale === item.href}
+            isActive={
+              item.href === '/dashboard'
+                ? pathnameWithoutLocale === '/dashboard'
+                : pathnameWithoutLocale.startsWith(item.href)
+            }
             t={t}
             variant="dark"
           />
@@ -159,7 +156,20 @@ export function DashboardNav() {
       </nav>
       <div className="border-t border-sidebar-border pt-2 pb-3">
         <PlanBadge />
-        <div className="px-3">
+        <div className="px-3 space-y-1">
+          <Link href="/dashboard/settings">
+            <span
+              className={cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all min-h-[40px]',
+                pathnameWithoutLocale.startsWith('/dashboard/settings')
+                  ? 'bg-sidebar-accent text-white shadow-sm shadow-sidebar-accent/30'
+                  : 'text-sidebar-foreground/70 hover:bg-sidebar-muted hover:text-sidebar-foreground-active'
+              )}
+            >
+              <Settings className="h-4 w-4 flex-shrink-0" />
+              {t('settings')}
+            </span>
+          </Link>
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 min-h-[44px] text-sidebar-foreground hover:text-white hover:bg-sidebar-muted"
@@ -221,21 +231,38 @@ export function MobileNav() {
               {t('brand')}
             </SheetTitle>
           </SheetHeader>
-          <nav className="flex-1 space-y-1 p-3">
+          <nav className="flex-1 space-y-1.5 p-3">
             {navItems.map((item) => (
               <NavLink
                 key={item.href}
                 href={item.href}
                 labelKey={item.labelKey}
                 icon={item.icon}
-                isActive={pathnameWithoutLocale === item.href}
+                isActive={
+                  item.href === '/dashboard'
+                    ? pathnameWithoutLocale === '/dashboard'
+                    : pathnameWithoutLocale.startsWith(item.href)
+                }
                 onClick={() => setOpen(false)}
                 t={t}
                 variant="light"
               />
             ))}
           </nav>
-          <div className="absolute bottom-0 left-0 right-0 border-t p-3">
+          <div className="absolute bottom-0 left-0 right-0 border-t p-3 space-y-1">
+            <Link href="/dashboard/settings" onClick={() => setOpen(false)}>
+              <span
+                className={cn(
+                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all min-h-[40px]',
+                  pathnameWithoutLocale.startsWith('/dashboard/settings')
+                    ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/25'
+                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                )}
+              >
+                <Settings className="h-4 w-4 flex-shrink-0" />
+                {t('settings')}
+              </span>
+            </Link>
             <Button
               variant="ghost"
               className="w-full justify-start gap-3 min-h-[44px]"

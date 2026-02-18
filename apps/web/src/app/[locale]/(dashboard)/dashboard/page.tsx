@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { AnimatedCheckmark } from '@/components/ui/animated-checkmark';
 import {
   FileText,
@@ -25,17 +24,13 @@ import {
   Play,
   Eye,
   AlertCircle,
-  TrendingUp,
   Users,
   Zap,
+  Send,
 } from 'lucide-react';
-import { useLocale } from 'next-intl';
-import { useApi } from '@/hooks/use-api';
-import { dashboardApi, DashboardStats, ActionLog, applicationApi, campaignApi, profileApi } from '@/lib/api-client';
-import { formatRelativeTime } from '@/lib/date-utils';
+import { dashboardApi, DashboardStats, applicationApi, campaignApi, profileApi } from '@/lib/api-client';
 import { FocusArea } from '@/components/dashboard/focus-area';
 import { Milestones } from '@/components/dashboard/milestones';
-import { ProfileReadinessWidget } from '@/components/profile/profile-readiness';
 
 // Helper to calculate profile completeness percentage
 function calculateProfileCompleteness(profile: Awaited<ReturnType<typeof profileApi.get>> | null): number {
@@ -56,79 +51,36 @@ function calculateProfileCompleteness(profile: Awaited<ReturnType<typeof profile
   return Math.round((passed / checks.length) * 100);
 }
 
-const actionKeyMap: Record<string, string> = {
-  'user.login': 'userLogin',
-  'profile.created': 'profileCreated',
-  'profile.updated': 'profileUpdated',
-  'cv.uploaded': 'cvUploaded',
-  'cv.parse_started': 'cvParseStarted',
-  'cv.parsed': 'cvParsed',
-  'cv.parse_failed': 'cvParseFailed',
-  'campaign.created': 'campaignCreated',
-  'campaign.started': 'campaignStarted',
-  'campaign.paused': 'campaignPaused',
-  'campaign.stopped': 'campaignStopped',
-  'job.discovered': 'jobDiscovered',
-  'job.analyzed': 'jobAnalyzed',
-  'job.matched': 'jobMatched',
-  'job.rejected': 'jobRejected',
-  'job.discovery_started': 'jobDiscoveryStarted',
-  'job.discovery_completed': 'jobDiscoveryCompleted',
-  'job.analysis_started': 'jobAnalysisStarted',
-  'application.created': 'applicationCreated',
-  'application.confirmed': 'applicationConfirmed',
-  'application.submitted': 'applicationSubmitted',
-  'application.withdrawn': 'applicationWithdrawn',
-  'document.generation_started': 'documentGenerationStarted',
-  'document.generated': 'documentGenerated',
-  'api_key.created': 'apiKeyCreated',
-  'api_key.revoked': 'apiKeyRevoked',
-};
-
-function getActionIcon(action: string) {
-  if (action.includes('cv') || action.includes('document')) return <FileText className="h-4 w-4" />;
-  if (action.includes('campaign')) return <Target className="h-4 w-4" />;
-  if (action.includes('job')) return <Briefcase className="h-4 w-4" />;
-  if (action.includes('application')) return <CheckCircle className="h-4 w-4" />;
-  return <Clock className="h-4 w-4" />;
-}
-
-function getStatusColor(status: string) {
-  if (status === 'failure') return 'text-red-500';
-  if (status === 'success') return 'text-green-500';
-  return 'text-muted-foreground';
-}
-
 export default function DashboardPage() {
   const t = useTranslations('dashboard');
   const tCommon = useTranslations('common');
-  const locale = useLocale();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState(false);
   const [pendingReviewCount, setPendingReviewCount] = useState(0);
+  const [readyToSubmitCount, setReadyToSubmitCount] = useState(0);
+  const [submittedCount, setSubmittedCount] = useState(0);
   const [activeCampaigns, setActiveCampaigns] = useState<Array<{ id: string; name: string; jobCount: number }>>([]);
   const [profile, setProfile] = useState<Awaited<ReturnType<typeof profileApi.get>> | null>(null);
   const [hasDraftCampaign, setHasDraftCampaign] = useState(false);
   const [newMatchCount, setNewMatchCount] = useState(0);
 
-  const {
-    data: activityData,
-    isLoading: activityLoading,
-  } = useApi(() => dashboardApi.getRecentActivity(10));
-
   const loadStats = async () => {
     setStatsLoading(true);
     setStatsError(false);
     try {
-      const [data, applicationsData, campaignsData, profileData] = await Promise.all([
+      const [data, pendingData, readyData, submittedData, campaignsData, profileData] = await Promise.all([
         dashboardApi.getStats(),
         applicationApi.list({ status: 'PENDING_REVIEW', limit: 1 }),
+        applicationApi.list({ status: 'READY_TO_SUBMIT', limit: 1 }),
+        applicationApi.list({ status: 'SUBMITTED', limit: 1 }),
         campaignApi.list(),
         profileApi.get().catch(() => null),
       ]);
       setStats(data);
-      setPendingReviewCount(applicationsData.meta?.total || 0);
+      setPendingReviewCount(pendingData.meta?.total || 0);
+      setReadyToSubmitCount(readyData.meta?.total || 0);
+      setSubmittedCount(submittedData.meta?.total || 0);
       setProfile(profileData);
 
       const campaigns = campaignsData || [];
@@ -156,7 +108,6 @@ export default function DashboardPage() {
     loadStats();
   }, []);
 
-  const activity = activityData?.data || [];
   const hasCompletedSetup = stats && stats.cvCount > 0;
   const hasActiveCampaigns = activeCampaigns.length > 0;
 
@@ -335,7 +286,7 @@ export default function DashboardPage() {
         />
       )}
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-2">
         {/* Getting Started / Quick Actions */}
         <Card className="lg:col-span-1">
           <CardHeader>
@@ -351,7 +302,7 @@ export default function DashboardPage() {
           <CardContent>
             {hasCompletedSetup ? (
               <div className="space-y-3">
-                <Link href="/dashboard/cvs">
+                <Link href="/dashboard/profile?tab=documents">
                   <Button variant="outline" className="w-full justify-between">
                     <span className="flex items-center gap-2">
                       <Upload className="h-4 w-4" />
@@ -405,7 +356,7 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between">
                       <p className="font-medium">{t('gettingStarted.step1.title')}</p>
                       {!stats?.cvCount && (
-                        <Link href="/dashboard/cvs">
+                        <Link href="/dashboard/profile?tab=documents">
                           <Button size="sm" variant="outline">
                             {tCommon('actions.upload')}
                           </Button>
@@ -486,9 +437,59 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Active Campaigns */}
+        {/* Application Pipeline */}
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Send className="h-5 w-5 text-primary" />
+              {t('pipeline.title')}
+            </CardTitle>
+            <CardDescription>
+              {t('pipeline.subtitle')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {statsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-yellow-50 dark:bg-yellow-950/20">
+                  <div className="h-3 w-3 rounded-full bg-yellow-500 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{t('pipeline.pendingReview')}</p>
+                  </div>
+                  <span className="text-lg font-bold tabular-nums">{pendingReviewCount}</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20">
+                  <div className="h-3 w-3 rounded-full bg-blue-500 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{t('pipeline.readyToSubmit')}</p>
+                  </div>
+                  <span className="text-lg font-bold tabular-nums">{readyToSubmitCount}</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50 dark:bg-green-950/20">
+                  <div className="h-3 w-3 rounded-full bg-green-500 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{t('pipeline.submitted')}</p>
+                  </div>
+                  <span className="text-lg font-bold tabular-nums">{submittedCount}</span>
+                </div>
+                <Link href="/dashboard/applications">
+                  <Button variant="ghost" size="sm" className="w-full">
+                    {t('pipeline.viewAll')}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Active Campaigns - spans full width if present */}
         {hasActiveCampaigns && (
-          <Card className="lg:col-span-1">
+          <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-green-500" />
@@ -499,7 +500,7 @@ export default function DashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {activeCampaigns.slice(0, 3).map((campaign) => (
                   <Link key={campaign.id} href={`/dashboard/campaigns/${campaign.id}`}>
                     <div className="p-3 border rounded-lg hover:bg-muted/50 hover:translate-y-[-2px] hover:shadow-md transition-all duration-200">
@@ -516,72 +517,18 @@ export default function DashboardPage() {
                     </div>
                   </Link>
                 ))}
-                {activeCampaigns.length > 3 && (
-                  <Link href="/dashboard/campaigns">
-                    <Button variant="ghost" size="sm" className="w-full">
-                      {t('activeCampaigns.viewAll')}
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                )}
               </div>
+              {activeCampaigns.length > 3 && (
+                <Link href="/dashboard/campaigns">
+                  <Button variant="ghost" size="sm" className="w-full mt-3">
+                    {t('activeCampaigns.viewAll')}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              )}
             </CardContent>
           </Card>
         )}
-
-        {/* Recent Activity */}
-        <Card className={hasActiveCampaigns ? 'lg:col-span-1' : 'lg:col-span-2'}>
-          <CardHeader>
-            <CardTitle>{t('recentActivity.title')}</CardTitle>
-            <CardDescription>{t('recentActivity.subtitle')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {activityLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-              </div>
-            ) : activity.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                {t('recentActivity.empty')}
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {activity.map((log: ActionLog) => {
-                  const actionKey = actionKeyMap[log.action];
-                  return (
-                    <div key={log.id} className="flex items-start gap-3">
-                      <div className="rounded-full bg-primary/10 p-2">
-                        <span className="text-primary">{getActionIcon(log.action)}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">
-                          {actionKey ? t(`actions.${actionKey}`) : log.action.replace(/[._]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatRelativeTime(log.createdAt, locale)}
-                          {log.testMode && (
-                            <span className="ml-2 text-orange-600">{t('recentActivity.practice')}</span>
-                          )}
-                        </p>
-                      </div>
-                      {log.status === 'failure' && (
-                        <span className="text-xs text-destructive">{t('recentActivity.failed')}</span>
-                      )}
-                    </div>
-                  );
-                })}
-                {activity.length >= 10 && (
-                  <Link href="/dashboard/activity">
-                    <Button variant="ghost" size="sm" className="w-full">
-                      {t('recentActivity.viewAll')}
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

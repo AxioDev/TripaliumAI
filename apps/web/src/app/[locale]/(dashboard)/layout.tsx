@@ -28,7 +28,11 @@ export default async function DashboardLayout({
         <div className="flex h-screen flex-col md:flex-row">
           <MobileNav />
           <DashboardNav />
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-muted/30">{children}</main>
+          <main className="flex-1 overflow-y-auto bg-muted/30">
+            <div className="mx-auto max-w-7xl p-4 md:p-8 lg:p-10">
+              {children}
+            </div>
+          </main>
         </div>
       </SubscriptionProvider>
     </RealtimeProvider>

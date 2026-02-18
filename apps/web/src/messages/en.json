@@ -373,6 +373,14 @@
       "running": "Running",
       "viewAll": "View all campaigns"
     },
+    "pipeline": {
+      "title": "Application Pipeline",
+      "subtitle": "Track your applications",
+      "pendingReview": "Pending review",
+      "readyToSubmit": "Ready to submit",
+      "submitted": "Submitted",
+      "viewAll": "View all applications"
+    },
     "recentActivity": {
       "title": "Recent Activity",
       "subtitle": "Your latest actions and updates",
@@ -956,7 +964,8 @@
       "personal": "Personal",
       "experience": "Experience",
       "education": "Education",
-      "skills": "Skills"
+      "skills": "Skills",
+      "documents": "Documents"
     },
     "personalInfo": {
       "title": "Personal Information",
