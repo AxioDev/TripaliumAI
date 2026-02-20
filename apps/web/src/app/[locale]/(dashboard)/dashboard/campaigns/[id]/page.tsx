@@ -25,8 +25,8 @@ import { useApi, useMutation, usePolling } from '@/hooks/use-api';
 import { useJobDiscoveryRealtime, useSocketConnection } from '@/hooks/use-realtime';
 import { CampaignLaunchModal } from '@/components/campaigns/campaign-launch-modal';
 import { DiscoveryFunnel } from '@/components/campaigns/discovery-funnel';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 import {
-  ArrowLeft,
   Loader2,
   Play,
   Pause,
@@ -406,17 +406,17 @@ export default function CampaignDetailPage() {
 
   return (
     <div className="space-y-8">
+      {/* Breadcrumb */}
+      <Breadcrumb items={[
+        { label: t('title'), href: '/dashboard/campaigns' },
+        { label: campaign.name },
+      ]} />
+
       {/* Header */}
       <div className="flex items-start justify-between">
-        <div className="flex items-start gap-4">
-          <Link href="/dashboard/campaigns">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold">{campaign.name}</h1>
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold">{campaign.name}</h1>
               {campaign.testMode && (
                 <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
                   {t('detail.practice')}
@@ -438,7 +438,6 @@ export default function CampaignDetailPage() {
               </span>
             </div>
           </div>
-        </div>
         <div className="flex items-center gap-2">
           {canStart && (
             <Button

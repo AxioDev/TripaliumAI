@@ -32,8 +32,8 @@ import { useApi, useMutation } from '@/hooks/use-api';
 import { DocumentPreview } from '@/components/document-preview';
 import { ApplicationStrength } from '@/components/applications/application-strength';
 import { SubmissionCelebration } from '@/components/applications/submission-celebration';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 import {
-  ArrowLeft,
   Loader2,
   CheckCircle,
   XCircle,
@@ -354,38 +354,37 @@ export default function ApplicationDetailPage() {
 
   return (
     <div className="space-y-8">
+      {/* Breadcrumb */}
+      <Breadcrumb items={[
+        { label: t('title'), href: '/dashboard/applications' },
+        { label: `${application.jobOffer.company} - ${application.jobOffer.title}` },
+      ]} />
+
       {/* Header */}
       <div className="flex items-start justify-between">
-        <div className="flex items-start gap-4">
-          <Link href="/dashboard/applications">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold">{application.jobOffer.title}</h1>
-              {application.testMode && (
-                <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
-                  {tCommon('status.testing') || 'Test Mode'}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2 mt-1 text-muted-foreground">
-              <span className={`text-xs px-2 py-1 rounded ${status.color}`}>
-                {status.label}
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold">{application.jobOffer.title}</h1>
+            {application.testMode && (
+              <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
+                {tCommon('status.testing') || 'Test Mode'}
               </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 mt-1 text-muted-foreground">
+            <span className={`text-xs px-2 py-1 rounded ${status.color}`}>
+              {status.label}
+            </span>
+            <span className="flex items-center gap-1 text-sm">
+              <Building className="h-3 w-3" />
+              {application.jobOffer.company}
+            </span>
+            {application.jobOffer.location && (
               <span className="flex items-center gap-1 text-sm">
-                <Building className="h-3 w-3" />
-                {application.jobOffer.company}
+                <MapPin className="h-3 w-3" />
+                {application.jobOffer.location}
               </span>
-              {application.jobOffer.location && (
-                <span className="flex items-center gap-1 text-sm">
-                  <MapPin className="h-3 w-3" />
-                  {application.jobOffer.location}
-                </span>
-              )}
-            </div>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-2">

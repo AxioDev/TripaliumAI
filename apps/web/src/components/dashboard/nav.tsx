@@ -16,6 +16,7 @@ import {
   User,
   Target,
   Briefcase,
+  Activity,
   Settings,
   LogOut,
   LayoutDashboard,
@@ -32,6 +33,7 @@ const navItems = [
   { href: '/dashboard/profile', labelKey: 'profile', icon: User },
   { href: '/dashboard/campaigns', labelKey: 'campaigns', icon: Target },
   { href: '/dashboard/applications', labelKey: 'applications', icon: Briefcase },
+  { href: '/dashboard/activity', labelKey: 'activity', icon: Activity },
 ];
 
 function NavLink({
@@ -222,7 +224,7 @@ export function MobileNav() {
       </div>
 
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="left" className="w-64 p-0">
+        <SheetContent side="left" className="w-64 p-0 flex flex-col">
           <SheetHeader className="border-b px-4 py-4">
             <SheetTitle className="text-left flex items-center gap-2">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg gradient-brand">
@@ -231,7 +233,7 @@ export function MobileNav() {
               {t('brand')}
             </SheetTitle>
           </SheetHeader>
-          <nav className="flex-1 space-y-1.5 p-3">
+          <nav className="flex-1 space-y-1.5 p-3 overflow-y-auto">
             {navItems.map((item) => (
               <NavLink
                 key={item.href}
@@ -249,7 +251,7 @@ export function MobileNav() {
               />
             ))}
           </nav>
-          <div className="absolute bottom-0 left-0 right-0 border-t p-3 space-y-1">
+          <div className="mt-auto border-t p-3 space-y-1">
             <Link href="/dashboard/settings" onClick={() => setOpen(false)}>
               <span
                 className={cn(
