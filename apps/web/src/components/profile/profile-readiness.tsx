@@ -367,37 +367,37 @@ export function ProfileReadinessInline({
   };
 
   return (
-    <div className={cn('space-y-4', className)}>
+    <div className={cn('space-y-3 sm:space-y-4', className)}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className={cn('text-2xl font-bold', getScoreColor(percentage))}>{percentage}%</span>
-          <span className={cn('text-sm', getScoreColor(percentage))}>{getScoreLabel(percentage)}</span>
+          <span className={cn('text-xl sm:text-2xl font-bold', getScoreColor(percentage))}>{percentage}%</span>
+          <span className={cn('text-xs sm:text-sm', getScoreColor(percentage))}>{getScoreLabel(percentage)}</span>
         </div>
         {percentage === 100 && (
-          <div className="flex items-center gap-1.5 text-success text-sm font-medium">
-            <CheckCircle2 className="h-4 w-4" />
-            {t('messages.fullyOptimized')}
+          <div className="flex items-center gap-1.5 text-success text-xs sm:text-sm font-medium">
+            <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">{t('messages.fullyOptimized')}</span>
           </div>
         )}
       </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+      <div className="h-1.5 sm:h-2 w-full overflow-hidden rounded-full bg-secondary">
         <div
           className={cn('h-full rounded-full transition-all duration-700', getProgressColor(percentage))}
           style={{ width: `${percentage}%` }}
         />
       </div>
       {failedChecks.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:gap-2">
           {failedChecks.slice(0, 3).map(check => (
             <button
               key={check.key}
               onClick={() => onScrollTo?.(checkToSection[check.key] || 'personal')}
-              className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-sm hover:bg-muted/80 transition-colors"
+              className="flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm hover:bg-muted/80 transition-colors text-left"
             >
-              {check.icon}
-              <span>{check.suggestion}</span>
+              <span className="shrink-0">{check.icon}</span>
+              <span className="truncate">{check.suggestion}</span>
               {check.boost && (
-                <span className="text-success text-xs font-medium">{check.boost}</span>
+                <span className="text-success text-xs font-medium shrink-0">{check.boost}</span>
               )}
             </button>
           ))}

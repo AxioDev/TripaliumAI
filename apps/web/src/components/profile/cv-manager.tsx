@@ -342,12 +342,12 @@ export function CVManager() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           {t('subtitle')}
         </p>
-        <div>
+        <div className="shrink-0">
           <input
             type="file"
             accept=".pdf"
@@ -357,16 +357,16 @@ export function CVManager() {
             disabled={isUploading}
           />
           <label htmlFor="cv-upload-manager">
-            <Button asChild disabled={isUploading}>
+            <Button asChild disabled={isUploading} size="sm">
               <span>
                 {isUploading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-1.5 h-3.5 w-3.5 sm:mr-2 sm:h-4 sm:w-4 animate-spin" />
                     {t('uploading')}
                   </>
                 ) : (
                   <>
-                    <Upload className="mr-2 h-4 w-4" />
+                    <Upload className="mr-1.5 h-3.5 w-3.5 sm:mr-2 sm:h-4 sm:w-4" />
                     {t('uploadCv')}
                   </>
                 )}
@@ -387,20 +387,21 @@ export function CVManager() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3 sm:gap-4">
           {cvs.map((cv) => (
             <Card key={cv.id} className={`transition-all hover:translate-y-[-2px] hover:shadow-md ${recentlyCompletedIds.has(cv.id) ? 'animate-card-glow' : ''}`}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <div className="flex items-center gap-4">
-                  <FileText className="h-8 w-8 text-muted-foreground" />
-                  <div>
-                    <CardTitle className="text-base flex items-center gap-2">
-                      {cv.fileName}
+              <CardHeader className="p-3 sm:p-6 space-y-0 pb-2 sm:pb-2">
+                {/* Top row: file info + status badge */}
+                <div className="flex items-start gap-2.5 sm:gap-4">
+                  <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground shrink-0 mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-sm sm:text-base flex items-center gap-1.5 sm:gap-2">
+                      <span className="truncate">{cv.fileName}</span>
                       {cv.isBaseline && (
-                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                        <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-yellow-500 fill-yellow-500 shrink-0" />
                       )}
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-xs sm:text-sm">
                       {t('uploaded')}{' '}
                       {new Date(cv.createdAt).toLocaleDateString('en-US', {
                         month: 'short',
@@ -408,70 +409,74 @@ export function CVManager() {
                         year: 'numeric',
                       })}
                       {cv.fileSize && (
-                        <span className="ml-2">
+                        <span className="ml-1 sm:ml-2">
                           ({(cv.fileSize / 1024).toFixed(0)} KB)
                         </span>
                       )}
                     </CardDescription>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
                   <span
-                    className={`flex items-center gap-1 text-xs px-2 py-1 rounded ${getStatusColor(cv.parsingStatus)}`}
+                    className={`flex items-center gap-1 text-xs px-2 py-1 rounded shrink-0 ${getStatusColor(cv.parsingStatus)}`}
                   >
                     {getStatusIcon(cv.parsingStatus)}
-                    {t(`parsing.${cv.parsingStatus === 'COMPLETED' ? 'completed' : cv.parsingStatus === 'PROCESSING' ? 'processing' : cv.parsingStatus === 'PENDING' ? 'pending' : 'failed'}`)}
+                    <span className="hidden sm:inline">{t(`parsing.${cv.parsingStatus === 'COMPLETED' ? 'completed' : cv.parsingStatus === 'PROCESSING' ? 'processing' : cv.parsingStatus === 'PENDING' ? 'pending' : 'failed'}`)}</span>
                   </span>
-                  <div className="flex items-center gap-1">
-                    {cv.parsingStatus === 'COMPLETED' && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleViewParsedData(cv)}
-                        title={t('actions.viewParsed')}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    )}
-                    {cv.parsingStatus === 'FAILED' && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => reparseMutation.mutate(cv.id)}
-                        disabled={reparseMutation.isLoading}
-                        title={t('actions.retryParsing')}
-                      >
-                        <RefreshCw className="h-4 w-4" />
-                      </Button>
-                    )}
+                </div>
+                {/* Actions row */}
+                <div className="flex items-center justify-end gap-0.5 mt-2 -mr-2">
+                  {cv.parsingStatus === 'COMPLETED' && (
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => window.open(`/api/backend/cvs/${cv.id}/download`, '_blank')}
-                      title={t('actions.download')}
+                      className="h-8 w-8"
+                      onClick={() => handleViewParsedData(cv)}
+                      title={t('actions.viewParsed')}
                     >
-                      <Download className="h-4 w-4" />
+                      <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </Button>
-                    {!cv.isBaseline && cv.parsingStatus === 'COMPLETED' && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => baselineMutation.mutate(cv.id)}
-                        disabled={baselineMutation.isLoading}
-                        title={t('actions.setBaseline')}
-                      >
-                        <Star className="h-4 w-4" />
-                      </Button>
-                    )}
+                  )}
+                  {cv.parsingStatus === 'FAILED' && (
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => setDeleteId(cv.id)}
-                      title={t('actions.delete')}
+                      className="h-8 w-8"
+                      onClick={() => reparseMutation.mutate(cv.id)}
+                      disabled={reparseMutation.isLoading}
+                      title={t('actions.retryParsing')}
                     >
-                      <Trash2 className="h-4 w-4 text-destructive" />
+                      <RefreshCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </Button>
-                  </div>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => window.open(`/api/backend/cvs/${cv.id}/download`, '_blank')}
+                    title={t('actions.download')}
+                  >
+                    <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </Button>
+                  {!cv.isBaseline && cv.parsingStatus === 'COMPLETED' && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => baselineMutation.mutate(cv.id)}
+                      disabled={baselineMutation.isLoading}
+                      title={t('actions.setBaseline')}
+                    >
+                      <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    </Button>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setDeleteId(cv.id)}
+                    title={t('actions.delete')}
+                  >
+                    <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" />
+                  </Button>
                 </div>
               </CardHeader>
               {(cv.parsingStatus === 'PENDING' || cv.parsingStatus === 'PROCESSING') && (
@@ -495,7 +500,7 @@ export function CVManager() {
 
       {/* Parsed Data Dialog */}
       <Dialog open={showParsedData} onOpenChange={setShowParsedData}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>{t('parsedData.title')}</DialogTitle>
             <DialogDescription>

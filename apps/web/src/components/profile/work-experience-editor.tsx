@@ -159,55 +159,55 @@ export function WorkExperienceEditor({
         localExperiences.map((exp, index) => (
           <div
             key={exp.id || index}
-            className="flex items-start gap-4 p-4 border rounded-lg"
+            className="p-3 sm:p-4 border rounded-lg"
           >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h4 className="font-medium">{exp.title}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {exp.company}
-                    {exp.location && ` - ${exp.location}`}
-                  </p>
-                </div>
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <h4 className="font-medium text-sm sm:text-base">{exp.title}</h4>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {exp.company}
+                  {exp.location && ` - ${exp.location}`}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
-                </span>
+                </p>
               </div>
-              {exp.description && (
-                <p className="text-sm mt-2">{exp.description}</p>
-              )}
-              {exp.highlights && exp.highlights.length > 0 && (
-                <ul className="text-sm mt-2 list-disc list-inside">
-                  {exp.highlights.slice(0, 3).map((h, i) => (
-                    <li key={i} className="text-muted-foreground">
-                      {h}
-                    </li>
-                  ))}
-                  {exp.highlights.length > 3 && (
-                    <li className="text-muted-foreground">
-                      {t('more', { count: exp.highlights.length - 3 })}
-                    </li>
-                  )}
-                </ul>
-              )}
+              <div className="flex gap-0.5 shrink-0">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-9 sm:w-9"
+                  onClick={() => openEditDialog(index)}
+                >
+                  <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-9 sm:w-9"
+                  onClick={() => setDeleteIndex(index)}
+                >
+                  <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" />
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => openEditDialog(index)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setDeleteIndex(index)}
-              >
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
-            </div>
+            {exp.description && (
+              <p className="text-xs sm:text-sm mt-2 line-clamp-3">{exp.description}</p>
+            )}
+            {exp.highlights && exp.highlights.length > 0 && (
+              <ul className="text-xs sm:text-sm mt-2 list-disc list-inside">
+                {exp.highlights.slice(0, 3).map((h, i) => (
+                  <li key={i} className="text-muted-foreground">
+                    {h}
+                  </li>
+                ))}
+                {exp.highlights.length > 3 && (
+                  <li className="text-muted-foreground">
+                    {t('more', { count: exp.highlights.length - 3 })}
+                  </li>
+                )}
+              </ul>
+            )}
           </div>
         ))
       )}

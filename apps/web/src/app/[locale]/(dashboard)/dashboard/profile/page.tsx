@@ -55,30 +55,30 @@ function ProfileSection({
       <Card>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex w-full items-center justify-between p-6 text-left"
+          className="flex w-full items-center justify-between p-4 sm:p-6 text-left"
         >
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
               {icon}
             </div>
-            <div>
-              <h2 className="text-lg font-semibold">{title}</h2>
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-semibold truncate">{title}</h2>
               {subtitle && (
-                <p className="text-sm text-muted-foreground">{subtitle}</p>
+                <p className="hidden sm:block text-sm text-muted-foreground">{subtitle}</p>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-2">
             {badge}
             <ChevronDown
               className={cn(
-                'h-5 w-5 text-muted-foreground transition-transform',
+                'h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground transition-transform',
                 isOpen && 'rotate-180'
               )}
             />
           </div>
         </button>
-        {isOpen && <CardContent className="pt-0">{children}</CardContent>}
+        {isOpen && <CardContent className="px-4 sm:px-6 pt-0">{children}</CardContent>}
       </Card>
     </section>
   );
@@ -354,12 +354,12 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header with inline readiness */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         <div>
-          <h1 className="text-2xl font-bold md:text-3xl">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground md:text-base">
+          <h1 className="text-xl font-bold sm:text-2xl md:text-3xl">{t('title')}</h1>
+          <p className="text-xs text-muted-foreground sm:text-sm md:text-base">
             {t('subtitle')}
           </p>
         </div>
@@ -372,21 +372,23 @@ export default function ProfilePage() {
       {/* Import from CV banner */}
       {showImportBanner && (
         <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <Sparkles className="h-5 w-5 text-primary" />
+          <CardContent className="p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium sm:text-base">{t('importBanner.title')}</p>
+                  <p className="text-xs text-muted-foreground sm:text-sm">
+                    {t('importBanner.subtitle')}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium">{t('importBanner.title')}</p>
-                <p className="text-sm text-muted-foreground">
-                  {t('importBanner.subtitle')}
-                </p>
-              </div>
+              <Button size="sm" onClick={handleImportFromCV} className="w-full sm:w-auto shrink-0">
+                {t('importBanner.action')}
+              </Button>
             </div>
-            <Button size="sm" onClick={handleImportFromCV}>
-              {t('importBanner.action')}
-            </Button>
           </CardContent>
         </Card>
       )}
@@ -625,16 +627,16 @@ export default function ProfilePage() {
 
       {/* Sticky save bar for personal info */}
       {personalDirty && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 px-4 py-3 md:left-64">
-          <div className="mx-auto max-w-7xl flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 px-3 py-2.5 sm:px-4 sm:py-3 md:left-64">
+          <div className="mx-auto max-w-7xl flex items-center justify-between gap-3">
+            <span className="hidden sm:inline text-sm text-muted-foreground">
               {t('unsavedChanges')}
             </span>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleDiscardPersonal}>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button variant="outline" size="sm" onClick={handleDiscardPersonal} className="flex-1 sm:flex-initial">
                 {t('discard')}
               </Button>
-              <Button size="sm" onClick={() => handleSubmit()} disabled={updateMutation.isLoading}>
+              <Button size="sm" onClick={() => handleSubmit()} disabled={updateMutation.isLoading} className="flex-1 sm:flex-initial">
                 {updateMutation.isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

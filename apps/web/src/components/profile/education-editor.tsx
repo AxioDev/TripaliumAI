@@ -156,52 +156,54 @@ export function EducationEditor({
         localEducations.map((edu, index) => (
           <div
             key={edu.id || index}
-            className="flex items-start gap-4 p-4 border rounded-lg"
+            className="p-3 sm:p-4 border rounded-lg"
           >
-            <div className="rounded-full bg-muted p-2">
-              <GraduationCap className="h-5 w-5 text-muted-foreground" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h4 className="font-medium">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-start gap-2.5 sm:gap-3 min-w-0 flex-1">
+                <div className="rounded-full bg-muted p-1.5 sm:p-2 shrink-0 mt-0.5">
+                  <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-medium text-sm sm:text-base">
                     {edu.degree}
                     {edu.field && ` ${t('education.in')} ${edu.field}`}
                   </h4>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     {edu.institution}
                   </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {formatDate(edu.startDate)}
+                    {edu.endDate && ` - ${formatDate(edu.endDate)}`}
+                  </p>
                 </div>
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
-                  {formatDate(edu.startDate)}
-                  {edu.endDate && ` - ${formatDate(edu.endDate)}`}
-                </span>
               </div>
-              {edu.gpa && (
-                <p className="text-sm mt-1">{t('education.gpa').replace(' (optional)', '')}: {edu.gpa}</p>
-              )}
-              {edu.description && (
-                <p className="text-sm mt-2 text-muted-foreground">
-                  {edu.description}
-                </p>
-              )}
+              <div className="flex gap-0.5 shrink-0">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-9 sm:w-9"
+                  onClick={() => openEditDialog(index)}
+                >
+                  <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-9 sm:w-9"
+                  onClick={() => setDeleteIndex(index)}
+                >
+                  <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" />
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => openEditDialog(index)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setDeleteIndex(index)}
-              >
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
-            </div>
+            {edu.gpa && (
+              <p className="text-xs sm:text-sm mt-1 ml-9 sm:ml-11">{t('education.gpa').replace(' (optional)', '')}: {edu.gpa}</p>
+            )}
+            {edu.description && (
+              <p className="text-xs sm:text-sm mt-2 ml-9 sm:ml-11 text-muted-foreground line-clamp-3">
+                {edu.description}
+              </p>
+            )}
           </div>
         ))
       )}
