@@ -41,7 +41,7 @@ export function WelcomeModal() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-brand">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[hsl(217,91%,53%)]">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
           </div>
@@ -61,7 +61,7 @@ export function WelcomeModal() {
             </div>
           ))}
         </div>
-        <Button onClick={handleDismiss} variant="gradient" className="w-full">
+        <Button onClick={handleDismiss} variant="accent" className="w-full">
           {t('cta')}
         </Button>
       </DialogContent>

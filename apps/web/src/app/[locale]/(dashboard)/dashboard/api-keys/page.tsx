@@ -55,10 +55,10 @@ import { useLocale } from 'next-intl';
 import { formatRelativeTime } from '@/lib/date-utils';
 
 const scopeColors: Record<string, string> = {
-  READ: 'bg-blue-100 text-blue-800',
-  WRITE: 'bg-green-100 text-green-800',
-  ADMIN: 'bg-purple-100 text-purple-800',
-  TEST: 'bg-orange-100 text-orange-800',
+  READ: 'bg-sky-50 text-sky-700',
+  WRITE: 'bg-emerald-50 text-emerald-700',
+  ADMIN: 'bg-zinc-100 text-zinc-700',
+  TEST: 'bg-amber-50 text-amber-700',
 };
 
 const scopeKeyMap: Record<string, string> = {
@@ -357,7 +357,7 @@ export default function ApiKeysPage() {
                 className="font-mono text-sm"
               />
               <Button variant="outline" size="icon" onClick={copyToClipboard}>
-                {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">

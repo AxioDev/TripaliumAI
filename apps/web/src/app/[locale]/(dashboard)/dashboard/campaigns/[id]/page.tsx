@@ -61,11 +61,11 @@ import { formatRelativeTime } from '@/lib/date-utils';
 import { jobStatusColors, getMatchScoreBadgeColor } from '@/lib/status-config';
 
 const campaignStatusColors: Record<string, { color: string; icon: React.ReactNode }> = {
-  DRAFT: { color: 'bg-gray-100 text-gray-800', icon: <Clock className="h-4 w-4" /> },
-  ACTIVE: { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="h-4 w-4" /> },
-  PAUSED: { color: 'bg-yellow-100 text-yellow-800', icon: <Pause className="h-4 w-4" /> },
-  COMPLETED: { color: 'bg-blue-100 text-blue-800', icon: <Square className="h-4 w-4" /> },
-  FAILED: { color: 'bg-red-100 text-red-800', icon: <AlertTriangle className="h-4 w-4" /> },
+  DRAFT: { color: 'bg-zinc-100 text-zinc-500', icon: <Clock className="h-4 w-4" /> },
+  ACTIVE: { color: 'bg-emerald-50 text-emerald-700', icon: <CheckCircle className="h-4 w-4" /> },
+  PAUSED: { color: 'bg-amber-50 text-amber-700', icon: <Pause className="h-4 w-4" /> },
+  COMPLETED: { color: 'bg-sky-50 text-sky-700', icon: <Square className="h-4 w-4" /> },
+  FAILED: { color: 'bg-rose-50 text-rose-700', icon: <AlertTriangle className="h-4 w-4" /> },
 };
 
 function MatchScoreBadge({ score, label }: { score: number; label: string }) {
@@ -100,7 +100,7 @@ const sourceConfig: Record<string, { icon: React.ReactNode; color: string; label
   },
   API: {
     icon: <Database className="h-3 w-3" />,
-    color: 'bg-blue-100 text-blue-800',
+    color: 'bg-sky-50 text-sky-700',
     label: 'API',
   },
 };
@@ -157,7 +157,7 @@ function DiscriminationBadge({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-red-100 text-red-800 cursor-help">
+          <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-rose-50 text-rose-700 cursor-help">
             <ShieldAlert className="h-3 w-3" />
             {attentionLabel}
           </span>
@@ -474,18 +474,18 @@ export default function CampaignDetailPage() {
 
       {/* Start Reminder for Draft Campaigns */}
       {campaign.status === 'DRAFT' && (
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-emerald-200 bg-emerald-50">
           <CardContent className="py-6">
             <div className="flex flex-col items-center text-center gap-4 sm:flex-row sm:text-left sm:justify-between">
               <div>
-                <h3 className="font-semibold text-green-900 text-lg">{t('detail.readyToStart.title')}</h3>
-                <p className="text-green-800">
+                <h3 className="font-semibold text-emerald-900 text-lg">{t('detail.readyToStart.title')}</h3>
+                <p className="text-emerald-800">
                   {t('detail.readyToStart.description')}
                 </p>
               </div>
               <Button
                 size="lg"
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-emerald-600 hover:bg-emerald-700"
                 onClick={() => setShowLaunchModal(true)}
                 disabled={startMutation.isLoading}
               >

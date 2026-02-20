@@ -37,11 +37,11 @@ function PasswordRequirements({ password }: { password: string }) {
       {checks.map((check, i) => (
         <div key={i} className="flex items-center gap-2 text-xs">
           {check.met ? (
-            <Check className="h-3 w-3 text-green-600" />
+            <Check className="h-3 w-3 text-emerald-600" />
           ) : (
             <X className="h-3 w-3 text-muted-foreground" />
           )}
-          <span className={check.met ? 'text-green-600' : 'text-muted-foreground'}>
+          <span className={check.met ? 'text-emerald-600' : 'text-muted-foreground'}>
             {check.label}
           </span>
         </div>
@@ -153,7 +153,7 @@ export default function SignupPage() {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <div className="flex items-center gap-2 mb-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-brand">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[hsl(217,91%,53%)]">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
           </div>
@@ -244,7 +244,7 @@ export default function SignupPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" variant="gradient" className="w-full" disabled={isLoading || !consentGiven}>
+            <Button type="submit" variant="accent" className="w-full" disabled={isLoading || !consentGiven}>
               {isLoading ? t('submitting') : t('submit')}
             </Button>
             <p className="text-sm text-muted-foreground text-center">

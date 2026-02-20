@@ -457,7 +457,7 @@ export default function NewCampaignPage() {
               <div className="space-y-0.5">
                 <Label className="flex items-center gap-2">
                   {t('advanced.anonymize')}
-                  <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded">
+                  <span className="text-xs bg-sky-50 text-sky-700 dark:bg-sky-900 dark:text-sky-200 px-2 py-0.5 rounded">
                     {t('advanced.anonymizeRecommended')}
                   </span>
                   <TooltipProvider>
@@ -533,7 +533,7 @@ export default function NewCampaignPage() {
               <div className="space-y-0.5">
                 <Label className="flex items-center gap-2">
                   {t('automation.autoApply')}
-                  <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded">
+                  <span className="text-xs bg-sky-50 text-sky-700 dark:bg-sky-900 dark:text-sky-200 px-2 py-0.5 rounded">
                     {t('automation.autoApplyBeta')}
                   </span>
                   <TooltipProvider>

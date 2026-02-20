@@ -380,7 +380,7 @@ export default function CampaignsPage() {
                           onClick={() => startMutation.mutate(campaign.id)}
                           disabled={startMutation.isLoading}
                         >
-                          <Play className="h-4 w-4 text-green-600" />
+                          <Play className="h-4 w-4 text-emerald-600" />
                         </Button>
                       )}
                       {canPause && (

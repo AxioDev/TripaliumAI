@@ -131,7 +131,7 @@ function ResetPasswordForm() {
     <Card className="w-full max-w-md shadow-lg">
       <CardHeader className="space-y-1">
         <div className="flex items-center gap-2 mb-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-brand">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[hsl(217,91%,53%)]">
             <Sparkles className="h-4 w-4 text-white" />
           </div>
         </div>
@@ -165,7 +165,7 @@ function ResetPasswordForm() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
-          <Button type="submit" variant="gradient" className="w-full" disabled={isLoading}>
+          <Button type="submit" variant="accent" className="w-full" disabled={isLoading}>
             {isLoading ? t('submitting') : t('submit')}
           </Button>
         </CardFooter>

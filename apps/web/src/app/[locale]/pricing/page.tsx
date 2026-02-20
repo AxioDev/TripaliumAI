@@ -103,7 +103,7 @@ export default function PricingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="mx-auto max-w-5xl px-4 pt-16 pb-12 text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
@@ -123,22 +123,22 @@ export default function PricingPage() {
             return (
               <div
                 key={plan.key}
-                className={`relative flex flex-col rounded-2xl border bg-white p-6 shadow-sm dark:bg-gray-900 ${
+                className={`relative flex flex-col rounded-2xl border bg-card p-6 shadow-sm ${
                   isPopular
-                    ? 'border-amber-400 ring-2 ring-amber-400/20'
-                    : 'border-gray-200 dark:border-gray-800'
+                    ? 'border-[hsl(217,91%,53%)] ring-2 ring-[hsl(217,91%,53%)]/20'
+                    : 'border-border'
                 }`}
               >
                 {isPopular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1 text-xs font-medium text-white">
+                    <span className="rounded-full bg-[hsl(217,91%,53%)] px-3 py-1 text-xs font-medium text-white">
                       {t('popular')}
                     </span>
                   </div>
                 )}
 
                 <div className="mb-4 flex items-center gap-2">
-                  <Icon className="h-5 w-5 text-amber-500" />
+                  <Icon className="h-5 w-5 text-[hsl(217,91%,53%)]" />
                   <h3 className="text-lg font-semibold">{t(`plans.${plan.key}.name`)}</h3>
                 </div>
 
@@ -156,7 +156,7 @@ export default function PricingPage() {
                 <Button
                   className={`mb-6 w-full ${
                     isPopular
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600'
+                      ? 'bg-[hsl(217,91%,53%)] text-white hover:bg-[hsl(217,91%,45%)]'
                       : ''
                   }`}
                   variant={isPopular ? 'default' : 'outline'}
@@ -177,12 +177,12 @@ export default function PricingPage() {
                       <div key={row.key} className="flex items-center gap-2 text-sm">
                         {row.boolean ? (
                           value ? (
-                            <Check className="h-4 w-4 text-green-500" />
+                            <Check className="h-4 w-4 text-emerald-500" />
                           ) : (
-                            <X className="h-4 w-4 text-gray-300" />
+                            <X className="h-4 w-4 text-zinc-300" />
                           )
                         ) : (
-                          <Check className="h-4 w-4 text-green-500" />
+                          <Check className="h-4 w-4 text-emerald-500" />
                         )}
                         <span className="text-muted-foreground">
                           {row.boolean

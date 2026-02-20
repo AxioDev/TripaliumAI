@@ -125,7 +125,7 @@ export default function DashboardPage() {
         </div>
         {hasCompletedSetup && (
           <Link href="/dashboard/campaigns/new" className="self-start sm:self-auto">
-            <Button variant="gradient">
+            <Button variant="accent">
               <Play className="mr-2 h-4 w-4" />
               {t('newCampaign')}
             </Button>
@@ -135,16 +135,16 @@ export default function DashboardPage() {
 
       {/* Error State */}
       {statsError && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-rose-200 bg-rose-50">
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <AlertCircle className="h-5 w-5 text-red-600" />
+                <AlertCircle className="h-5 w-5 text-rose-600" />
                 <div>
-                  <p className="font-medium text-red-900">
+                  <p className="font-medium text-rose-900">
                     {t('error.title')}
                   </p>
-                  <p className="text-sm text-red-800">
+                  <p className="text-sm text-rose-800">
                     {t('error.description')}
                   </p>
                 </div>
@@ -152,7 +152,7 @@ export default function DashboardPage() {
               <Button
                 size="sm"
                 variant="outline"
-                className="border-red-600 text-red-700 hover:bg-red-100"
+                className="border-rose-600 text-rose-700 hover:bg-rose-100"
                 onClick={loadStats}
               >
                 {tCommon('actions.retry')}
@@ -470,22 +470,22 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-yellow-50 dark:bg-yellow-950/20">
-                  <div className="h-3 w-3 rounded-full bg-yellow-500 flex-shrink-0" />
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/20">
+                  <div className="h-3 w-3 rounded-full bg-amber-500 flex-shrink-0" />
                   <div className="flex-1">
                     <p className="text-sm font-medium">{t('pipeline.pendingReview')}</p>
                   </div>
                   <span className="text-lg font-bold tabular-nums">{pendingReviewCount}</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20">
-                  <div className="h-3 w-3 rounded-full bg-blue-500 flex-shrink-0" />
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-sky-50 dark:bg-sky-950/20">
+                  <div className="h-3 w-3 rounded-full bg-sky-500 flex-shrink-0" />
                   <div className="flex-1">
                     <p className="text-sm font-medium">{t('pipeline.readyToSubmit')}</p>
                   </div>
                   <span className="text-lg font-bold tabular-nums">{readyToSubmitCount}</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50 dark:bg-green-950/20">
-                  <div className="h-3 w-3 rounded-full bg-green-500 flex-shrink-0" />
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/20">
+                  <div className="h-3 w-3 rounded-full bg-emerald-500 flex-shrink-0" />
                   <div className="flex-1">
                     <p className="text-sm font-medium">{t('pipeline.submitted')}</p>
                   </div>
@@ -507,7 +507,7 @@ export default function DashboardPage() {
           <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-green-500" />
+                <Zap className="h-5 w-5 text-emerald-500" />
                 {t('activeCampaigns.title')}
               </CardTitle>
               <CardDescription>
@@ -526,8 +526,8 @@ export default function DashboardPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-xs text-green-600">{t('activeCampaigns.running')}</span>
+                        <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-xs text-emerald-600">{t('activeCampaigns.running')}</span>
                       </div>
                     </div>
                   </Link>

@@ -2,11 +2,11 @@
 
 // Campaign statuses
 export const campaignStatusColors: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
-  ACTIVE: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  PAUSED: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-  COMPLETED: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  FAILED: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  DRAFT: 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400',
+  ACTIVE: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200',
+  PAUSED: 'bg-amber-50 text-amber-700 dark:bg-amber-900 dark:text-amber-200',
+  COMPLETED: 'bg-sky-50 text-sky-700 dark:bg-sky-900 dark:text-sky-200',
+  FAILED: 'bg-rose-50 text-rose-700 dark:bg-rose-900 dark:text-rose-200',
 };
 
 export const campaignStatusKeyMap: Record<string, string> = {
@@ -19,15 +19,15 @@ export const campaignStatusKeyMap: Record<string, string> = {
 
 // Application statuses
 export const applicationStatusColors: Record<string, string> = {
-  PENDING_GENERATION: 'bg-blue-100 text-blue-800',
-  GENERATING: 'bg-blue-100 text-blue-800',
-  GENERATION_FAILED: 'bg-red-100 text-red-800',
-  PENDING_REVIEW: 'bg-yellow-100 text-yellow-800',
-  READY_TO_SUBMIT: 'bg-green-100 text-green-800',
-  SUBMITTING: 'bg-purple-100 text-purple-800',
-  SUBMITTED: 'bg-green-100 text-green-800',
-  SUBMISSION_FAILED: 'bg-red-100 text-red-800',
-  WITHDRAWN: 'bg-gray-100 text-gray-800',
+  PENDING_GENERATION: 'bg-sky-50 text-sky-700',
+  GENERATING: 'bg-sky-50 text-sky-700',
+  GENERATION_FAILED: 'bg-rose-50 text-rose-700',
+  PENDING_REVIEW: 'bg-amber-50 text-amber-700',
+  READY_TO_SUBMIT: 'bg-emerald-50 text-emerald-700',
+  SUBMITTING: 'bg-zinc-100 text-zinc-700',
+  SUBMITTED: 'bg-emerald-50 text-emerald-700',
+  SUBMISSION_FAILED: 'bg-rose-50 text-rose-700',
+  WITHDRAWN: 'bg-zinc-100 text-zinc-500',
 };
 
 export const applicationStatusKeyMap: Record<string, string> = {
@@ -44,26 +44,26 @@ export const applicationStatusKeyMap: Record<string, string> = {
 
 // Job statuses
 export const jobStatusColors: Record<string, string> = {
-  DISCOVERED: 'bg-blue-100 text-blue-800',
-  ANALYZING: 'bg-yellow-100 text-yellow-800',
-  MATCHED: 'bg-green-100 text-green-800',
-  REJECTED: 'bg-gray-100 text-gray-800',
-  APPLIED: 'bg-purple-100 text-purple-800',
-  EXPIRED: 'bg-red-100 text-red-800',
-  ERROR: 'bg-red-100 text-red-800',
+  DISCOVERED: 'bg-sky-50 text-sky-700',
+  ANALYZING: 'bg-amber-50 text-amber-700',
+  MATCHED: 'bg-emerald-50 text-emerald-700',
+  REJECTED: 'bg-zinc-100 text-zinc-500',
+  APPLIED: 'bg-zinc-100 text-zinc-700',
+  EXPIRED: 'bg-rose-50 text-rose-700',
+  ERROR: 'bg-rose-50 text-rose-700',
 };
 
 // Match score color helper
 export function getMatchScoreColor(score: number): string {
-  if (score >= 80) return 'text-green-500';
-  if (score >= 60) return 'text-blue-500';
-  if (score >= 40) return 'text-yellow-500';
-  return 'text-red-500';
+  if (score >= 80) return 'text-emerald-500';
+  if (score >= 60) return 'text-sky-500';
+  if (score >= 40) return 'text-amber-500';
+  return 'text-rose-500';
 }
 
 export function getMatchScoreBadgeColor(score: number): string {
-  if (score >= 80) return 'bg-green-100 text-green-800';
-  if (score >= 60) return 'bg-blue-100 text-blue-800';
-  if (score >= 40) return 'bg-yellow-100 text-yellow-800';
-  return 'bg-red-100 text-red-800';
+  if (score >= 80) return 'bg-emerald-50 text-emerald-700';
+  if (score >= 60) return 'bg-sky-50 text-sky-700';
+  if (score >= 40) return 'bg-amber-50 text-amber-700';
+  return 'bg-rose-50 text-rose-700';
 }

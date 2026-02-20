@@ -93,8 +93,8 @@ function PlanBadge() {
   const t = useTranslations('subscription.plans');
   const planStyles = {
     FREE: 'bg-sidebar-muted text-sidebar-foreground',
-    STARTER: 'bg-amber-500/20 text-amber-300',
-    PRO: 'bg-purple-500/20 text-purple-300',
+    STARTER: 'bg-sidebar-accent/20 text-sky-300',
+    PRO: 'bg-sidebar-accent/20 text-sidebar-foreground-active',
   };
   const getPlanName = (): string => {
     switch (plan) {
@@ -124,10 +124,10 @@ export function DashboardNav() {
   const pathnameWithoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') || '/';
 
   return (
-    <div className="hidden md:flex h-screen w-64 flex-col gradient-sidebar flex-shrink-0 sticky top-0">
+    <div className="hidden md:flex h-screen w-64 flex-col bg-sidebar flex-shrink-0 sticky top-0">
       <div className="flex h-14 items-center justify-between border-b border-sidebar-border px-4">
         <Link href="/dashboard" className="flex items-center gap-2 font-bold text-white">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg gradient-brand">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[hsl(217,91%,53%)]">
             <Sparkles className="h-4 w-4 text-white" />
           </div>
           {t('brand')}
@@ -199,7 +199,7 @@ export function MobileNav() {
     <>
       <div className="flex md:hidden h-14 items-center justify-between border-b bg-background px-4 sticky top-0 z-40">
         <Link href="/dashboard" className="flex items-center gap-2 font-bold">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg gradient-brand">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[hsl(217,91%,53%)]">
             <Sparkles className="h-4 w-4 text-white" />
           </div>
           {t('brand')}
@@ -227,7 +227,7 @@ export function MobileNav() {
         <SheetContent side="left" className="w-64 p-0 flex flex-col">
           <SheetHeader className="border-b px-4 py-4">
             <SheetTitle className="text-left flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg gradient-brand">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[hsl(217,91%,53%)]">
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               {t('brand')}

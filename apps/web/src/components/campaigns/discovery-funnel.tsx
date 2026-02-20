@@ -38,22 +38,22 @@ function getStages(
       label: t('stages.discovered'),
       value: discovered,
       icon: <Search className="h-4 w-4" />,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-500',
+      color: 'text-sky-600',
+      bgColor: 'bg-sky-500',
     },
     {
       label: t('stages.matched'),
       value: matched,
       icon: <Target className="h-4 w-4" />,
-      color: 'text-green-600',
-      bgColor: 'bg-green-500',
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-500',
     },
     {
       label: t('stages.applied'),
       value: applied,
       icon: <Send className="h-4 w-4" />,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-500',
+      color: 'text-zinc-600',
+      bgColor: 'bg-zinc-500',
     },
   ];
 }
@@ -168,17 +168,17 @@ export function DiscoveryFunnelCompact({
 }) {
   return (
     <div className="flex items-center gap-2 text-sm">
-      <span className="flex items-center gap-1 text-blue-600">
+      <span className="flex items-center gap-1 text-sky-600">
         <Search className="h-3 w-3" />
         {discovered}
       </span>
       <ChevronRight className="h-3 w-3 text-muted-foreground" />
-      <span className="flex items-center gap-1 text-green-600">
+      <span className="flex items-center gap-1 text-emerald-600">
         <Target className="h-3 w-3" />
         {matched}
       </span>
       <ChevronRight className="h-3 w-3 text-muted-foreground" />
-      <span className="flex items-center gap-1 text-purple-600">
+      <span className="flex items-center gap-1 text-zinc-600">
         <Send className="h-3 w-3" />
         {applied}
       </span>

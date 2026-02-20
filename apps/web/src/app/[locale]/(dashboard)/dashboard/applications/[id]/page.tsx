@@ -62,47 +62,47 @@ function getStatusConfig(t: ReturnType<typeof useTranslations>): Record<string, 
   return {
     PENDING_GENERATION: {
       label: t('status.generating'),
-      color: 'bg-blue-100 text-blue-800',
+      color: 'bg-sky-50 text-sky-700',
       description: 'AI is generating your tailored CV and cover letter.',
     },
     GENERATING: {
       label: t('status.generating'),
-      color: 'bg-blue-100 text-blue-800',
+      color: 'bg-sky-50 text-sky-700',
       description: 'AI is generating your tailored CV and cover letter.',
     },
     GENERATION_FAILED: {
       label: t('status.generationFailed'),
-      color: 'bg-red-100 text-red-800',
+      color: 'bg-rose-50 text-rose-700',
       description: 'Document generation failed. Please try again.',
     },
     PENDING_REVIEW: {
       label: t('status.pendingReview'),
-      color: 'bg-yellow-100 text-yellow-800',
+      color: 'bg-amber-50 text-amber-700',
       description: 'Please review the generated documents before confirming.',
     },
     READY_TO_SUBMIT: {
       label: t('status.readyToSubmit'),
-      color: 'bg-green-100 text-green-800',
+      color: 'bg-emerald-50 text-emerald-700',
       description: 'Application is ready. Mark as submitted after applying externally.',
     },
     SUBMITTING: {
       label: t('status.submitting'),
-      color: 'bg-purple-100 text-purple-800',
+      color: 'bg-zinc-100 text-zinc-700',
       description: 'Application is being submitted.',
     },
     SUBMITTED: {
       label: t('status.submitted'),
-      color: 'bg-green-100 text-green-800',
+      color: 'bg-emerald-50 text-emerald-700',
       description: 'Application has been submitted successfully.',
     },
     SUBMISSION_FAILED: {
       label: t('status.submissionFailed'),
-      color: 'bg-red-100 text-red-800',
+      color: 'bg-rose-50 text-rose-700',
       description: 'Submission failed. Please try again or submit manually.',
     },
     WITHDRAWN: {
       label: t('status.withdrawn'),
-      color: 'bg-gray-100 text-gray-800',
+      color: 'bg-zinc-100 text-zinc-500',
       description: 'This application has been withdrawn.',
     },
   };
@@ -110,26 +110,26 @@ function getStatusConfig(t: ReturnType<typeof useTranslations>): Record<string, 
 
 function getRecommendationLabels(t: ReturnType<typeof useTranslations>): Record<string, { label: string; color: string }> {
   return {
-    strong_match: { label: t('recommendations.strongMatch'), color: 'text-green-600' },
-    good_match: { label: t('recommendations.goodMatch'), color: 'text-blue-600' },
-    possible_match: { label: t('recommendations.possibleMatch'), color: 'text-yellow-600' },
-    weak_match: { label: t('recommendations.weakMatch'), color: 'text-orange-600' },
-    no_match: { label: t('recommendations.noMatch'), color: 'text-red-600' },
+    strong_match: { label: t('recommendations.strongMatch'), color: 'text-emerald-600' },
+    good_match: { label: t('recommendations.goodMatch'), color: 'text-sky-600' },
+    possible_match: { label: t('recommendations.possibleMatch'), color: 'text-amber-600' },
+    weak_match: { label: t('recommendations.weakMatch'), color: 'text-amber-600' },
+    no_match: { label: t('recommendations.noMatch'), color: 'text-rose-600' },
   };
 }
 
 function MatchScoreCircle({ score }: { score: number }) {
-  let color = 'text-gray-500';
-  if (score >= 80) color = 'text-green-500';
-  else if (score >= 60) color = 'text-blue-500';
-  else if (score >= 40) color = 'text-yellow-500';
-  else color = 'text-red-500';
+  let color = 'text-zinc-500';
+  if (score >= 80) color = 'text-emerald-500';
+  else if (score >= 60) color = 'text-sky-500';
+  else if (score >= 40) color = 'text-amber-500';
+  else color = 'text-rose-500';
 
   return (
     <div className="relative w-24 h-24">
       <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
         <circle
-          className="text-gray-200"
+          className="text-zinc-200"
           strokeWidth="8"
           stroke="currentColor"
           fill="transparent"
@@ -367,7 +367,7 @@ export default function ApplicationDetailPage() {
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{application.jobOffer.title}</h1>
             {application.testMode && (
-              <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
+              <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded">
                 {tCommon('status.testing') || 'Test Mode'}
               </span>
             )}
@@ -438,10 +438,10 @@ export default function ApplicationDetailPage() {
       </div>
 
       {/* Status Banner */}
-      <Card className={isProcessing ? 'border-blue-200 bg-blue-50' : undefined}>
+      <Card className={isProcessing ? 'border-sky-200 bg-sky-50' : undefined}>
         <CardContent className="py-4">
           <div className="flex items-center gap-3">
-            {isProcessing && <Loader2 className="h-5 w-5 animate-spin text-blue-600" />}
+            {isProcessing && <Loader2 className="h-5 w-5 animate-spin text-sky-600" />}
             <div>
               <p className="font-medium">{status.label}</p>
               <p className="text-sm text-muted-foreground">{status.description}</p>
@@ -698,7 +698,7 @@ export default function ApplicationDetailPage() {
                     <Separator />
                     <div>
                       <h4 className="text-sm font-medium mb-2 flex items-center gap-1">
-                        <CheckCircle className="h-3 w-3 text-green-600" />
+                        <CheckCircle className="h-3 w-3 text-emerald-600" />
                         Matching
                       </h4>
                       <ul className="text-sm text-muted-foreground space-y-1">
@@ -714,7 +714,7 @@ export default function ApplicationDetailPage() {
                     <Separator />
                     <div>
                       <h4 className="text-sm font-medium mb-2 flex items-center gap-1">
-                        <XCircle className="h-3 w-3 text-red-600" />
+                        <XCircle className="h-3 w-3 text-rose-600" />
                         Missing
                       </h4>
                       <ul className="text-sm text-muted-foreground space-y-1">
@@ -730,7 +730,7 @@ export default function ApplicationDetailPage() {
                     <Separator />
                     <div>
                       <h4 className="text-sm font-medium mb-2 flex items-center gap-1">
-                        <AlertTriangle className="h-3 w-3 text-yellow-600" />
+                        <AlertTriangle className="h-3 w-3 text-amber-600" />
                         Red Flags
                       </h4>
                       <ul className="text-sm text-muted-foreground space-y-1">
@@ -756,7 +756,7 @@ export default function ApplicationDetailPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <div className="mt-1 h-2 w-2 rounded-full bg-green-500" />
+                  <div className="mt-1 h-2 w-2 rounded-full bg-emerald-500" />
                   <div>
                     <p className="text-sm font-medium">Created</p>
                     <p className="text-xs text-muted-foreground">
@@ -766,7 +766,7 @@ export default function ApplicationDetailPage() {
                 </div>
                 {application.confirmedAt && (
                   <div className="flex items-start gap-3">
-                    <div className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
+                    <div className="mt-1 h-2 w-2 rounded-full bg-sky-500" />
                     <div>
                       <p className="text-sm font-medium">{t('messages.confirmed')}</p>
                       <p className="text-xs text-muted-foreground">
@@ -777,7 +777,7 @@ export default function ApplicationDetailPage() {
                 )}
                 {application.submittedAt && (
                   <div className="flex items-start gap-3">
-                    <div className="mt-1 h-2 w-2 rounded-full bg-purple-500" />
+                    <div className="mt-1 h-2 w-2 rounded-full bg-zinc-500" />
                     <div>
                       <p className="text-sm font-medium">{t('status.submitted')}</p>
                       <p className="text-xs text-muted-foreground">
@@ -814,7 +814,7 @@ export default function ApplicationDetailPage() {
             <DialogDescription>
               Send your application directly to the hiring manager or recruiter.
               {application.testMode && (
-                <span className="block mt-2 text-orange-600">
+                <span className="block mt-2 text-amber-600">
                   {t('messages.emailSimulationMode')}
                 </span>
               )}
@@ -895,11 +895,11 @@ export default function ApplicationDetailPage() {
                 >
                   <div className="flex items-center gap-3">
                     {email.status === 'SENT' ? (
-                      <MailCheck className="h-5 w-5 text-green-500" />
+                      <MailCheck className="h-5 w-5 text-emerald-500" />
                     ) : email.status === 'FAILED' ? (
-                      <MailX className="h-5 w-5 text-red-500" />
+                      <MailX className="h-5 w-5 text-rose-500" />
                     ) : (
-                      <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                      <Loader2 className="h-5 w-5 animate-spin text-sky-500" />
                     )}
                     <div>
                       <p className="font-medium text-sm">{email.toAddress}</p>
@@ -912,15 +912,15 @@ export default function ApplicationDetailPage() {
                     <div className="flex items-center gap-2">
                       <span className={`text-xs px-2 py-0.5 rounded ${
                         email.status === 'SENT'
-                          ? 'bg-green-100 text-green-800'
+                          ? 'bg-emerald-50 text-emerald-700'
                           : email.status === 'FAILED'
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-blue-100 text-blue-800'
+                          ? 'bg-rose-50 text-rose-700'
+                          : 'bg-sky-50 text-sky-700'
                       }`}>
                         {email.status}
                       </span>
                       {email.dryRun && (
-                        <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
+                        <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded">
                           Test
                         </span>
                       )}
@@ -931,7 +931,7 @@ export default function ApplicationDetailPage() {
                         : format(new Date(email.createdAt), 'PPp')}
                     </p>
                     {email.errorMessage && (
-                      <p className="text-xs text-red-600 mt-1">{email.errorMessage}</p>
+                      <p className="text-xs text-rose-600 mt-1">{email.errorMessage}</p>
                     )}
                   </div>
                 </div>

@@ -326,12 +326,12 @@ export default function CVsPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-emerald-600" />;
       case 'PROCESSING':
       case 'PENDING':
-        return <Clock className="h-4 w-4 text-yellow-600 animate-pulse" />;
+        return <Clock className="h-4 w-4 text-amber-600 animate-pulse" />;
       case 'FAILED':
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-rose-600" />;
       default:
         return null;
     }
@@ -340,14 +340,14 @@ export default function CVsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        return 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200';
       case 'PROCESSING':
       case 'PENDING':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+        return 'bg-amber-50 text-amber-700 dark:bg-amber-900 dark:text-amber-200';
       case 'FAILED':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        return 'bg-rose-50 text-rose-700 dark:bg-rose-900 dark:text-rose-200';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-zinc-100 text-zinc-500';
     }
   };
 

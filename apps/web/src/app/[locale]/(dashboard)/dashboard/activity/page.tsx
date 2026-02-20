@@ -53,15 +53,15 @@ const entityTypeIcons: Record<string, React.ReactNode> = {
 };
 
 const actionColors: Record<string, string> = {
-  created: 'text-green-600 bg-green-50',
-  updated: 'text-blue-600 bg-blue-50',
-  deleted: 'text-red-600 bg-red-50',
-  started: 'text-purple-600 bg-purple-50',
-  completed: 'text-green-600 bg-green-50',
-  failed: 'text-red-600 bg-red-50',
-  paused: 'text-yellow-600 bg-yellow-50',
-  stopped: 'text-gray-600 bg-gray-50',
-  login: 'text-blue-600 bg-blue-50',
+  created: 'text-emerald-700 bg-emerald-50',
+  updated: 'text-sky-700 bg-sky-50',
+  deleted: 'text-rose-700 bg-rose-50',
+  started: 'text-zinc-700 bg-zinc-100',
+  completed: 'text-emerald-700 bg-emerald-50',
+  failed: 'text-rose-700 bg-rose-50',
+  paused: 'text-amber-700 bg-amber-50',
+  stopped: 'text-zinc-500 bg-zinc-100',
+  login: 'text-sky-700 bg-sky-50',
 };
 
 const actionKeyMap: Record<string, string> = {
@@ -100,7 +100,7 @@ function getActionColor(action: string): string {
       return color;
     }
   }
-  return 'text-gray-600 bg-gray-50';
+  return 'text-zinc-500 bg-zinc-100';
 }
 
 function formatAction(action: string): string {
@@ -113,13 +113,13 @@ function formatAction(action: string): string {
 function StatusIcon({ status }: { status: string }) {
   switch (status) {
     case 'success':
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
+      return <CheckCircle className="h-4 w-4 text-emerald-500" />;
     case 'failure':
-      return <XCircle className="h-4 w-4 text-red-500" />;
+      return <XCircle className="h-4 w-4 text-rose-500" />;
     case 'pending':
-      return <Clock className="h-4 w-4 text-yellow-500" />;
+      return <Clock className="h-4 w-4 text-amber-500" />;
     default:
-      return <Activity className="h-4 w-4 text-gray-500" />;
+      return <Activity className="h-4 w-4 text-zinc-500" />;
   }
 }
 
@@ -261,7 +261,7 @@ export default function ActivityPage() {
                           {actionKey ? tDashboard(`actions.${actionKey}`) : formatAction(log.action)}
                         </span>
                         {log.testMode && (
-                          <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
+                          <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded">
                             {t('test')}
                           </span>
                         )}
@@ -275,7 +275,7 @@ export default function ActivityPage() {
                         </p>
                       )}
                       {log.status === 'failure' && log.errorMessage && (
-                        <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
+                        <p className="text-xs text-rose-600 mt-1 flex items-center gap-1">
                           <AlertTriangle className="h-3 w-3" />
                           {log.errorMessage}
                         </p>

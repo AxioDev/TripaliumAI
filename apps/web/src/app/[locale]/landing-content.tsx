@@ -46,7 +46,7 @@ export function LandingContent() {
       <header className="sticky top-0 z-50 glass border-b border-border/50">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-brand">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[hsl(217,91%,53%)]">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             <span className="text-lg font-bold">{t('nav.brand')}</span>
@@ -61,7 +61,7 @@ export function LandingContent() {
               <Button variant="ghost" size="sm">{t('nav.signIn')}</Button>
             </Link>
             <Link href="/signup">
-              <Button variant="gradient" size="sm">{t('nav.getStarted')}</Button>
+              <Button variant="accent" size="sm">{t('nav.getStarted')}</Button>
             </Link>
           </div>
           {/* Mobile hamburger */}
@@ -81,7 +81,7 @@ export function LandingContent() {
         <SheetContent side="right" className="w-64">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg gradient-brand">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[hsl(217,91%,53%)]">
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               {t('nav.brand')}
@@ -96,7 +96,7 @@ export function LandingContent() {
               <Button variant="ghost" className="w-full justify-start">{t('nav.signIn')}</Button>
             </Link>
             <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="gradient" className="w-full">{t('nav.getStarted')}</Button>
+              <Button variant="accent" className="w-full">{t('nav.getStarted')}</Button>
             </Link>
           </nav>
         </SheetContent>
@@ -112,7 +112,7 @@ export function LandingContent() {
         </div>
 
         <div className="max-w-3xl">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl gradient-text-brand">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl text-foreground">
             {t('hero.headline')}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
@@ -120,7 +120,7 @@ export function LandingContent() {
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link href="/signup">
-              <Button variant="gradient" size="lg">{t('hero.ctaPrimary')}</Button>
+              <Button variant="accent" size="lg">{t('hero.ctaPrimary')}</Button>
             </Link>
             <Button variant="outline" size="lg" onClick={scrollToHowItWorks}>
               {t('hero.ctaSecondary')}
@@ -192,7 +192,7 @@ export function LandingContent() {
             <div className="relative text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 mb-6 relative z-10">
                 <Upload className="h-8 w-8 text-primary" />
-                <span className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full gradient-brand text-xs font-bold text-white">
+                <span className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-[hsl(217,91%,53%)] text-xs font-bold text-white">
                   1
                 </span>
               </div>
@@ -203,7 +203,7 @@ export function LandingContent() {
             <div className="relative text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 mb-6 relative z-10">
                 <Target className="h-8 w-8 text-primary" />
-                <span className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full gradient-brand text-xs font-bold text-white">
+                <span className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-[hsl(217,91%,53%)] text-xs font-bold text-white">
                   2
                 </span>
               </div>
@@ -214,7 +214,7 @@ export function LandingContent() {
             <div className="relative text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 mb-6 relative z-10">
                 <Sparkles className="h-8 w-8 text-primary" />
-                <span className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full gradient-brand text-xs font-bold text-white">
+                <span className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-[hsl(217,91%,53%)] text-xs font-bold text-white">
                   3
                 </span>
               </div>
@@ -314,17 +314,17 @@ export function LandingContent() {
           </h2>
           <div className="mt-16 grid gap-8 sm:grid-cols-3 text-center">
             <div>
-              <p className="text-4xl font-bold gradient-text-brand">{t('stats.stat1.number')}</p>
+              <p className="text-4xl font-bold text-[hsl(217,91%,53%)]">{t('stats.stat1.number')}</p>
               <p className="mt-2 font-semibold">{t('stats.stat1.label')}</p>
               <p className="mt-1 text-sm text-muted-foreground">{t('stats.stat1.description')}</p>
             </div>
             <div>
-              <p className="text-4xl font-bold gradient-text-brand">{t('stats.stat2.number')}</p>
+              <p className="text-4xl font-bold text-[hsl(217,91%,53%)]">{t('stats.stat2.number')}</p>
               <p className="mt-2 font-semibold">{t('stats.stat2.label')}</p>
               <p className="mt-1 text-sm text-muted-foreground">{t('stats.stat2.description')}</p>
             </div>
             <div>
-              <p className="text-4xl font-bold gradient-text-brand">{t('stats.stat3.number')}</p>
+              <p className="text-4xl font-bold text-[hsl(217,91%,53%)]">{t('stats.stat3.number')}</p>
               <p className="mt-2 font-semibold">{t('stats.stat3.label')}</p>
               <p className="mt-1 text-sm text-muted-foreground">{t('stats.stat3.description')}</p>
             </div>
@@ -361,7 +361,7 @@ export function LandingContent() {
       {/* ── 9. Final CTA ── */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-4xl">
-          <div className="rounded-2xl gradient-brand-vivid p-12 text-center text-white">
+          <div className="rounded-2xl bg-[hsl(240,6%,10%)] p-12 text-center text-white">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
               {t('finalCta.title')}
             </h2>
@@ -385,7 +385,7 @@ export function LandingContent() {
           <div className="grid gap-8 sm:grid-cols-3">
             <div>
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-brand">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[hsl(217,91%,53%)]">
                   <Sparkles className="h-4 w-4 text-white" />
                 </div>
                 <span className="text-lg font-bold">{t('nav.brand')}</span>

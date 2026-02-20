@@ -227,10 +227,10 @@ export default function SettingsPage() {
           <div className="flex items-center gap-3">
             <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${
               plan === 'PRO'
-                ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
+                ? 'bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300'
                 : plan === 'STARTER'
-                ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
-                : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                ? 'bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300'
+                : 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
             }`}>
               <Sparkles className="h-3.5 w-3.5" />
               {t(`subscription.plans.${plan.toLowerCase()}`)}
@@ -255,7 +255,7 @@ export default function SettingsPage() {
                     <div
                       className={`h-full rounded-full transition-all ${
                         item.limit > 0 && item.current >= item.limit
-                          ? 'bg-red-500'
+                          ? 'bg-rose-500'
                           : item.limit > 0 && item.current / item.limit > 0.8
                           ? 'bg-amber-500'
                           : 'bg-primary'
@@ -290,7 +290,7 @@ export default function SettingsPage() {
               </Button>
             ) : (
               <Button
-                className="bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
+                className="bg-[hsl(217,91%,53%)] text-white hover:bg-[hsl(217,91%,45%)]"
                 disabled={billingLoading}
                 onClick={async () => {
                   setBillingLoading(true);

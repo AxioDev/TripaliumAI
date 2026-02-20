@@ -31,15 +31,15 @@ export function UpgradePrompt({ messageKey, plan = 'STARTER', compact = false }:
 
   if (compact) {
     return (
-      <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950/30">
-        <Sparkles className="h-4 w-4 shrink-0 text-amber-600" />
-        <p className="text-sm text-amber-800 dark:text-amber-200">{t(messageKey)}</p>
+      <div className="flex items-center gap-3 rounded-lg border border-sky-200 bg-sky-50 p-3 dark:border-sky-900 dark:bg-sky-950/30">
+        <Sparkles className="h-4 w-4 shrink-0 text-sky-600" />
+        <p className="text-sm text-sky-800 dark:text-sky-200">{t(messageKey)}</p>
         <Button
           size="sm"
           variant="outline"
           onClick={handleUpgrade}
           disabled={loading}
-          className="ml-auto shrink-0 border-amber-300 text-amber-700 hover:bg-amber-100"
+          className="ml-auto shrink-0 border-sky-300 text-sky-700 hover:bg-sky-100"
         >
           {t('upgrade')}
         </Button>
@@ -48,18 +48,18 @@ export function UpgradePrompt({ messageKey, plan = 'STARTER', compact = false }:
   }
 
   return (
-    <div className="relative overflow-hidden rounded-xl border-2 border-transparent bg-gradient-to-r from-amber-50 to-orange-50 p-6 dark:from-amber-950/20 dark:to-orange-950/20">
-      <div className="absolute inset-0 rounded-xl border-2 border-amber-300/50 dark:border-amber-700/50" />
+    <div className="relative overflow-hidden rounded-xl border-2 border-transparent bg-sky-50 p-6 dark:bg-sky-950/20">
+      <div className="absolute inset-0 rounded-xl border-2 border-sky-300/50 dark:border-sky-700/50" />
       <div className="relative flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
-          <div className="rounded-full bg-amber-100 p-2 dark:bg-amber-900/50">
-            <Sparkles className="h-5 w-5 text-amber-600" />
+          <div className="rounded-full bg-sky-100 p-2 dark:bg-sky-900/50">
+            <Sparkles className="h-5 w-5 text-sky-600" />
           </div>
           <div>
-            <p className="font-medium text-amber-900 dark:text-amber-100">
+            <p className="font-medium text-sky-900 dark:text-sky-100">
               {t(messageKey)}
             </p>
-            <p className="mt-1 text-sm text-amber-700 dark:text-amber-300">
+            <p className="mt-1 text-sm text-sky-700 dark:text-sky-300">
               {t('upgradeDescription')}
             </p>
           </div>
@@ -67,7 +67,7 @@ export function UpgradePrompt({ messageKey, plan = 'STARTER', compact = false }:
         <Button
           onClick={handleUpgrade}
           disabled={loading}
-          className="shrink-0 bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
+          className="shrink-0 bg-[hsl(217,91%,53%)] text-white hover:bg-[hsl(217,91%,45%)]"
         >
           {loading ? t('upgrading') : t('upgrade')}
         </Button>
