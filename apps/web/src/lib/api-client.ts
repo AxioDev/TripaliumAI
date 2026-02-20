@@ -127,6 +127,12 @@ export const authApi = {
   exportData: () =>
     apiRequest<Record<string, unknown>>('/auth/data-export'),
 
+  changePassword: (currentPassword: string, newPassword: string) =>
+    apiRequest<{ message: string }>('/auth/change-password', {
+      method: 'POST',
+      body: { currentPassword, newPassword },
+    }),
+
   forgotPassword: (email: string) =>
     apiRequest<{ message: string }>('/auth/forgot-password', {
       method: 'POST',

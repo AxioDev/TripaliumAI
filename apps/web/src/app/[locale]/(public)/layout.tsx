@@ -1,4 +1,4 @@
-import { setRequestLocale } from 'next-intl/server';
+import { setRequestLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 
 export default async function PublicLayout({
@@ -11,6 +11,8 @@ export default async function PublicLayout({
   const { locale } = await params;
   setRequestLocale(locale);
 
+  const t = await getTranslations('publicNav');
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
@@ -20,10 +22,10 @@ export default async function PublicLayout({
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/login" className="hover:underline">
-              {locale === 'fr' ? 'Connexion' : 'Sign in'}
+              {t('signIn')}
             </Link>
             <Link href="/signup" className="hover:underline">
-              {locale === 'fr' ? "S'inscrire" : 'Sign up'}
+              {t('signUp')}
             </Link>
           </nav>
         </div>
@@ -33,15 +35,15 @@ export default async function PublicLayout({
         <div className="container mx-auto px-4 text-sm text-muted-foreground">
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/privacy" className="hover:underline">
-              {locale === 'fr' ? 'Politique de confidentialité' : 'Privacy Policy'}
+              {t('privacy')}
             </Link>
             <Link href="/terms" className="hover:underline">
-              {locale === 'fr' ? "Conditions d'utilisation" : 'Terms of Service'}
+              {t('terms')}
             </Link>
           </div>
           <p className="text-center mt-4">
             &copy; {new Date().getFullYear()} TripaliumAI.{' '}
-            {locale === 'fr' ? 'Tous droits réservés.' : 'All rights reserved.'}
+            {t('allRights')}
           </p>
         </div>
       </footer>

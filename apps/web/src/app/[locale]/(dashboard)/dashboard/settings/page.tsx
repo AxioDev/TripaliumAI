@@ -30,13 +30,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import { authApi, billingApi } from '@/lib/api-client';
 import { useSubscription } from '@/contexts/subscription-context';
+import { Badge } from '@/components/ui/badge';
 import {
   User,
   Target,
   Bell,
   Shield,
   Loader2,
-  Save,
   Globe,
   AlertTriangle,
   Download,
@@ -48,7 +48,6 @@ import {
 export default function SettingsPage() {
   const { toast } = useToast();
   const { data: session } = useSession();
-  const [saving, setSaving] = useState(false);
   const t = useTranslations('settings');
 
   // Campaign defaults
@@ -78,15 +77,11 @@ export default function SettingsPage() {
   const { plan, isPaid, usage, refresh: refreshSubscription } = useSubscription();
 
   const handleSavePreferences = async () => {
-    setSaving(true);
-    // In a real app, this would save to the backend
-    setTimeout(() => {
-      setSaving(false);
-      toast({
-        title: t('toast.saved.title'),
-        description: t('toast.saved.description'),
-      });
-    }, 500);
+    // Campaign defaults are not yet supported by the backend
+    toast({
+      title: t('toast.comingSoon.title'),
+      description: t('toast.comingSoon.description'),
+    });
   };
 
   const handleChangePassword = async () => {
@@ -109,9 +104,8 @@ export default function SettingsPage() {
     }
 
     setChangingPassword(true);
-    // In a real app, this would call the backend
-    setTimeout(() => {
-      setChangingPassword(false);
+    try {
+      await authApi.changePassword(currentPassword, newPassword);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -119,7 +113,15 @@ export default function SettingsPage() {
         title: t('toast.passwordUpdated.title'),
         description: t('toast.passwordUpdated.description'),
       });
-    }, 500);
+    } catch {
+      toast({
+        title: t('toast.error.title'),
+        description: t('toast.error.passwordChangeFailed'),
+        variant: 'destructive',
+      });
+    } finally {
+      setChangingPassword(false);
+    }
   };
 
   const handleExportData = async () => {
@@ -312,17 +314,20 @@ export default function SettingsPage() {
       </Card>
 
       {/* Campaign Defaults */}
-      <Card>
+      <Card className="opacity-75">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="h-5 w-5" />
             {t('campaignDefaults.title')}
+            <Badge variant="secondary" className="ml-auto text-xs">
+              {t('comingSoon')}
+            </Badge>
           </CardTitle>
           <CardDescription>
             {t('campaignDefaults.subtitle')}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pointer-events-none">
           <div className="space-y-4">
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -336,6 +341,7 @@ export default function SettingsPage() {
                 max={100}
                 step={5}
                 className="w-full"
+                disabled
               />
               <p className="text-xs text-muted-foreground mt-1">
                 {t('campaignDefaults.matchThresholdHint')}
@@ -356,6 +362,7 @@ export default function SettingsPage() {
               <Switch
                 checked={defaultPracticeMode}
                 onCheckedChange={setDefaultPracticeMode}
+                disabled
               />
             </div>
 
@@ -369,6 +376,7 @@ export default function SettingsPage() {
               <Switch
                 checked={defaultAutoApply}
                 onCheckedChange={setDefaultAutoApply}
+                disabled
               />
             </div>
 
@@ -382,35 +390,28 @@ export default function SettingsPage() {
               <Switch
                 checked={defaultRemoteOk}
                 onCheckedChange={setDefaultRemoteOk}
+                disabled
               />
             </div>
-          </div>
-
-          <div className="pt-2">
-            <Button onClick={handleSavePreferences} disabled={saving}>
-              {saving ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="mr-2 h-4 w-4" />
-              )}
-              {t('campaignDefaults.savePreferences')}
-            </Button>
           </div>
         </CardContent>
       </Card>
 
       {/* Notifications */}
-      <Card>
+      <Card className="opacity-75">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
             {t('notifications.title')}
+            <Badge variant="secondary" className="ml-auto text-xs">
+              {t('comingSoon')}
+            </Badge>
           </CardTitle>
           <CardDescription>
             {t('notifications.subtitle')}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pointer-events-none">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label>{t('notifications.email')}</Label>
@@ -421,6 +422,7 @@ export default function SettingsPage() {
             <Switch
               checked={emailNotifications}
               onCheckedChange={setEmailNotifications}
+              disabled
             />
           </div>
 
@@ -434,7 +436,7 @@ export default function SettingsPage() {
             <Switch
               checked={jobAlerts}
               onCheckedChange={setJobAlerts}
-              disabled={!emailNotifications}
+              disabled
             />
           </div>
 
@@ -448,7 +450,7 @@ export default function SettingsPage() {
             <Switch
               checked={applicationUpdates}
               onCheckedChange={setApplicationUpdates}
-              disabled={!emailNotifications}
+              disabled
             />
           </div>
 
@@ -462,7 +464,7 @@ export default function SettingsPage() {
             <Switch
               checked={weeklyDigest}
               onCheckedChange={setWeeklyDigest}
-              disabled={!emailNotifications}
+              disabled
             />
           </div>
         </CardContent>

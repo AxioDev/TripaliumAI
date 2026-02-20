@@ -55,6 +55,13 @@
       "noResults": "No results found"
     }
   },
+  "publicNav": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "allRights": "All rights reserved."
+  },
   "nav": {
     "brand": "TripaliumAI",
     "dashboard": "Dashboard",
@@ -1199,6 +1206,7 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your account and application preferences",
+    "comingSoon": "Coming soon",
     "account": {
       "title": "Account",
       "subtitle": "Your account information",
@@ -1310,7 +1318,12 @@
         "passwordsNoMatch": "New passwords do not match",
         "passwordTooShort": "Password must be at least 8 characters",
         "exportFailed": "Failed to export data",
-        "deleteFailed": "Failed to delete account"
+        "deleteFailed": "Failed to delete account",
+        "passwordChangeFailed": "Failed to change password. Please check your current password."
+      },
+      "comingSoon": {
+        "title": "Coming soon",
+        "description": "This feature is not yet available. Stay tuned!"
       }
     }
   },
