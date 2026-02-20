@@ -814,10 +814,10 @@
     "uploaded": "Uploaded",
     "parsing": {
       "analyzing": "Analyzing your CV... Usually takes 30-60 seconds.",
-      "completed": "COMPLETED",
-      "processing": "PROCESSING",
-      "pending": "PENDING",
-      "failed": "FAILED"
+      "completed": "Parsed",
+      "processing": "Analyzing...",
+      "pending": "Queued",
+      "failed": "Error"
     },
     "actions": {
       "viewParsed": "View parsed data",
@@ -998,11 +998,38 @@
     "saveProfile": "Save Profile",
     "saving": "Saving...",
     "saveChanges": "Save Changes",
+    "saveAll": "Save all changes",
+    "discard": "Discard",
+    "unsavedChanges": "You have unsaved changes",
     "add": "Add",
     "cancel": "Cancel",
     "update": "Update",
     "present": "Present",
     "more": "+{count} more",
+    "sections": {
+      "personal": "Personal Information",
+      "personalSubtitle": "Your identity, contact details, and professional summary",
+      "summary": "Professional Summary",
+      "summarySubtitle": "A brief overview of your professional background",
+      "experience": "Work Experience",
+      "experienceSubtitle": "Your professional experience and achievements",
+      "education": "Education",
+      "educationSubtitle": "Your academic background and qualifications",
+      "skills": "Skills",
+      "skillsSubtitle": "Your technical and professional skills",
+      "documents": "Documents",
+      "documentsSubtitle": "Upload and manage your CVs"
+    },
+    "importBanner": {
+      "title": "Import from your CV",
+      "subtitle": "Populate your profile automatically from a parsed CV",
+      "action": "Import"
+    },
+    "deleteConfirm": {
+      "title": "Delete this item?",
+      "description": "This action cannot be undone. The item will be removed.",
+      "confirm": "Delete"
+    },
     "experience": {
       "title": "Work Experience",
       "count": "{count} position(s)",

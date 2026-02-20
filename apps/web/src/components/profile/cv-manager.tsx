@@ -420,7 +420,7 @@ export function CVManager() {
                     className={`flex items-center gap-1 text-xs px-2 py-1 rounded ${getStatusColor(cv.parsingStatus)}`}
                   >
                     {getStatusIcon(cv.parsingStatus)}
-                    {cv.parsingStatus}
+                    {t(`parsing.${cv.parsingStatus === 'COMPLETED' ? 'completed' : cv.parsingStatus === 'PROCESSING' ? 'processing' : cv.parsingStatus === 'PENDING' ? 'pending' : 'failed'}`)}
                   </span>
                   <div className="flex items-center gap-1">
                     {cv.parsingStatus === 'COMPLETED' && (
@@ -428,7 +428,7 @@ export function CVManager() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleViewParsedData(cv)}
-                        title="View parsed data"
+                        title={t('actions.viewParsed')}
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -439,7 +439,7 @@ export function CVManager() {
                         size="icon"
                         onClick={() => reparseMutation.mutate(cv.id)}
                         disabled={reparseMutation.isLoading}
-                        title="Retry parsing"
+                        title={t('actions.retryParsing')}
                       >
                         <RefreshCw className="h-4 w-4" />
                       </Button>
@@ -448,7 +448,7 @@ export function CVManager() {
                       variant="ghost"
                       size="icon"
                       onClick={() => window.open(`/api/backend/cvs/${cv.id}/download`, '_blank')}
-                      title="Download"
+                      title={t('actions.download')}
                     >
                       <Download className="h-4 w-4" />
                     </Button>
@@ -458,7 +458,7 @@ export function CVManager() {
                         size="icon"
                         onClick={() => baselineMutation.mutate(cv.id)}
                         disabled={baselineMutation.isLoading}
-                        title="Set as baseline"
+                        title={t('actions.setBaseline')}
                       >
                         <Star className="h-4 w-4" />
                       </Button>
@@ -467,7 +467,7 @@ export function CVManager() {
                       variant="ghost"
                       size="icon"
                       onClick={() => setDeleteId(cv.id)}
-                      title="Delete"
+                      title={t('actions.delete')}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

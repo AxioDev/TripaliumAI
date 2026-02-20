@@ -5,13 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
   DialogContent,
@@ -20,8 +14,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { WorkExperience } from '@/lib/api-client';
-import { Plus, Pencil, Trash2, GripVertical, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 
 interface WorkExperienceEditorProps {
   experiences: WorkExperience[];
@@ -60,6 +64,7 @@ export function WorkExperienceEditor({
   const [formData, setFormData] = useState<ExperienceFormData>(emptyForm);
   const [localExperiences, setLocalExperiences] = useState(experiences);
   const [hasChanges, setHasChanges] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
   const openAddDialog = () => {
     setEditIndex(null);
@@ -111,6 +116,7 @@ export function WorkExperienceEditor({
   const handleDelete = (index: number) => {
     setLocalExperiences(localExperiences.filter((_, i) => i !== index));
     setHasChanges(true);
+    setDeleteIndex(null);
   };
 
   const handleSaveAll = async () => {
@@ -135,96 +141,91 @@ export function WorkExperienceEditor({
   };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>{t('experience.title')}</CardTitle>
-          <CardDescription>
-            {t('experience.count', { count: localExperiences.length })}
-          </CardDescription>
-        </div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          {t('experience.count', { count: localExperiences.length })}
+        </p>
         <Button onClick={openAddDialog} size="sm">
           <Plus className="h-4 w-4 mr-1" /> {t('add')}
         </Button>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {localExperiences.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            {t('experience.empty')}
-          </p>
-        ) : (
-          localExperiences.map((exp, index) => (
-            <div
-              key={exp.id || index}
-              className="flex items-start gap-4 p-4 border rounded-lg"
-            >
-              <GripVertical className="h-5 w-5 text-muted-foreground mt-1 cursor-move" />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="font-medium">{exp.title}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {exp.company}
-                      {exp.location && ` - ${exp.location}`}
-                    </p>
-                  </div>
-                  <span className="text-sm text-muted-foreground whitespace-nowrap">
-                    {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
-                  </span>
-                </div>
-                {exp.description && (
-                  <p className="text-sm mt-2">{exp.description}</p>
-                )}
-                {exp.highlights && exp.highlights.length > 0 && (
-                  <ul className="text-sm mt-2 list-disc list-inside">
-                    {exp.highlights.slice(0, 3).map((h, i) => (
-                      <li key={i} className="text-muted-foreground">
-                        {h}
-                      </li>
-                    ))}
-                    {exp.highlights.length > 3 && (
-                      <li className="text-muted-foreground">
-                        {t('more', { count: exp.highlights.length - 3 })}
-                      </li>
-                    )}
-                  </ul>
-                )}
-              </div>
-              <div className="flex gap-1">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => openEditDialog(index)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleDelete(index)}
-                >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </div>
-            </div>
-          ))
-        )}
+      </div>
 
-        {hasChanges && (
-          <div className="flex justify-end pt-4 border-t">
-            <Button onClick={handleSaveAll} disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t('saving')}
-                </>
-              ) : (
-                t('saveChanges')
+      {localExperiences.length === 0 ? (
+        <p className="text-sm text-muted-foreground text-center py-4">
+          {t('experience.empty')}
+        </p>
+      ) : (
+        localExperiences.map((exp, index) => (
+          <div
+            key={exp.id || index}
+            className="flex items-start gap-4 p-4 border rounded-lg"
+          >
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h4 className="font-medium">{exp.title}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {exp.company}
+                    {exp.location && ` - ${exp.location}`}
+                  </p>
+                </div>
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                  {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
+                </span>
+              </div>
+              {exp.description && (
+                <p className="text-sm mt-2">{exp.description}</p>
               )}
-            </Button>
+              {exp.highlights && exp.highlights.length > 0 && (
+                <ul className="text-sm mt-2 list-disc list-inside">
+                  {exp.highlights.slice(0, 3).map((h, i) => (
+                    <li key={i} className="text-muted-foreground">
+                      {h}
+                    </li>
+                  ))}
+                  {exp.highlights.length > 3 && (
+                    <li className="text-muted-foreground">
+                      {t('more', { count: exp.highlights.length - 3 })}
+                    </li>
+                  )}
+                </ul>
+              )}
+            </div>
+            <div className="flex gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => openEditDialog(index)}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setDeleteIndex(index)}
+              >
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            </div>
           </div>
-        )}
-      </CardContent>
+        ))
+      )}
+
+      {hasChanges && (
+        <div className="flex justify-end pt-4 border-t">
+          <Button onClick={handleSaveAll} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t('saving')}
+              </>
+            ) : (
+              t('saveChanges')
+            )}
+          </Button>
+        </div>
+      )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-lg">
@@ -303,9 +304,9 @@ export function WorkExperienceEditor({
 
             <div className="space-y-2">
               <Label htmlFor="description">{t('experience.description')}</Label>
-              <textarea
+              <Textarea
                 id="description"
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="min-h-[80px]"
                 value={formData.description}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
@@ -316,9 +317,9 @@ export function WorkExperienceEditor({
 
             <div className="space-y-2">
               <Label htmlFor="highlights">{t('experience.highlights')}</Label>
-              <textarea
+              <Textarea
                 id="highlights"
-                className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="min-h-[100px]"
                 value={formData.highlights}
                 onChange={(e) =>
                   setFormData({ ...formData, highlights: e.target.value })
@@ -341,6 +342,28 @@ export function WorkExperienceEditor({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Card>
+
+      <AlertDialog open={deleteIndex !== null} onOpenChange={() => setDeleteIndex(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('deleteConfirm.title')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('deleteConfirm.description')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (deleteIndex !== null) handleDelete(deleteIndex);
+              }}
+            >
+              {t('deleteConfirm.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 }

@@ -302,7 +302,7 @@ export default function DashboardPage() {
           <CardContent>
             {hasCompletedSetup ? (
               <div className="space-y-3">
-                <Link href="/dashboard/profile?tab=documents">
+                <Link href="/dashboard/profile#documents">
                   <Button variant="outline" className="w-full justify-between">
                     <span className="flex items-center gap-2">
                       <Upload className="h-4 w-4" />
@@ -356,7 +356,7 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between">
                       <p className="font-medium">{t('gettingStarted.step1.title')}</p>
                       {!stats?.cvCount && (
-                        <Link href="/dashboard/profile?tab=documents">
+                        <Link href="/dashboard/profile#documents">
                           <Button size="sm" variant="outline">
                             {tCommon('actions.upload')}
                           </Button>

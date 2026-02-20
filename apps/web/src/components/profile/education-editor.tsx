@@ -5,13 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +14,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Education } from '@/lib/api-client';
 import { Plus, Pencil, Trash2, GraduationCap, Loader2 } from 'lucide-react';
 
@@ -60,6 +64,7 @@ export function EducationEditor({
   const [formData, setFormData] = useState<EducationFormData>(emptyForm);
   const [localEducations, setLocalEducations] = useState(educations);
   const [hasChanges, setHasChanges] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
   const openAddDialog = () => {
     setEditIndex(null);
@@ -108,6 +113,7 @@ export function EducationEditor({
   const handleDelete = (index: number) => {
     setLocalEducations(localEducations.filter((_, i) => i !== index));
     setHasChanges(true);
+    setDeleteIndex(null);
   };
 
   const handleSaveAll = async () => {
@@ -132,92 +138,88 @@ export function EducationEditor({
   };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>{t('education.title')}</CardTitle>
-          <CardDescription>
-            {t('education.count', { count: localEducations.length })}
-          </CardDescription>
-        </div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          {t('education.count', { count: localEducations.length })}
+        </p>
         <Button onClick={openAddDialog} size="sm">
           <Plus className="h-4 w-4 mr-1" /> {t('add')}
         </Button>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {localEducations.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            {t('education.empty')}
-          </p>
-        ) : (
-          localEducations.map((edu, index) => (
-            <div
-              key={edu.id || index}
-              className="flex items-start gap-4 p-4 border rounded-lg"
-            >
-              <div className="rounded-full bg-muted p-2">
-                <GraduationCap className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="font-medium">
-                      {edu.degree}
-                      {edu.field && ` ${t('education.in')} ${edu.field}`}
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {edu.institution}
-                    </p>
-                  </div>
-                  <span className="text-sm text-muted-foreground whitespace-nowrap">
-                    {formatDate(edu.startDate)}
-                    {edu.endDate && ` - ${formatDate(edu.endDate)}`}
-                  </span>
-                </div>
-                {edu.gpa && (
-                  <p className="text-sm mt-1">{t('education.gpa').replace(' (optional)', '')}: {edu.gpa}</p>
-                )}
-                {edu.description && (
-                  <p className="text-sm mt-2 text-muted-foreground">
-                    {edu.description}
-                  </p>
-                )}
-              </div>
-              <div className="flex gap-1">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => openEditDialog(index)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleDelete(index)}
-                >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </div>
-            </div>
-          ))
-        )}
+      </div>
 
-        {hasChanges && (
-          <div className="flex justify-end pt-4 border-t">
-            <Button onClick={handleSaveAll} disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t('saving')}
-                </>
-              ) : (
-                t('saveChanges')
+      {localEducations.length === 0 ? (
+        <p className="text-sm text-muted-foreground text-center py-4">
+          {t('education.empty')}
+        </p>
+      ) : (
+        localEducations.map((edu, index) => (
+          <div
+            key={edu.id || index}
+            className="flex items-start gap-4 p-4 border rounded-lg"
+          >
+            <div className="rounded-full bg-muted p-2">
+              <GraduationCap className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h4 className="font-medium">
+                    {edu.degree}
+                    {edu.field && ` ${t('education.in')} ${edu.field}`}
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {edu.institution}
+                  </p>
+                </div>
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                  {formatDate(edu.startDate)}
+                  {edu.endDate && ` - ${formatDate(edu.endDate)}`}
+                </span>
+              </div>
+              {edu.gpa && (
+                <p className="text-sm mt-1">{t('education.gpa').replace(' (optional)', '')}: {edu.gpa}</p>
               )}
-            </Button>
+              {edu.description && (
+                <p className="text-sm mt-2 text-muted-foreground">
+                  {edu.description}
+                </p>
+              )}
+            </div>
+            <div className="flex gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => openEditDialog(index)}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setDeleteIndex(index)}
+              >
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            </div>
           </div>
-        )}
-      </CardContent>
+        ))
+      )}
+
+      {hasChanges && (
+        <div className="flex justify-end pt-4 border-t">
+          <Button onClick={handleSaveAll} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t('saving')}
+              </>
+            ) : (
+              t('saveChanges')
+            )}
+          </Button>
+        </div>
+      )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-lg">
@@ -307,9 +309,9 @@ export function EducationEditor({
 
             <div className="space-y-2">
               <Label htmlFor="eduDescription">{t('education.descriptionLabel')}</Label>
-              <textarea
+              <Textarea
                 id="eduDescription"
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="min-h-[80px]"
                 value={formData.description}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
@@ -332,6 +334,28 @@ export function EducationEditor({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Card>
+
+      <AlertDialog open={deleteIndex !== null} onOpenChange={() => setDeleteIndex(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('deleteConfirm.title')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('deleteConfirm.description')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (deleteIndex !== null) handleDelete(deleteIndex);
+              }}
+            >
+              {t('deleteConfirm.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 }

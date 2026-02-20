@@ -309,6 +309,104 @@ export function ProfileReadiness({
   );
 }
 
+// Map readiness check keys to section IDs for scroll navigation
+const checkToSection: Record<string, string> = {
+  name: 'personal',
+  contact: 'personal',
+  location: 'personal',
+  summary: 'personal',
+  experience: 'experience',
+  experienceDetails: 'experience',
+  education: 'education',
+  skills: 'skills',
+};
+
+// Inline version for profile page header
+export function ProfileReadinessInline({
+  profile,
+  onScrollTo,
+  className,
+}: {
+  profile: Profile | null;
+  onScrollTo?: (sectionId: string) => void;
+  className?: string;
+}) {
+  const t = useTranslations('profile.readiness');
+  const readinessChecks = React.useMemo(() => getReadinessChecks(t), [t]);
+
+  const results = React.useMemo(() => {
+    return readinessChecks.map(check => ({
+      ...check,
+      passed: check.check(profile),
+    }));
+  }, [readinessChecks, profile]);
+
+  const totalWeight = results.reduce((sum, r) => sum + r.weight, 0);
+  const score = results.reduce((sum, r) => sum + (r.passed ? r.weight : 0), 0);
+  const percentage = Math.round((score / totalWeight) * 100);
+  const failedChecks = results.filter(r => !r.passed);
+
+  const getScoreColor = (pct: number) => {
+    if (pct >= 70) return 'text-success';
+    if (pct >= 40) return 'text-warning';
+    return 'text-destructive';
+  };
+
+  const getScoreLabel = (pct: number) => {
+    if (pct >= 90) return t('labels.excellent');
+    if (pct >= 70) return t('labels.strong');
+    if (pct >= 50) return t('labels.good');
+    if (pct >= 30) return t('labels.gettingStarted');
+    return t('labels.needsAttention');
+  };
+
+  const getProgressColor = (pct: number) => {
+    if (pct >= 70) return 'bg-success';
+    if (pct >= 40) return 'bg-warning';
+    return 'bg-destructive';
+  };
+
+  return (
+    <div className={cn('space-y-4', className)}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className={cn('text-2xl font-bold', getScoreColor(percentage))}>{percentage}%</span>
+          <span className={cn('text-sm', getScoreColor(percentage))}>{getScoreLabel(percentage)}</span>
+        </div>
+        {percentage === 100 && (
+          <div className="flex items-center gap-1.5 text-success text-sm font-medium">
+            <CheckCircle2 className="h-4 w-4" />
+            {t('messages.fullyOptimized')}
+          </div>
+        )}
+      </div>
+      <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+        <div
+          className={cn('h-full rounded-full transition-all duration-700', getProgressColor(percentage))}
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+      {failedChecks.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {failedChecks.slice(0, 3).map(check => (
+            <button
+              key={check.key}
+              onClick={() => onScrollTo?.(checkToSection[check.key] || 'personal')}
+              className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-sm hover:bg-muted/80 transition-colors"
+            >
+              {check.icon}
+              <span>{check.suggestion}</span>
+              {check.boost && (
+                <span className="text-success text-xs font-medium">{check.boost}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Compact widget for dashboard
 export function ProfileReadinessWidget({
   profile,

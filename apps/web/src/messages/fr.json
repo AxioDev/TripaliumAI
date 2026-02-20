@@ -818,10 +818,10 @@
     "uploaded": "Téléversé",
     "parsing": {
       "analyzing": "Analyse de votre CV... Généralement 30 à 60 secondes.",
-      "completed": "TERMINÉ",
-      "processing": "EN COURS",
-      "pending": "EN ATTENTE",
-      "failed": "ÉCHOUÉ"
+      "completed": "Analysé",
+      "processing": "Analyse...",
+      "pending": "En file d'attente",
+      "failed": "Erreur"
     },
     "actions": {
       "viewParsed": "Voir les données extraites",
@@ -1002,11 +1002,38 @@
     "saveProfile": "Enregistrer le profil",
     "saving": "Enregistrement...",
     "saveChanges": "Enregistrer les modifications",
+    "saveAll": "Enregistrer toutes les modifications",
+    "discard": "Annuler les modifications",
+    "unsavedChanges": "Vous avez des modifications non enregistrées",
     "add": "Ajouter",
     "cancel": "Annuler",
     "update": "Mettre à jour",
     "present": "Présent",
     "more": "+{count} de plus",
+    "sections": {
+      "personal": "Informations personnelles",
+      "personalSubtitle": "Votre identité, coordonnées et résumé professionnel",
+      "summary": "Résumé professionnel",
+      "summarySubtitle": "Un bref aperçu de votre parcours professionnel",
+      "experience": "Expérience professionnelle",
+      "experienceSubtitle": "Votre expérience professionnelle et vos réalisations",
+      "education": "Formation",
+      "educationSubtitle": "Votre parcours académique et vos qualifications",
+      "skills": "Compétences",
+      "skillsSubtitle": "Vos compétences techniques et professionnelles",
+      "documents": "Documents",
+      "documentsSubtitle": "Téléversez et gérez vos CV"
+    },
+    "importBanner": {
+      "title": "Importer depuis votre CV",
+      "subtitle": "Remplissez votre profil automatiquement à partir d'un CV analysé",
+      "action": "Importer"
+    },
+    "deleteConfirm": {
+      "title": "Supprimer cet élément ?",
+      "description": "Cette action est irréversible. L'élément sera supprimé.",
+      "confirm": "Supprimer"
+    },
     "experience": {
       "title": "Expérience professionnelle",
       "count": "{count} poste(s)",
