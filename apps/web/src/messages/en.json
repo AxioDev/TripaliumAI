@@ -475,6 +475,11 @@
     "title": "Campaigns",
     "subtitle": "Manage your job search campaigns",
     "newCampaign": "New Campaign",
+    "search": "Search campaigns...",
+    "filterAll": "All statuses",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "sortName": "Name A-Z",
     "new": {
       "title": "New Campaign",
       "subtitle": "Define your job search criteria",
@@ -726,6 +731,10 @@
   "applications": {
     "title": "Applications",
     "subtitle": "Track and manage your job applications",
+    "search": "Search by job title, company...",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "sortCompany": "Company A-Z",
     "stats": {
       "total": "Total",
       "pendingReview": "Pending Review",

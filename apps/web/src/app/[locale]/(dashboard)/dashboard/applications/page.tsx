@@ -22,6 +22,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { AnimatedCheckmark } from '@/components/ui/animated-checkmark';
 import { applicationApi, Application } from '@/lib/api-client';
 import { useApi, useMutation } from '@/hooks/use-api';
+import { Input } from '@/components/ui/input';
 import {
   Briefcase,
   Loader2,
@@ -36,6 +37,7 @@ import {
   Building,
   MapPin,
   ExternalLink,
+  Search,
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/date-utils';
 
@@ -80,6 +82,8 @@ export default function ApplicationsPage() {
   const t = useTranslations('applications');
   const locale = useLocale();
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<string>('newest');
 
   // Fetch applications
   const {
@@ -219,25 +223,50 @@ export default function ApplicationsPage() {
 
       {/* Applications List */}
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>{t('list.title')}</CardTitle>
-            <CardDescription>
-              {t('list.subtitle')}
-            </CardDescription>
+        <CardHeader className="space-y-4">
+          <div className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>{t('list.title')}</CardTitle>
+              <CardDescription>
+                {t('list.subtitle')}
+              </CardDescription>
+            </div>
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder={t('filter.all')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('filter.all')}</SelectItem>
-              <SelectItem value="PENDING_REVIEW">{t('filter.needsAttention')}</SelectItem>
-              <SelectItem value="READY_TO_SUBMIT">{t('filter.readyToSend')}</SelectItem>
-              <SelectItem value="SUBMITTED">{t('filter.sent')}</SelectItem>
-              <SelectItem value="WITHDRAWN">{t('filter.withdrawn')}</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder={t('search')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder={t('filter.all')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t('filter.all')}</SelectItem>
+                  <SelectItem value="PENDING_REVIEW">{t('filter.needsAttention')}</SelectItem>
+                  <SelectItem value="READY_TO_SUBMIT">{t('filter.readyToSend')}</SelectItem>
+                  <SelectItem value="SUBMITTED">{t('filter.sent')}</SelectItem>
+                  <SelectItem value="WITHDRAWN">{t('filter.withdrawn')}</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">{t('sortNewest')}</SelectItem>
+                  <SelectItem value="oldest">{t('sortOldest')}</SelectItem>
+                  <SelectItem value="company">{t('sortCompany')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -257,7 +286,20 @@ export default function ApplicationsPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {applications.map((application: Application) => {
+              {applications
+                .filter((a: Application) => {
+                  if (!searchQuery) return true;
+                  const q = searchQuery.toLowerCase();
+                  return a.jobOffer.title.toLowerCase().includes(q) ||
+                    a.jobOffer.company.toLowerCase().includes(q) ||
+                    (a.jobOffer.location && a.jobOffer.location.toLowerCase().includes(q));
+                })
+                .sort((a: Application, b: Application) => {
+                  if (sortBy === 'company') return a.jobOffer.company.localeCompare(b.jobOffer.company);
+                  if (sortBy === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                })
+                .map((application: Application) => {
                 const statusKey = statusKeyMap[application.status] || 'pendingReview';
                 const statusColor = statusColors[application.status] || 'bg-yellow-100 text-yellow-800';
                 const statusIcon = statusIcons[application.status] || <Eye className="h-3 w-3" />;

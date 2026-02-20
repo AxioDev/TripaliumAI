@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AnimatedCheckmark } from '@/components/ui/animated-checkmark';
+import { Skeleton } from '@/components/ui/skeleton';
 import { WelcomeModal } from '@/components/dashboard/welcome-modal';
 import {
   FileText,
@@ -185,7 +186,10 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {statsLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <div className="space-y-2">
+                <Skeleton className="h-7 w-12" />
+                <Skeleton className="h-3 w-32" />
+              </div>
             ) : (
               <>
                 <div className="text-2xl font-bold">{stats?.cvCount || 0}</div>
@@ -209,7 +213,10 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {statsLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <div className="space-y-2">
+                <Skeleton className="h-7 w-12" />
+                <Skeleton className="h-3 w-36" />
+              </div>
             ) : (
               <>
                 <div className="text-2xl font-bold">
@@ -235,7 +242,10 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {statsLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <div className="space-y-2">
+                <Skeleton className="h-7 w-12" />
+                <Skeleton className="h-3 w-28" />
+              </div>
             ) : (
               <>
                 <div className="text-2xl font-bold">{stats?.jobCount || 0}</div>
@@ -259,7 +269,10 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {statsLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <div className="space-y-2">
+                <Skeleton className="h-7 w-12" />
+                <Skeleton className="h-3 w-32" />
+              </div>
             ) : (
               <>
                 <div className="text-2xl font-bold">

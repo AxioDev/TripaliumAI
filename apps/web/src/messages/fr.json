@@ -475,6 +475,11 @@
     "title": "Campagnes",
     "subtitle": "Gérez vos campagnes de recherche d'emploi",
     "newCampaign": "Nouvelle campagne",
+    "search": "Rechercher des campagnes...",
+    "filterAll": "Tous les statuts",
+    "sortNewest": "Plus récentes",
+    "sortOldest": "Plus anciennes",
+    "sortName": "Nom A-Z",
     "new": {
       "title": "Nouvelle campagne",
       "subtitle": "Définissez vos critères de recherche d'emploi",
@@ -730,6 +735,10 @@
   "applications": {
     "title": "Candidatures",
     "subtitle": "Suivez et gérez vos candidatures",
+    "search": "Rechercher par titre, entreprise...",
+    "sortNewest": "Plus récentes",
+    "sortOldest": "Plus anciennes",
+    "sortCompany": "Entreprise A-Z",
     "stats": {
       "total": "Total",
       "pendingReview": "En attente de révision",

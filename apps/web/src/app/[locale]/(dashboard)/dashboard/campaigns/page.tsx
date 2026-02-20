@@ -24,6 +24,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Target,
   Play,
@@ -38,6 +46,7 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
+  Search,
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/date-utils';
 
@@ -71,6 +80,9 @@ export default function CampaignsPage() {
   const tCommon = useTranslations('common');
   const locale = useLocale();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('newest');
 
   const {
     data: campaigns,
@@ -191,6 +203,45 @@ export default function CampaignsPage() {
         </Link>
       </div>
 
+      {/* Search and Filter Bar */}
+      {campaigns && campaigns.length > 0 && (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder={t('search')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('filterAll')}</SelectItem>
+                <SelectItem value="DRAFT">{t('status.draft')}</SelectItem>
+                <SelectItem value="ACTIVE">{t('status.active')}</SelectItem>
+                <SelectItem value="PAUSED">{t('status.paused')}</SelectItem>
+                <SelectItem value="COMPLETED">{t('status.completed')}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">{t('sortNewest')}</SelectItem>
+                <SelectItem value="oldest">{t('sortOldest')}</SelectItem>
+                <SelectItem value="name">{t('sortName')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
+
       {!campaigns || campaigns.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
@@ -209,7 +260,23 @@ export default function CampaignsPage() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {campaigns.map((campaign: Campaign) => {
+          {campaigns
+            .filter((c: Campaign) => {
+              if (statusFilter !== 'all' && c.status !== statusFilter) return false;
+              if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                return c.name.toLowerCase().includes(q) ||
+                  c.targetRoles.some(r => r.toLowerCase().includes(q)) ||
+                  c.targetLocations.some(l => l.toLowerCase().includes(q));
+              }
+              return true;
+            })
+            .sort((a: Campaign, b: Campaign) => {
+              if (sortBy === 'name') return a.name.localeCompare(b.name);
+              if (sortBy === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+              return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            })
+            .map((campaign: Campaign) => {
             const statusKey = statusKeyMap[campaign.status] || 'draft';
             const statusColor = statusColors[campaign.status] || statusColors.DRAFT;
             const statusIcon = statusIcons[campaign.status] || statusIcons.DRAFT;
