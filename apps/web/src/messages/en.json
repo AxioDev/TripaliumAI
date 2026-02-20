@@ -636,6 +636,7 @@
       "action": "Create your first campaign"
     },
     "practice": "Practice",
+    "copy": "Copy",
     "jobs": "jobs",
     "applications": "applications",
     "created": "Created",
@@ -651,7 +652,8 @@
       "start": "Start campaign",
       "pause": "Pause campaign",
       "stop": "Stop campaign",
-      "delete": "Delete campaign"
+      "delete": "Delete campaign",
+      "duplicate": "Duplicate campaign"
     },
     "deleteDialog": {
       "title": "Delete Campaign",
@@ -681,7 +683,12 @@
         "startFailed": "Failed to start campaign",
         "pauseFailed": "Failed to pause campaign",
         "stopFailed": "Failed to stop campaign",
-        "deleteFailed": "Failed to delete campaign"
+        "deleteFailed": "Failed to delete campaign",
+        "cloneFailed": "Failed to duplicate campaign"
+      },
+      "cloned": {
+        "title": "Campaign duplicated",
+        "description": "A copy of the campaign has been created as a draft."
       }
     },
     "detail": {
@@ -805,7 +812,10 @@
     "empty": {
       "title": "No applications yet",
       "description": "Start a campaign to discover matching jobs and create applications.",
-      "action": "View Campaigns"
+      "action": "View Campaigns",
+      "noResults": "No matching applications",
+      "noResultsDescription": "Try adjusting your search or filters to find what you're looking for.",
+      "clearFilters": "Clear filters"
     },
     "practice": "Practice",
     "created": "Created",
@@ -836,6 +846,9 @@
     },
     "sections": {
       "jobDetails": "Job Details",
+      "documents": "Documents",
+      "matchAnalysis": "Match",
+      "timeline": "Timeline",
       "description": "Description",
       "requirements": "Requirements"
     },

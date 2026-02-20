@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +13,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
-import { campaignApi, Campaign } from '@/lib/api-client';
+import { campaignApi, Campaign, CreateCampaignData } from '@/lib/api-client';
 import { useApi, useMutation } from '@/hooks/use-api';
 import {
   AlertDialog,
@@ -47,8 +48,10 @@ import {
   CheckCircle,
   Clock,
   Search,
+  Copy,
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/date-utils';
+import { campaignStatusColors, campaignStatusKeyMap } from '@/lib/status-config';
 
 const statusIcons: Record<string, React.ReactNode> = {
   DRAFT: <Clock className="h-3 w-3" />,
@@ -58,23 +61,9 @@ const statusIcons: Record<string, React.ReactNode> = {
   FAILED: <AlertTriangle className="h-3 w-3" />,
 };
 
-const statusColors: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
-  ACTIVE: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  PAUSED: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-  COMPLETED: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  FAILED: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-};
-
-const statusKeyMap: Record<string, string> = {
-  DRAFT: 'draft',
-  ACTIVE: 'active',
-  PAUSED: 'paused',
-  COMPLETED: 'completed',
-  FAILED: 'failed',
-};
 
 export default function CampaignsPage() {
+  const router = useRouter();
   const { toast } = useToast();
   const t = useTranslations('campaigns');
   const tCommon = useTranslations('common');
@@ -172,6 +161,39 @@ export default function CampaignsPage() {
         toast({
           title: t('toast.error.title'),
           description: t('toast.error.deleteFailed'),
+          variant: 'destructive',
+        });
+      },
+    }
+  );
+
+  const cloneMutation = useMutation(
+    (campaign: Campaign) =>
+      campaignApi.create({
+        name: `${campaign.name} (${t('copy')})`,
+        targetRoles: campaign.targetRoles,
+        targetLocations: campaign.targetLocations,
+        contractTypes: campaign.contractTypes,
+        salaryMin: campaign.salaryMin ?? undefined,
+        salaryMax: campaign.salaryMax ?? undefined,
+        salaryCurrency: campaign.salaryCurrency ?? undefined,
+        remoteOk: campaign.remoteOk,
+        matchThreshold: campaign.matchThreshold,
+        testMode: campaign.testMode,
+        autoApply: campaign.autoApply,
+      }),
+    {
+      onSuccess: (newCampaign) => {
+        toast({
+          title: t('toast.cloned.title'),
+          description: t('toast.cloned.description'),
+        });
+        router.push(`/dashboard/campaigns/${newCampaign.id}`);
+      },
+      onError: () => {
+        toast({
+          title: t('toast.error.title'),
+          description: t('toast.error.cloneFailed'),
           variant: 'destructive',
         });
       },
@@ -277,8 +299,8 @@ export default function CampaignsPage() {
               return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
             })
             .map((campaign: Campaign) => {
-            const statusKey = statusKeyMap[campaign.status] || 'draft';
-            const statusColor = statusColors[campaign.status] || statusColors.DRAFT;
+            const statusKey = campaignStatusKeyMap[campaign.status] || 'draft';
+            const statusColor = campaignStatusColors[campaign.status] || campaignStatusColors.DRAFT;
             const statusIcon = statusIcons[campaign.status] || statusIcons.DRAFT;
             const isActive = campaign.status === 'ACTIVE';
             const isPaused = campaign.status === 'PAUSED';
@@ -383,6 +405,15 @@ export default function CampaignsPage() {
                           <Square className="h-4 w-4 text-red-600" />
                         </Button>
                       )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title={t('actions.duplicate')}
+                        onClick={() => cloneMutation.mutate(campaign)}
+                        disabled={cloneMutation.isLoading}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
                       {canDelete && (
                         <Button
                           variant="ghost"

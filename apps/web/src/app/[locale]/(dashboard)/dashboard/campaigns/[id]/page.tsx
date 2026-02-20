@@ -58,15 +58,7 @@ import {
 import { useLocale } from 'next-intl';
 import { formatRelativeTime } from '@/lib/date-utils';
 
-const statusColors: Record<string, string> = {
-  DISCOVERED: 'bg-blue-100 text-blue-800',
-  ANALYZING: 'bg-yellow-100 text-yellow-800',
-  MATCHED: 'bg-green-100 text-green-800',
-  REJECTED: 'bg-gray-100 text-gray-800',
-  APPLIED: 'bg-purple-100 text-purple-800',
-  EXPIRED: 'bg-red-100 text-red-800',
-  ERROR: 'bg-red-100 text-red-800',
-};
+import { jobStatusColors, getMatchScoreBadgeColor } from '@/lib/status-config';
 
 const campaignStatusColors: Record<string, { color: string; icon: React.ReactNode }> = {
   DRAFT: { color: 'bg-gray-100 text-gray-800', icon: <Clock className="h-4 w-4" /> },
@@ -77,14 +69,8 @@ const campaignStatusColors: Record<string, { color: string; icon: React.ReactNod
 };
 
 function MatchScoreBadge({ score, label }: { score: number; label: string }) {
-  let color = 'bg-gray-100 text-gray-800';
-  if (score >= 80) color = 'bg-green-100 text-green-800';
-  else if (score >= 60) color = 'bg-blue-100 text-blue-800';
-  else if (score >= 40) color = 'bg-yellow-100 text-yellow-800';
-  else color = 'bg-red-100 text-red-800';
-
   return (
-    <span className={`text-xs font-medium px-2 py-0.5 rounded ${color}`}>
+    <span className={`text-xs font-medium px-2 py-0.5 rounded ${getMatchScoreBadgeColor(score)}`}>
       {label}
     </span>
   );
@@ -566,71 +552,73 @@ export default function CampaignDetailPage() {
           ) : (
             <div className="space-y-4">
               {jobs.map((job: JobOffer) => {
-                const jobStatusColor = statusColors[job.status] || statusColors.DISCOVERED;
+                const jobStatusColor = jobStatusColors[job.status] || jobStatusColors.DISCOVERED;
                 const isAnalyzing = job.status === 'ANALYZING';
                 const canReject = job.status === 'MATCHED' || job.status === 'DISCOVERED';
 
                 return (
                   <div
                     key={job.id}
-                    className="flex items-start justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                    className="flex flex-col gap-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors sm:flex-row sm:items-start sm:justify-between sm:p-4"
                   >
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <h4 className="font-medium truncate">{job.title}</h4>
-                            <span className={`text-xs px-2 py-0.5 rounded ${jobStatusColor}`}>
-                              {isAnalyzing && <Loader2 className="h-3 w-3 animate-spin inline mr-1" />}
-                              {getJobStatusLabel(job.status)}
-                            </span>
-                            {job.matchScore !== null && (
-                              <MatchScoreBadge score={job.matchScore} label={t('detail.jobs.match', { score: job.matchScore })} />
-                            )}
-                            {job.jobSource && (
-                              <SourceBadge source={job.jobSource} />
-                            )}
-                            {job.discriminationFlags && job.discriminationFlags.length > 0 && (
-                              <DiscriminationBadge flags={job.discriminationFlags} locale={locale} t={t} />
-                            )}
-                          </div>
-                          <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Building className="h-3 w-3" />
-                              {job.company}
-                            </span>
-                            {job.location && (
-                              <span className="flex items-center gap-1">
-                                <MapPin className="h-3 w-3" />
-                                {job.location}
-                              </span>
-                            )}
-                            {job.salary && (
-                              <span className="flex items-center gap-1">
-                                <DollarSign className="h-3 w-3" />
-                                {job.salary}
-                              </span>
-                            )}
-                            {job.contractType && (
-                              <span className="text-xs bg-muted px-2 py-0.5 rounded">
-                                {job.contractType}
-                              </span>
-                            )}
-                            {job.remoteType && (
-                              <span className="text-xs bg-muted px-2 py-0.5 rounded">
-                                {job.remoteType}
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            <Calendar className="h-3 w-3 inline mr-1" />
-                            {t('detail.jobs.discovered')}{' '}
-                            {formatRelativeTime(job.discoveredAt, locale)}
-                          </p>
-                        </div>
+                      {/* Line 1: Title + Status */}
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <h4 className="font-medium truncate">{job.title}</h4>
+                        <span className={`text-xs px-2 py-0.5 rounded ${jobStatusColor}`}>
+                          {isAnalyzing && <Loader2 className="h-3 w-3 animate-spin inline mr-1" />}
+                          {getJobStatusLabel(job.status)}
+                        </span>
+                        {job.matchScore !== null && (
+                          <MatchScoreBadge score={job.matchScore} label={t('detail.jobs.match', { score: job.matchScore })} />
+                        )}
                       </div>
+                      {/* Line 2: Company + Location + Source/Badges */}
+                      <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Building className="h-3 w-3" />
+                          {job.company}
+                        </span>
+                        {job.location && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {job.location}
+                          </span>
+                        )}
+                        {job.jobSource && (
+                          <SourceBadge source={job.jobSource} />
+                        )}
+                        {job.discriminationFlags && job.discriminationFlags.length > 0 && (
+                          <DiscriminationBadge flags={job.discriminationFlags} locale={locale} t={t} />
+                        )}
+                      </div>
+                      {/* Line 3: Secondary info - hidden on mobile */}
+                      <div className="hidden sm:flex flex-wrap gap-3 text-sm text-muted-foreground mt-1">
+                        {job.salary && (
+                          <span className="flex items-center gap-1">
+                            <DollarSign className="h-3 w-3" />
+                            {job.salary}
+                          </span>
+                        )}
+                        {job.contractType && (
+                          <span className="text-xs bg-muted px-2 py-0.5 rounded">
+                            {job.contractType}
+                          </span>
+                        )}
+                        {job.remoteType && (
+                          <span className="text-xs bg-muted px-2 py-0.5 rounded">
+                            {job.remoteType}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        <Calendar className="h-3 w-3 inline mr-1" />
+                        {t('detail.jobs.discovered')}{' '}
+                        {formatRelativeTime(job.discoveredAt, locale)}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-2 ml-4">
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 sm:ml-4">
                       {canReject && (
                         <Button
                           variant="ghost"

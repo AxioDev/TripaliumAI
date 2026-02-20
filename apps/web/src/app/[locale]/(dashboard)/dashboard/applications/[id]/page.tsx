@@ -28,6 +28,7 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
 import { applicationApi, profileApi, Application, GeneratedDocument, EmailRecord } from '@/lib/api-client';
+import { applicationStatusColors } from '@/lib/status-config';
 import { useApi, useMutation } from '@/hooks/use-api';
 import { DocumentPreview } from '@/components/document-preview';
 import { ApplicationStrength } from '@/components/applications/application-strength';
@@ -458,11 +459,33 @@ export default function ApplicationDetailPage() {
         />
       )}
 
+      {/* Mobile Section Navigation */}
+      <div className="flex gap-2 overflow-x-auto pb-2 lg:hidden">
+        <Button variant="outline" size="sm" onClick={() => document.getElementById('section-details')?.scrollIntoView({ behavior: 'smooth' })}>
+          <Briefcase className="h-3 w-3 mr-1" />
+          {t('sections.jobDetails')}
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => document.getElementById('section-documents')?.scrollIntoView({ behavior: 'smooth' })}>
+          <FileText className="h-3 w-3 mr-1" />
+          {t('sections.documents')}
+        </Button>
+        {matchAnalysis && (
+          <Button variant="outline" size="sm" onClick={() => document.getElementById('section-match')?.scrollIntoView({ behavior: 'smooth' })}>
+            <Target className="h-3 w-3 mr-1" />
+            {t('sections.matchAnalysis')}
+          </Button>
+        )}
+        <Button variant="outline" size="sm" onClick={() => document.getElementById('section-timeline')?.scrollIntoView({ behavior: 'smooth' })}>
+          <Clock className="h-3 w-3 mr-1" />
+          {t('sections.timeline')}
+        </Button>
+      </div>
+
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Job Details */}
-          <Card>
+          <Card id="section-details">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Briefcase className="h-5 w-5" />
@@ -512,7 +535,7 @@ export default function ApplicationDetailPage() {
           </Card>
 
           {/* Generated Documents */}
-          <Card>
+          <Card id="section-documents">
             <CardHeader className="flex flex-row items-start justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2">
@@ -612,7 +635,7 @@ export default function ApplicationDetailPage() {
         <div className="space-y-6">
           {/* Match Analysis */}
           {matchAnalysis && (
-            <Card>
+            <Card id="section-match">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Target className="h-5 w-5" />
@@ -723,7 +746,7 @@ export default function ApplicationDetailPage() {
           )}
 
           {/* Timeline */}
-          <Card>
+          <Card id="section-timeline">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />

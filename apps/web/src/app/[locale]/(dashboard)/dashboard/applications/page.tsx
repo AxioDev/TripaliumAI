@@ -21,6 +21,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { AnimatedCheckmark } from '@/components/ui/animated-checkmark';
 import { applicationApi, Application } from '@/lib/api-client';
+import { applicationStatusColors, applicationStatusKeyMap } from '@/lib/status-config';
 import { useApi, useMutation } from '@/hooks/use-api';
 import { Input } from '@/components/ui/input';
 import {
@@ -53,29 +54,6 @@ const statusIcons: Record<string, React.ReactNode> = {
   WITHDRAWN: <Ban className="h-3 w-3" />,
 };
 
-const statusColors: Record<string, string> = {
-  PENDING_GENERATION: 'bg-blue-100 text-blue-800',
-  GENERATING: 'bg-blue-100 text-blue-800',
-  GENERATION_FAILED: 'bg-red-100 text-red-800',
-  PENDING_REVIEW: 'bg-yellow-100 text-yellow-800',
-  READY_TO_SUBMIT: 'bg-green-100 text-green-800',
-  SUBMITTING: 'bg-purple-100 text-purple-800',
-  SUBMITTED: 'bg-green-100 text-green-800',
-  SUBMISSION_FAILED: 'bg-red-100 text-red-800',
-  WITHDRAWN: 'bg-gray-100 text-gray-800',
-};
-
-const statusKeyMap: Record<string, string> = {
-  PENDING_GENERATION: 'pendingGeneration',
-  GENERATING: 'generating',
-  GENERATION_FAILED: 'generationFailed',
-  PENDING_REVIEW: 'pendingReview',
-  READY_TO_SUBMIT: 'readyToSubmit',
-  SUBMITTING: 'submitting',
-  SUBMITTED: 'submitted',
-  SUBMISSION_FAILED: 'submissionFailed',
-  WITHDRAWN: 'withdrawn',
-};
 
 export default function ApplicationsPage() {
   const { toast } = useToast();
@@ -284,24 +262,43 @@ export default function ApplicationsPage() {
                 <Button className="mt-4">{t('empty.action')}</Button>
               </Link>
             </div>
-          ) : (
+          ) : (() => {
+            const filtered = applications
+              .filter((a: Application) => {
+                if (!searchQuery) return true;
+                const q = searchQuery.toLowerCase();
+                return a.jobOffer.title.toLowerCase().includes(q) ||
+                  a.jobOffer.company.toLowerCase().includes(q) ||
+                  (a.jobOffer.location && a.jobOffer.location.toLowerCase().includes(q));
+              })
+              .sort((a: Application, b: Application) => {
+                if (sortBy === 'company') return a.jobOffer.company.localeCompare(b.jobOffer.company);
+                if (sortBy === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+              });
+            if (filtered.length === 0) {
+              return (
+                <div className="text-center py-8">
+                  <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="font-semibold mb-2">{t('empty.noResults')}</h3>
+                  <p className="text-sm text-muted-foreground text-center max-w-md mx-auto">
+                    {t('empty.noResultsDescription')}
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="mt-4"
+                    onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}
+                  >
+                    {t('empty.clearFilters')}
+                  </Button>
+                </div>
+              );
+            }
+            return (
             <div className="space-y-4">
-              {applications
-                .filter((a: Application) => {
-                  if (!searchQuery) return true;
-                  const q = searchQuery.toLowerCase();
-                  return a.jobOffer.title.toLowerCase().includes(q) ||
-                    a.jobOffer.company.toLowerCase().includes(q) ||
-                    (a.jobOffer.location && a.jobOffer.location.toLowerCase().includes(q));
-                })
-                .sort((a: Application, b: Application) => {
-                  if (sortBy === 'company') return a.jobOffer.company.localeCompare(b.jobOffer.company);
-                  if (sortBy === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-                  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-                })
-                .map((application: Application) => {
-                const statusKey = statusKeyMap[application.status] || 'pendingReview';
-                const statusColor = statusColors[application.status] || 'bg-yellow-100 text-yellow-800';
+              {filtered.map((application: Application) => {
+                const statusKey = applicationStatusKeyMap[application.status] || 'pendingReview';
+                const statusColor = applicationStatusColors[application.status] || 'bg-yellow-100 text-yellow-800';
                 const statusIcon = statusIcons[application.status] || <Eye className="h-3 w-3" />;
                 const canConfirm = application.status === 'PENDING_REVIEW';
                 const canWithdraw = ['PENDING_REVIEW', 'READY_TO_SUBMIT'].includes(application.status);
@@ -395,7 +392,8 @@ export default function ApplicationsPage() {
                 );
               })}
             </div>
-          )}
+            );
+          })()}
         </CardContent>
       </Card>
     </div>

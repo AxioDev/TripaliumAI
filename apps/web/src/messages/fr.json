@@ -640,6 +640,7 @@
       "action": "Créer votre première campagne"
     },
     "practice": "Pratique",
+    "copy": "Copie",
     "jobs": "emplois",
     "applications": "candidatures",
     "created": "Créée",
@@ -655,7 +656,8 @@
       "start": "Démarrer la campagne",
       "pause": "Mettre en pause",
       "stop": "Arrêter la campagne",
-      "delete": "Supprimer la campagne"
+      "delete": "Supprimer la campagne",
+      "duplicate": "Dupliquer la campagne"
     },
     "deleteDialog": {
       "title": "Supprimer la campagne",
@@ -685,7 +687,12 @@
         "startFailed": "Échec du démarrage de la campagne",
         "pauseFailed": "Échec de la mise en pause de la campagne",
         "stopFailed": "Échec de l'arrêt de la campagne",
-        "deleteFailed": "Échec de la suppression de la campagne"
+        "deleteFailed": "Échec de la suppression de la campagne",
+        "cloneFailed": "Échec de la duplication de la campagne"
+      },
+      "cloned": {
+        "title": "Campagne dupliquée",
+        "description": "Une copie de la campagne a été créée en tant que brouillon."
       }
     },
     "detail": {
@@ -809,7 +816,10 @@
     "empty": {
       "title": "Aucune candidature",
       "description": "Démarrez une campagne pour découvrir des emplois correspondants et créer des candidatures.",
-      "action": "Voir les campagnes"
+      "action": "Voir les campagnes",
+      "noResults": "Aucune candidature correspondante",
+      "noResultsDescription": "Essayez d'ajuster votre recherche ou vos filtres pour trouver ce que vous cherchez.",
+      "clearFilters": "Effacer les filtres"
     },
     "practice": "Pratique",
     "created": "Créée",
@@ -840,6 +850,9 @@
     },
     "sections": {
       "jobDetails": "Détails de l'offre",
+      "documents": "Documents",
+      "matchAnalysis": "Correspondance",
+      "timeline": "Chronologie",
       "description": "Description",
       "requirements": "Exigences"
     },
