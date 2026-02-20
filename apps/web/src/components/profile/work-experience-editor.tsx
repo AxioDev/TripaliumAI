@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { WorkExperience } from '@/lib/api-client';
-import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Briefcase } from 'lucide-react';
 
 interface WorkExperienceEditorProps {
   experiences: WorkExperience[];
@@ -62,8 +62,6 @@ export function WorkExperienceEditor({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState<ExperienceFormData>(emptyForm);
-  const [localExperiences, setLocalExperiences] = useState(experiences);
-  const [hasChanges, setHasChanges] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
   const openAddDialog = () => {
@@ -73,7 +71,7 @@ export function WorkExperienceEditor({
   };
 
   const openEditDialog = (index: number) => {
-    const exp = localExperiences[index];
+    const exp = experiences[index];
     setEditIndex(index);
     setFormData({
       company: exp.company,
@@ -87,7 +85,18 @@ export function WorkExperienceEditor({
     setIsDialogOpen(true);
   };
 
-  const handleSaveItem = () => {
+  const toPayload = (exps: WorkExperience[]): Omit<WorkExperience, 'id'>[] =>
+    exps.map((exp) => ({
+      company: exp.company,
+      title: exp.title,
+      location: exp.location,
+      startDate: exp.startDate,
+      endDate: exp.endDate,
+      description: exp.description,
+      highlights: exp.highlights,
+    }));
+
+  const handleSaveItem = async () => {
     const newExp: Omit<WorkExperience, 'id'> = {
       company: formData.company,
       title: formData.title,
@@ -101,37 +110,22 @@ export function WorkExperienceEditor({
         .filter((h) => h.length > 0),
     };
 
+    let updated: WorkExperience[];
     if (editIndex !== null) {
-      const updated = [...localExperiences];
+      updated = [...experiences];
       updated[editIndex] = { ...updated[editIndex], ...newExp };
-      setLocalExperiences(updated);
     } else {
-      setLocalExperiences([...localExperiences, newExp as WorkExperience]);
+      updated = [...experiences, newExp as WorkExperience];
     }
 
-    setHasChanges(true);
     setIsDialogOpen(false);
+    await onSave(toPayload(updated));
   };
 
-  const handleDelete = (index: number) => {
-    setLocalExperiences(localExperiences.filter((_, i) => i !== index));
-    setHasChanges(true);
+  const handleDelete = async (index: number) => {
     setDeleteIndex(null);
-  };
-
-  const handleSaveAll = async () => {
-    await onSave(
-      localExperiences.map((exp) => ({
-        company: exp.company,
-        title: exp.title,
-        location: exp.location,
-        startDate: exp.startDate,
-        endDate: exp.endDate,
-        description: exp.description,
-        highlights: exp.highlights,
-      }))
-    );
-    setHasChanges(false);
+    const updated = experiences.filter((_, i) => i !== index);
+    await onSave(toPayload(updated));
   };
 
   const formatDate = (dateStr: string | null) => {
@@ -144,19 +138,26 @@ export function WorkExperienceEditor({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {t('experience.count', { count: localExperiences.length })}
+          {t('experience.count', { count: experiences.length })}
         </p>
-        <Button onClick={openAddDialog} size="sm">
+        <Button onClick={openAddDialog} size="sm" disabled={isLoading}>
           <Plus className="h-4 w-4 mr-1" /> {t('add')}
         </Button>
       </div>
 
-      {localExperiences.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-4">
-          {t('experience.empty')}
-        </p>
+      {experiences.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-8 px-4 border border-dashed rounded-lg">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-3">
+            <Briefcase className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <h4 className="text-sm font-medium mb-1">{t('experience.emptyTitle')}</h4>
+          <p className="text-xs text-muted-foreground text-center max-w-xs mb-1">
+            {t('experience.emptyDescription')}
+          </p>
+          <p className="text-xs text-success font-medium">{t('experience.emptyBoost')}</p>
+        </div>
       ) : (
-        localExperiences.map((exp, index) => (
+        experiences.map((exp, index) => (
           <div
             key={exp.id || index}
             className="p-3 sm:p-4 border rounded-lg"
@@ -178,6 +179,7 @@ export function WorkExperienceEditor({
                   size="icon"
                   className="h-8 w-8 sm:h-9 sm:w-9"
                   onClick={() => openEditDialog(index)}
+                  disabled={isLoading}
                 >
                   <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
@@ -186,6 +188,7 @@ export function WorkExperienceEditor({
                   size="icon"
                   className="h-8 w-8 sm:h-9 sm:w-9"
                   onClick={() => setDeleteIndex(index)}
+                  disabled={isLoading}
                 >
                   <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" />
                 </Button>
@@ -210,21 +213,6 @@ export function WorkExperienceEditor({
             )}
           </div>
         ))
-      )}
-
-      {hasChanges && (
-        <div className="flex justify-end pt-4 border-t">
-          <Button onClick={handleSaveAll} disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t('saving')}
-              </>
-            ) : (
-              t('saveChanges')
-            )}
-          </Button>
-        </div>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -335,7 +323,7 @@ export function WorkExperienceEditor({
             </Button>
             <Button
               onClick={handleSaveItem}
-              disabled={!formData.title || !formData.company}
+              disabled={!formData.title || !formData.company || isLoading}
             >
               {editIndex !== null ? t('update') : t('add')}
             </Button>

@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skill } from '@/lib/api-client';
-import { Plus, X, Loader2 } from 'lucide-react';
+import { Plus, X, Wrench, Pencil, Check } from 'lucide-react';
 
 interface SkillsEditorProps {
   skills: Skill[];
@@ -60,10 +60,17 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
   const t = useTranslations('profile');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState<SkillFormData>(emptyForm);
-  const [localSkills, setLocalSkills] = useState(skills);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  const handleAddSkill = () => {
+  const toPayload = (s: Skill[]): Omit<Skill, 'id'>[] =>
+    s.map((skill) => ({
+      name: skill.name,
+      category: skill.category,
+      level: skill.level,
+      yearsOfExp: skill.yearsOfExp,
+    }));
+
+  const handleAddSkill = async () => {
     if (!formData.name.trim()) return;
 
     const newSkill: Omit<Skill, 'id'> = {
@@ -73,27 +80,15 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
       yearsOfExp: formData.yearsOfExp ? parseInt(formData.yearsOfExp) : null,
     };
 
-    setLocalSkills([...localSkills, newSkill as Skill]);
+    const updated = [...skills, newSkill as Skill];
     setFormData(emptyForm);
-    setHasChanges(true);
     setIsDialogOpen(false);
+    await onSave(toPayload(updated));
   };
 
-  const handleRemoveSkill = (index: number) => {
-    setLocalSkills(localSkills.filter((_, i) => i !== index));
-    setHasChanges(true);
-  };
-
-  const handleSaveAll = async () => {
-    await onSave(
-      localSkills.map((skill) => ({
-        name: skill.name,
-        category: skill.category,
-        level: skill.level,
-        yearsOfExp: skill.yearsOfExp,
-      }))
-    );
-    setHasChanges(false);
+  const handleRemoveSkill = async (index: number) => {
+    const updated = skills.filter((_, i) => i !== index);
+    await onSave(toPayload(updated));
   };
 
   // Get translated category name
@@ -115,7 +110,7 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
   };
 
   // Group skills by category
-  const groupedSkills = localSkills.reduce(
+  const groupedSkills = skills.reduce(
     (acc, skill) => {
       const cat = skill.category || 'other';
       if (!acc[cat]) acc[cat] = [];
@@ -129,17 +124,39 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {t('skills.count', { count: localSkills.length })}
+          {t('skills.count', { count: skills.length })}
         </p>
-        <Button onClick={() => setIsDialogOpen(true)} size="sm">
-          <Plus className="h-4 w-4 mr-1" /> {t('add')}
-        </Button>
+        <div className="flex gap-2">
+          {skills.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditMode(!isEditMode)}
+            >
+              {isEditMode ? (
+                <><Check className="h-4 w-4 mr-1" /> {t('skills.doneEditing')}</>
+              ) : (
+                <><Pencil className="h-4 w-4 mr-1" /> {t('skills.editMode')}</>
+              )}
+            </Button>
+          )}
+          <Button onClick={() => setIsDialogOpen(true)} size="sm" disabled={isLoading}>
+            <Plus className="h-4 w-4 mr-1" /> {t('add')}
+          </Button>
+        </div>
       </div>
 
-      {localSkills.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-4">
-          {t('skills.empty')}
-        </p>
+      {skills.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-8 px-4 border border-dashed rounded-lg">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-3">
+            <Wrench className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <h4 className="text-sm font-medium mb-1">{t('skills.emptyTitle')}</h4>
+          <p className="text-xs text-muted-foreground text-center max-w-xs mb-1">
+            {t('skills.emptyDescription')}
+          </p>
+          <p className="text-xs text-success font-medium">{t('skills.emptyBoost')}</p>
+        </div>
       ) : (
         Object.entries(groupedSkills).map(([category, categorySkills]) => (
           <div key={category}>
@@ -148,11 +165,13 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
             </h4>
             <div className="flex flex-wrap gap-2">
               {categorySkills.map((skill, index) => {
-                const globalIndex = localSkills.indexOf(skill);
+                const globalIndex = skills.indexOf(skill);
                 return (
                   <span
                     key={skill.id || index}
-                    className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm group hover:border-destructive"
+                    className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm ${
+                      isEditMode ? 'border-destructive/50 pr-1.5' : 'group hover:border-destructive'
+                    }`}
                   >
                     {skill.name}
                     {skill.level && (
@@ -162,7 +181,10 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
                     )}
                     <button
                       onClick={() => handleRemoveSkill(globalIndex)}
-                      className="ml-1 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive"
+                      disabled={isLoading}
+                      className={`ml-1 text-destructive hover:text-destructive ${
+                        isEditMode ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                      }`}
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -172,21 +194,6 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
             </div>
           </div>
         ))
-      )}
-
-      {hasChanges && (
-        <div className="flex justify-end pt-4 border-t">
-          <Button onClick={handleSaveAll} disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t('saving')}
-              </>
-            ) : (
-              t('saveChanges')
-            )}
-          </Button>
-        </div>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -275,7 +282,7 @@ export function SkillsEditor({ skills, onSave, isLoading }: SkillsEditorProps) {
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               {t('cancel')}
             </Button>
-            <Button onClick={handleAddSkill} disabled={!formData.name.trim()}>
+            <Button onClick={handleAddSkill} disabled={!formData.name.trim() || isLoading}>
               {t('skills.addSkill')}
             </Button>
           </DialogFooter>

@@ -419,6 +419,7 @@ export function CVManager() {
                     className={`flex items-center gap-1 text-xs px-2 py-1 rounded shrink-0 ${getStatusColor(cv.parsingStatus)}`}
                   >
                     {getStatusIcon(cv.parsingStatus)}
+                    <span className="sm:hidden">{t(`parsing.${cv.parsingStatus === 'COMPLETED' ? 'completedShort' : cv.parsingStatus === 'PROCESSING' ? 'processingShort' : cv.parsingStatus === 'PENDING' ? 'pendingShort' : 'failedShort'}`)}</span>
                     <span className="hidden sm:inline">{t(`parsing.${cv.parsingStatus === 'COMPLETED' ? 'completed' : cv.parsingStatus === 'PROCESSING' ? 'processing' : cv.parsingStatus === 'PENDING' ? 'pending' : 'failed'}`)}</span>
                   </span>
                 </div>

@@ -817,7 +817,11 @@
       "completed": "Parsed",
       "processing": "Analyzing...",
       "pending": "Queued",
-      "failed": "Error"
+      "failed": "Error",
+      "completedShort": "Done",
+      "processingShort": "...",
+      "pendingShort": "Wait",
+      "failedShort": "Err"
     },
     "actions": {
       "viewParsed": "View parsed data",
@@ -948,6 +952,12 @@
           "description": "At least 3 skills listed",
           "suggestion": "Add at least 3 skills",
           "boost": "+10% skill matches"
+        },
+        "languages": {
+          "label": "Languages added",
+          "description": "At least one language listed",
+          "suggestion": "Add spoken languages",
+          "boost": "+5% EU matches"
         }
       },
       "sections": {
@@ -967,9 +977,26 @@
       "skills": "Skills",
       "documents": "Documents"
     },
+    "autoSave": {
+      "saving": "Saving...",
+      "saved": "Saved",
+      "error": "Failed to save"
+    },
+    "validation": {
+      "email": "Please enter a valid email address",
+      "phone": "Please enter a valid phone number",
+      "linkedIn": "Please enter a valid LinkedIn URL",
+      "website": "Please enter a valid URL (starting with http:// or https://)"
+    },
+    "celebration": {
+      "title": "Profile complete!",
+      "description": "Your profile is fully optimized for job matching."
+    },
     "personalInfo": {
       "title": "Personal Information",
       "subtitle": "Basic information used in your CV and applications",
+      "contactGroup": "Contact Details",
+      "aboutGroup": "About You",
       "firstName": "First Name",
       "firstNamePlaceholder": "John",
       "lastName": "Last Name",
@@ -1018,7 +1045,9 @@
       "skills": "Skills",
       "skillsSubtitle": "Your technical and professional skills",
       "documents": "Documents",
-      "documentsSubtitle": "Upload and manage your CVs"
+      "documentsSubtitle": "Upload and manage your CVs",
+      "languages": "Languages",
+      "languagesSubtitle": "Languages you speak"
     },
     "importBanner": {
       "title": "Import from your CV",
@@ -1034,6 +1063,9 @@
       "title": "Work Experience",
       "count": "{count} position(s)",
       "empty": "No work experience added. Upload a CV to extract your experience or add manually.",
+      "emptyTitle": "No work experience yet",
+      "emptyDescription": "Add your professional experience to help us match you with the right jobs.",
+      "emptyBoost": "+20% match rate",
       "addTitle": "Add Experience",
       "editTitle": "Edit Experience",
       "dialogDescription": "Enter the details of your work experience",
@@ -1055,6 +1087,8 @@
       "title": "Education",
       "count": "{count} degree(s)",
       "empty": "No education added. Upload a CV to extract your education or add manually.",
+      "emptyTitle": "No education added",
+      "emptyDescription": "Add your academic background to complete your profile.",
       "addTitle": "Add Education",
       "editTitle": "Edit Education",
       "dialogDescription": "Enter the details of your education",
@@ -1076,6 +1110,11 @@
       "title": "Skills",
       "count": "{count} skill(s)",
       "empty": "No skills added. Upload a CV to extract your skills or add manually.",
+      "emptyTitle": "No skills added",
+      "emptyDescription": "List your key skills so we can match you to the right opportunities.",
+      "emptyBoost": "+10% skill matches",
+      "editMode": "Edit",
+      "doneEditing": "Done",
       "addTitle": "Add Skill",
       "dialogDescription": "Add a new skill to your profile",
       "name": "Skill Name",
@@ -1104,6 +1143,25 @@
         "expert": "Expert"
       }
     },
+    "languages": {
+      "count": "{count} language(s)",
+      "emptyTitle": "No languages added",
+      "emptyDescription": "Adding languages improves your match rate for international and EU positions.",
+      "emptyBoost": "+5% EU matches",
+      "addTitle": "Add Language",
+      "dialogDescription": "Add a language you speak",
+      "name": "Language",
+      "namePlaceholder": "e.g., English, French, Spanish",
+      "proficiency": "Proficiency",
+      "proficiencyPlaceholder": "Select level",
+      "proficiencies": {
+        "native": "Native",
+        "fluent": "Fluent",
+        "advanced": "Advanced",
+        "intermediate": "Intermediate",
+        "basic": "Basic"
+      }
+    },
     "error": {
       "loadFailed": "Failed to load profile"
     },
@@ -1124,12 +1182,17 @@
         "title": "Skills updated",
         "description": "Your skills have been saved."
       },
+      "languagesUpdated": {
+        "title": "Languages updated",
+        "description": "Your languages have been saved."
+      },
       "error": {
         "title": "Error",
         "updateFailed": "Failed to update profile",
         "experienceFailed": "Failed to update work experience",
         "educationFailed": "Failed to update education",
-        "skillsFailed": "Failed to update skills"
+        "skillsFailed": "Failed to update skills",
+        "languagesFailed": "Failed to update languages"
       }
     }
   },

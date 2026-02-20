@@ -821,7 +821,11 @@
       "completed": "Analysé",
       "processing": "Analyse...",
       "pending": "En file d'attente",
-      "failed": "Erreur"
+      "failed": "Erreur",
+      "completedShort": "OK",
+      "processingShort": "...",
+      "pendingShort": "Att.",
+      "failedShort": "Err"
     },
     "actions": {
       "viewParsed": "Voir les données extraites",
@@ -952,6 +956,12 @@
           "description": "Au moins 3 compétences répertoriées",
           "suggestion": "Ajouter au moins 3 compétences",
           "boost": "+10% correspondances de compétences"
+        },
+        "languages": {
+          "label": "Langues ajoutées",
+          "description": "Au moins une langue répertoriée",
+          "suggestion": "Ajouter les langues parlées",
+          "boost": "+5% correspondances EU"
         }
       },
       "sections": {
@@ -971,9 +981,26 @@
       "skills": "Compétences",
       "documents": "Documents"
     },
+    "autoSave": {
+      "saving": "Enregistrement...",
+      "saved": "Enregistré",
+      "error": "Échec de l'enregistrement"
+    },
+    "validation": {
+      "email": "Veuillez entrer une adresse e-mail valide",
+      "phone": "Veuillez entrer un numéro de téléphone valide",
+      "linkedIn": "Veuillez entrer une URL LinkedIn valide",
+      "website": "Veuillez entrer une URL valide (commençant par http:// ou https://)"
+    },
+    "celebration": {
+      "title": "Profil complet !",
+      "description": "Votre profil est entièrement optimisé pour la correspondance d'emplois."
+    },
     "personalInfo": {
       "title": "Informations personnelles",
       "subtitle": "Informations de base utilisées dans votre CV et vos candidatures",
+      "contactGroup": "Coordonnées",
+      "aboutGroup": "À propos de vous",
       "firstName": "Prénom",
       "firstNamePlaceholder": "Jean",
       "lastName": "Nom",
@@ -1022,7 +1049,9 @@
       "skills": "Compétences",
       "skillsSubtitle": "Vos compétences techniques et professionnelles",
       "documents": "Documents",
-      "documentsSubtitle": "Téléversez et gérez vos CV"
+      "documentsSubtitle": "Téléversez et gérez vos CV",
+      "languages": "Langues",
+      "languagesSubtitle": "Langues que vous parlez"
     },
     "importBanner": {
       "title": "Importer depuis votre CV",
@@ -1038,6 +1067,9 @@
       "title": "Expérience professionnelle",
       "count": "{count} poste(s)",
       "empty": "Aucune expérience ajoutée. Téléversez un CV pour extraire votre expérience ou ajoutez-la manuellement.",
+      "emptyTitle": "Aucune expérience professionnelle",
+      "emptyDescription": "Ajoutez votre expérience professionnelle pour nous aider à vous trouver les bons emplois.",
+      "emptyBoost": "+20% taux de correspondance",
       "addTitle": "Ajouter une expérience",
       "editTitle": "Modifier l'expérience",
       "dialogDescription": "Entrez les détails de votre expérience professionnelle",
@@ -1059,6 +1091,8 @@
       "title": "Formation",
       "count": "{count} diplôme(s)",
       "empty": "Aucune formation ajoutée. Téléversez un CV pour extraire votre formation ou ajoutez-la manuellement.",
+      "emptyTitle": "Aucune formation ajoutée",
+      "emptyDescription": "Ajoutez votre parcours académique pour compléter votre profil.",
       "addTitle": "Ajouter une formation",
       "editTitle": "Modifier la formation",
       "dialogDescription": "Entrez les détails de votre formation",
@@ -1080,6 +1114,11 @@
       "title": "Compétences",
       "count": "{count} compétence(s)",
       "empty": "Aucune compétence ajoutée. Téléversez un CV pour extraire vos compétences ou ajoutez-les manuellement.",
+      "emptyTitle": "Aucune compétence ajoutée",
+      "emptyDescription": "Listez vos compétences clés pour que nous puissions vous trouver les bonnes opportunités.",
+      "emptyBoost": "+10% correspondances de compétences",
+      "editMode": "Modifier",
+      "doneEditing": "Terminé",
       "addTitle": "Ajouter une compétence",
       "dialogDescription": "Ajoutez une nouvelle compétence à votre profil",
       "name": "Nom de la compétence",
@@ -1108,6 +1147,25 @@
         "expert": "Expert"
       }
     },
+    "languages": {
+      "count": "{count} langue(s)",
+      "emptyTitle": "Aucune langue ajoutée",
+      "emptyDescription": "Ajouter des langues améliore votre taux de correspondance pour les postes internationaux et européens.",
+      "emptyBoost": "+5% correspondances EU",
+      "addTitle": "Ajouter une langue",
+      "dialogDescription": "Ajoutez une langue que vous parlez",
+      "name": "Langue",
+      "namePlaceholder": "ex. Anglais, Français, Espagnol",
+      "proficiency": "Niveau",
+      "proficiencyPlaceholder": "Sélectionnez un niveau",
+      "proficiencies": {
+        "native": "Natif",
+        "fluent": "Courant",
+        "advanced": "Avancé",
+        "intermediate": "Intermédiaire",
+        "basic": "Basique"
+      }
+    },
     "error": {
       "loadFailed": "Échec du chargement du profil"
     },
@@ -1128,12 +1186,17 @@
         "title": "Compétences mises à jour",
         "description": "Vos compétences ont été enregistrées."
       },
+      "languagesUpdated": {
+        "title": "Langues mises à jour",
+        "description": "Vos langues ont été enregistrées."
+      },
       "error": {
         "title": "Erreur",
         "updateFailed": "Échec de la mise à jour du profil",
         "experienceFailed": "Échec de la mise à jour de l'expérience",
         "educationFailed": "Échec de la mise à jour de la formation",
-        "skillsFailed": "Échec de la mise à jour des compétences"
+        "skillsFailed": "Échec de la mise à jour des compétences",
+        "languagesFailed": "Échec de la mise à jour des langues"
       }
     }
   },

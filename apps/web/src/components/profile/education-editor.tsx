@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Education } from '@/lib/api-client';
-import { Plus, Pencil, Trash2, GraduationCap, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, GraduationCap } from 'lucide-react';
 
 interface EducationEditorProps {
   educations: Education[];
@@ -62,8 +62,6 @@ export function EducationEditor({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState<EducationFormData>(emptyForm);
-  const [localEducations, setLocalEducations] = useState(educations);
-  const [hasChanges, setHasChanges] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
   const openAddDialog = () => {
@@ -73,7 +71,7 @@ export function EducationEditor({
   };
 
   const openEditDialog = (index: number) => {
-    const edu = localEducations[index];
+    const edu = educations[index];
     setEditIndex(index);
     setFormData({
       institution: edu.institution,
@@ -87,7 +85,18 @@ export function EducationEditor({
     setIsDialogOpen(true);
   };
 
-  const handleSaveItem = () => {
+  const toPayload = (edus: Education[]): Omit<Education, 'id'>[] =>
+    edus.map((edu) => ({
+      institution: edu.institution,
+      degree: edu.degree,
+      field: edu.field,
+      startDate: edu.startDate,
+      endDate: edu.endDate,
+      gpa: edu.gpa,
+      description: edu.description,
+    }));
+
+  const handleSaveItem = async () => {
     const newEdu: Omit<Education, 'id'> = {
       institution: formData.institution,
       degree: formData.degree,
@@ -98,62 +107,53 @@ export function EducationEditor({
       description: formData.description || null,
     };
 
+    let updated: Education[];
     if (editIndex !== null) {
-      const updated = [...localEducations];
+      updated = [...educations];
       updated[editIndex] = { ...updated[editIndex], ...newEdu };
-      setLocalEducations(updated);
     } else {
-      setLocalEducations([...localEducations, newEdu as Education]);
+      updated = [...educations, newEdu as Education];
     }
 
-    setHasChanges(true);
     setIsDialogOpen(false);
+    await onSave(toPayload(updated));
   };
 
-  const handleDelete = (index: number) => {
-    setLocalEducations(localEducations.filter((_, i) => i !== index));
-    setHasChanges(true);
+  const handleDelete = async (index: number) => {
     setDeleteIndex(null);
-  };
-
-  const handleSaveAll = async () => {
-    await onSave(
-      localEducations.map((edu) => ({
-        institution: edu.institution,
-        degree: edu.degree,
-        field: edu.field,
-        startDate: edu.startDate,
-        endDate: edu.endDate,
-        gpa: edu.gpa,
-        description: edu.description,
-      }))
-    );
-    setHasChanges(false);
+    const updated = educations.filter((_, i) => i !== index);
+    await onSave(toPayload(updated));
   };
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
-    return date.toLocaleDateString(undefined, { year: 'numeric' });
+    return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
   };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {t('education.count', { count: localEducations.length })}
+          {t('education.count', { count: educations.length })}
         </p>
-        <Button onClick={openAddDialog} size="sm">
+        <Button onClick={openAddDialog} size="sm" disabled={isLoading}>
           <Plus className="h-4 w-4 mr-1" /> {t('add')}
         </Button>
       </div>
 
-      {localEducations.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-4">
-          {t('education.empty')}
-        </p>
+      {educations.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-8 px-4 border border-dashed rounded-lg">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-3">
+            <GraduationCap className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <h4 className="text-sm font-medium mb-1">{t('education.emptyTitle')}</h4>
+          <p className="text-xs text-muted-foreground text-center max-w-xs">
+            {t('education.emptyDescription')}
+          </p>
+        </div>
       ) : (
-        localEducations.map((edu, index) => (
+        educations.map((edu, index) => (
           <div
             key={edu.id || index}
             className="p-3 sm:p-4 border rounded-lg"
@@ -183,6 +183,7 @@ export function EducationEditor({
                   size="icon"
                   className="h-8 w-8 sm:h-9 sm:w-9"
                   onClick={() => openEditDialog(index)}
+                  disabled={isLoading}
                 >
                   <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
@@ -191,13 +192,14 @@ export function EducationEditor({
                   size="icon"
                   className="h-8 w-8 sm:h-9 sm:w-9"
                   onClick={() => setDeleteIndex(index)}
+                  disabled={isLoading}
                 >
                   <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" />
                 </Button>
               </div>
             </div>
             {edu.gpa && (
-              <p className="text-xs sm:text-sm mt-1 ml-9 sm:ml-11">{t('education.gpa').replace(' (optional)', '')}: {edu.gpa}</p>
+              <p className="text-xs sm:text-sm mt-1 ml-9 sm:ml-11">{t('education.gpa').replace(' (optional)', '').replace(' (optionnel)', '')}: {edu.gpa}</p>
             )}
             {edu.description && (
               <p className="text-xs sm:text-sm mt-2 ml-9 sm:ml-11 text-muted-foreground line-clamp-3">
@@ -206,21 +208,6 @@ export function EducationEditor({
             )}
           </div>
         ))
-      )}
-
-      {hasChanges && (
-        <div className="flex justify-end pt-4 border-t">
-          <Button onClick={handleSaveAll} disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t('saving')}
-              </>
-            ) : (
-              t('saveChanges')
-            )}
-          </Button>
-        </div>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -329,7 +316,7 @@ export function EducationEditor({
             </Button>
             <Button
               onClick={handleSaveItem}
-              disabled={!formData.institution || !formData.degree}
+              disabled={!formData.institution || !formData.degree || isLoading}
             >
               {editIndex !== null ? t('update') : t('add')}
             </Button>

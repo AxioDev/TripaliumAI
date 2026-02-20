@@ -14,6 +14,7 @@ import {
   Briefcase,
   GraduationCap,
   Wrench,
+  Languages,
   Sparkles
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,7 +27,7 @@ interface ReadinessCheck {
   icon: React.ReactNode;
   check: (profile: Profile | null) => boolean;
   suggestion?: string;
-  boost?: string; // e.g., "+15% matches"
+  boost?: string;
 }
 
 function getReadinessChecks(t: ReturnType<typeof useTranslations>): ReadinessCheck[] {
@@ -73,7 +74,7 @@ function getReadinessChecks(t: ReturnType<typeof useTranslations>): ReadinessChe
       key: 'experience',
       label: t('checks.experience.label'),
       description: t('checks.experience.description'),
-      weight: 25,
+      weight: 20,
       icon: <Briefcase className="h-4 w-4" />,
       check: (p) => !!(p?.workExperiences && p.workExperiences.length > 0),
       suggestion: t('checks.experience.suggestion'),
@@ -107,7 +108,71 @@ function getReadinessChecks(t: ReturnType<typeof useTranslations>): ReadinessChe
       suggestion: t('checks.skills.suggestion'),
       boost: t('checks.skills.boost'),
     },
+    {
+      key: 'languages',
+      label: t('checks.languages.label'),
+      description: t('checks.languages.description'),
+      weight: 5,
+      icon: <Languages className="h-4 w-4" />,
+      check: (p) => !!(p?.languages && p.languages.length > 0),
+      suggestion: t('checks.languages.suggestion'),
+      boost: t('checks.languages.boost'),
+    },
   ];
+}
+
+// Map readiness check keys to section IDs for scroll navigation
+const checkToSection: Record<string, string> = {
+  name: 'personal',
+  contact: 'personal',
+  location: 'personal',
+  summary: 'personal',
+  experience: 'experience',
+  experienceDetails: 'experience',
+  education: 'education',
+  skills: 'skills',
+  languages: 'languages',
+};
+
+// Export function for per-section completion status
+type SectionStatus = 'complete' | 'incomplete' | 'empty';
+
+export function getSectionCompletion(profile: Profile | null): Record<string, SectionStatus> {
+  const personal = (() => {
+    if (!profile) return 'empty';
+    const hasName = !!(profile.firstName && profile.lastName);
+    const hasContact = !!(profile.email);
+    const hasSummary = !!(profile.summary && profile.summary.length >= 50);
+    if (hasName && hasContact && hasSummary && profile.location) return 'complete';
+    if (hasName || hasContact) return 'incomplete';
+    return 'empty';
+  })();
+
+  const experience = (() => {
+    if (!profile?.workExperiences?.length) return 'empty';
+    const hasDetails = profile.workExperiences.some(w => w.description && w.description.length > 50);
+    return hasDetails ? 'complete' : 'incomplete';
+  })();
+
+  const education = (() => {
+    if (!profile?.educations?.length) return 'empty';
+    return 'complete';
+  })();
+
+  const skills = (() => {
+    if (!profile?.skills?.length) return 'empty';
+    return profile.skills.length >= 3 ? 'complete' : 'incomplete';
+  })();
+
+  const languages = (() => {
+    if (!profile?.languages?.length) return 'empty';
+    return 'complete';
+  })();
+
+  // Documents: can't check from profile alone, mark as empty by default
+  const documents: SectionStatus = 'empty';
+
+  return { personal, experience, education, skills, languages, documents };
 }
 
 interface ProfileReadinessProps {
@@ -308,18 +373,6 @@ export function ProfileReadiness({
     </div>
   );
 }
-
-// Map readiness check keys to section IDs for scroll navigation
-const checkToSection: Record<string, string> = {
-  name: 'personal',
-  contact: 'personal',
-  location: 'personal',
-  summary: 'personal',
-  experience: 'experience',
-  experienceDetails: 'experience',
-  education: 'education',
-  skills: 'skills',
-};
 
 // Inline version for profile page header
 export function ProfileReadinessInline({
