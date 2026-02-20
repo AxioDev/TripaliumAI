@@ -1,9 +1,22 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcherMinimal } from '@/components/ui/language-switcher';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import {
   Sparkles,
   Clock,
@@ -15,10 +28,13 @@ import {
   PenTool,
   Shield,
   Globe,
+  Menu,
+  Quote,
 } from 'lucide-react';
 
 export function LandingContent() {
   const t = useTranslations('landing');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const scrollToHowItWorks = () => {
     document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
@@ -35,7 +51,8 @@ export function LandingContent() {
             </div>
             <span className="text-lg font-bold">{t('nav.brand')}</span>
           </div>
-          <div className="flex items-center gap-3">
+          {/* Desktop nav */}
+          <div className="hidden sm:flex items-center gap-3">
             <LanguageSwitcherMinimal />
             <Link href="/pricing">
               <Button variant="ghost" size="sm">{t('nav.pricing')}</Button>
@@ -47,8 +64,43 @@ export function LandingContent() {
               <Button variant="gradient" size="sm">{t('nav.getStarted')}</Button>
             </Link>
           </div>
+          {/* Mobile hamburger */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
         </div>
       </header>
+
+      {/* Mobile nav sheet */}
+      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <SheetContent side="right" className="w-64">
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg gradient-brand">
+                <Sparkles className="h-4 w-4 text-white" />
+              </div>
+              {t('nav.brand')}
+            </SheetTitle>
+          </SheetHeader>
+          <nav className="flex flex-col gap-2 mt-6">
+            <LanguageSwitcherMinimal />
+            <Link href="/pricing" onClick={() => setMobileMenuOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start">{t('nav.pricing')}</Button>
+            </Link>
+            <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start">{t('nav.signIn')}</Button>
+            </Link>
+            <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+              <Button variant="gradient" className="w-full">{t('nav.getStarted')}</Button>
+            </Link>
+          </nav>
+        </SheetContent>
+      </Sheet>
 
       {/* ── 2. Hero ── */}
       <section className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
@@ -94,7 +146,6 @@ export function LandingContent() {
           </div>
 
           <div className="mt-16 grid gap-8 sm:grid-cols-3">
-            {/* Pain 1 */}
             <div className="rounded-xl border bg-card p-6">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10 mb-4">
                 <Clock className="h-5 w-5 text-destructive" />
@@ -102,7 +153,6 @@ export function LandingContent() {
               <h3 className="font-semibold">{t('problem.pain1.title')}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{t('problem.pain1.description')}</p>
             </div>
-            {/* Pain 2 */}
             <div className="rounded-xl border bg-card p-6">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10 mb-4">
                 <Copy className="h-5 w-5 text-destructive" />
@@ -110,7 +160,6 @@ export function LandingContent() {
               <h3 className="font-semibold">{t('problem.pain2.title')}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{t('problem.pain2.description')}</p>
             </div>
-            {/* Pain 3 */}
             <div className="rounded-xl border bg-card p-6">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10 mb-4">
                 <Ghost className="h-5 w-5 text-destructive" />
@@ -138,10 +187,8 @@ export function LandingContent() {
           </div>
 
           <div className="relative mt-16 grid gap-12 sm:grid-cols-3">
-            {/* Connector line (desktop) */}
             <div className="absolute top-10 left-[16.67%] right-[16.67%] hidden h-0.5 bg-border sm:block" />
 
-            {/* Step 1 */}
             <div className="relative text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 mb-6 relative z-10">
                 <Upload className="h-8 w-8 text-primary" />
@@ -153,7 +200,6 @@ export function LandingContent() {
               <p className="mt-2 text-sm text-muted-foreground">{t('howItWorks.step1.description')}</p>
             </div>
 
-            {/* Step 2 */}
             <div className="relative text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 mb-6 relative z-10">
                 <Target className="h-8 w-8 text-primary" />
@@ -165,7 +211,6 @@ export function LandingContent() {
               <p className="mt-2 text-sm text-muted-foreground">{t('howItWorks.step2.description')}</p>
             </div>
 
-            {/* Step 3 */}
             <div className="relative text-center">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 mb-6 relative z-10">
                 <Sparkles className="h-8 w-8 text-primary" />
@@ -196,7 +241,6 @@ export function LandingContent() {
           </div>
 
           <div className="mt-16 grid gap-8 sm:grid-cols-2">
-            {/* Feature 1 - Matching */}
             <div className="rounded-xl border bg-card p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 mb-4">
                 <FileSearch className="h-5 w-5 text-primary" />
@@ -204,7 +248,6 @@ export function LandingContent() {
               <h3 className="font-semibold">{t('features.matching.title')}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{t('features.matching.description')}</p>
             </div>
-            {/* Feature 2 - Documents */}
             <div className="rounded-xl border bg-card p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-info/10 mb-4">
                 <PenTool className="h-5 w-5 text-info" />
@@ -212,7 +255,6 @@ export function LandingContent() {
               <h3 className="font-semibold">{t('features.documents.title')}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{t('features.documents.description')}</p>
             </div>
-            {/* Feature 3 - Control */}
             <div className="rounded-xl border bg-card p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success/10 mb-4">
                 <Shield className="h-5 w-5 text-success" />
@@ -220,7 +262,6 @@ export function LandingContent() {
               <h3 className="font-semibold">{t('features.control.title')}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{t('features.control.description')}</p>
             </div>
-            {/* Feature 4 - Sources */}
             <div className="rounded-xl border bg-card p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-warning/10 mb-4">
                 <Globe className="h-5 w-5 text-warning" />
@@ -232,8 +273,41 @@ export function LandingContent() {
         </div>
       </section>
 
-      {/* ── 6. Stats ── */}
+      {/* ── 6. Testimonials ── */}
       <section className="px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center">
+            <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
+              {t('testimonials.eyebrow')}
+            </p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+              {t('testimonials.title')}
+            </h2>
+          </div>
+          <div className="mt-12 grid gap-8 sm:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="rounded-xl border bg-card p-6">
+                <Quote className="h-6 w-6 text-primary/30 mb-3" />
+                <p className="text-sm text-muted-foreground italic">
+                  {t(`testimonials.quote${i}.text`)}
+                </p>
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
+                    {t(`testimonials.quote${i}.initials`)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{t(`testimonials.quote${i}.name`)}</p>
+                    <p className="text-xs text-muted-foreground">{t(`testimonials.quote${i}.role`)}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. Stats ── */}
+      <section className="bg-muted/30 px-6 py-24">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             {t('stats.title')}
@@ -258,7 +332,33 @@ export function LandingContent() {
         </div>
       </section>
 
-      {/* ── 7. Final CTA ── */}
+      {/* ── 8. FAQ ── */}
+      <section id="faq" className="px-6 py-24">
+        <div className="mx-auto max-w-3xl">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              {t('faq.title')}
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
+              {t('faq.subtitle')}
+            </p>
+          </div>
+          <Accordion type="single" collapsible className="mt-12">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <AccordionItem key={i} value={`faq-${i}`}>
+                <AccordionTrigger className="text-left">
+                  {t(`faq.q${i}.question`)}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {t(`faq.q${i}.answer`)}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </section>
+
+      {/* ── 9. Final CTA ── */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-4xl">
           <div className="rounded-2xl gradient-brand-vivid p-12 text-center text-white">
@@ -279,11 +379,10 @@ export function LandingContent() {
         </div>
       </section>
 
-      {/* ── 8. Footer ── */}
+      {/* ── 10. Footer ── */}
       <footer className="border-t bg-muted/30 px-6 py-12">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-8 sm:grid-cols-3">
-            {/* Brand */}
             <div>
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-brand">
@@ -294,7 +393,6 @@ export function LandingContent() {
               <p className="mt-3 text-sm text-muted-foreground">{t('footer.tagline')}</p>
             </div>
 
-            {/* Product links */}
             <div>
               <h4 className="font-semibold">{t('footer.product')}</h4>
               <ul className="mt-3 space-y-2 text-sm">
@@ -322,7 +420,6 @@ export function LandingContent() {
               </ul>
             </div>
 
-            {/* Legal links */}
             <div>
               <h4 className="font-semibold">{t('footer.legal')}</h4>
               <ul className="mt-3 space-y-2 text-sm">

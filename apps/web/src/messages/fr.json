@@ -261,6 +261,56 @@
         "description": "Indeed, WTTJ, RemoteOK et d'autres recherchés simultanément"
       }
     },
+    "testimonials": {
+      "eyebrow": "Ce qu'en disent les utilisateurs",
+      "title": "La confiance des chercheurs d'emploi",
+      "quote1": {
+        "text": "Je passais 3 heures chaque soir à réécrire mon CV. Maintenant je le téléverse une fois et TripaliumAI fait le reste. J'ai eu 3 entretiens dès ma première semaine.",
+        "name": "Sarah M.",
+        "role": "Développeuse logiciel",
+        "initials": "SM"
+      },
+      "quote2": {
+        "text": "Le mode pratique est génial. Je pouvais voir exactement ce que les employeurs recevraient avant de passer en mode réel. Ça m'a donné confiance pour postuler.",
+        "name": "Thomas L.",
+        "role": "Responsable marketing",
+        "initials": "TL"
+      },
+      "quote3": {
+        "text": "Enfin un outil qui n'envoie pas le même CV partout. Chaque candidature est vraiment personnalisée. Mon taux de réponse a considérablement augmenté.",
+        "name": "Amina K.",
+        "role": "Analyste de données",
+        "initials": "AK"
+      }
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "subtitle": "Tout ce que vous devez savoir sur TripaliumAI.",
+      "q1": {
+        "question": "TripaliumAI est-il gratuit ?",
+        "answer": "Oui ! Vous pouvez commencer gratuitement en mode pratique, qui vous permet de tester le flux complet sans envoyer de vraies candidatures. Quand vous êtes prêt à postuler pour de vrai, vous pouvez passer à un plan payant."
+      },
+      "q2": {
+        "question": "Comment fonctionne le matching IA ?",
+        "answer": "Notre IA analyse votre profil (compétences, expérience, formation) et le compare à chaque offre d'emploi. Elle calcule un score de correspondance et ne présente que les emplois au-dessus du seuil que vous avez choisi."
+      },
+      "q3": {
+        "question": "Les candidatures seront-elles envoyées sans mon accord ?",
+        "answer": "Jamais. Vous vérifiez et approuvez toujours chaque candidature avant qu'elle ne soit envoyée. Même avec la candidature automatique, les documents sont d'abord générés pour vérification. Rien ne part sans votre confirmation explicite."
+      },
+      "q4": {
+        "question": "Mes données personnelles sont-elles en sécurité ?",
+        "answer": "Absolument. Nous sommes conformes au RGPD et vos données sont chiffrées au repos et en transit. Vous pouvez exporter ou supprimer toutes vos données à tout moment. Nous ne vendons jamais vos informations à des tiers."
+      },
+      "q5": {
+        "question": "Quels sites d'emploi recherchez-vous ?",
+        "answer": "Nous recherchons sur plusieurs sources dont Indeed, Welcome to the Jungle, RemoteOK et d'autres. Tous les résultats sont regroupés dans un seul tableau de bord pour que vous n'ayez pas à vérifier chaque site séparément."
+      },
+      "q6": {
+        "question": "Puis-je personnaliser les documents générés ?",
+        "answer": "Oui. Chaque CV et lettre de motivation est généré spécifiquement pour l'offre d'emploi. Vous pouvez les prévisualiser et les télécharger avant de confirmer. Les documents mettent en avant les parties les plus pertinentes de votre expérience pour chaque poste."
+      }
+    },
     "finalCta": {
       "title": "Votre prochain emploi est là, quelque part. Allons le trouver.",
       "description": "Arrêtez de passer vos soirées à réécrire des lettres de motivation. Configurez votre profil une fois, et laissez TripaliumAI s'occuper du reste.",

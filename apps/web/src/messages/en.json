@@ -261,6 +261,56 @@
         "description": "Indeed, WTTJ, RemoteOK, and more searched at once"
       }
     },
+    "testimonials": {
+      "eyebrow": "What users say",
+      "title": "Trusted by job seekers",
+      "quote1": {
+        "text": "I was spending 3 hours every evening rewriting my CV. Now I upload once and TripaliumAI does the rest. Got 3 interviews in my first week.",
+        "name": "Sarah M.",
+        "role": "Software Engineer",
+        "initials": "SM"
+      },
+      "quote2": {
+        "text": "The practice mode is brilliant. I could see exactly what employers would receive before going live. Gave me confidence to actually apply.",
+        "name": "Thomas L.",
+        "role": "Marketing Manager",
+        "initials": "TL"
+      },
+      "quote3": {
+        "text": "Finally, a tool that doesn't just blast the same CV everywhere. Each application is actually tailored. My response rate went up significantly.",
+        "name": "Amina K.",
+        "role": "Data Analyst",
+        "initials": "AK"
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "subtitle": "Everything you need to know about TripaliumAI.",
+      "q1": {
+        "question": "Is TripaliumAI free to use?",
+        "answer": "Yes! You can start for free with practice mode, which lets you test the full flow without sending real applications. When you're ready to apply for real, you can upgrade to a paid plan."
+      },
+      "q2": {
+        "question": "How does the AI matching work?",
+        "answer": "Our AI analyzes your profile (skills, experience, education) and compares it against each job posting. It calculates a match score and only presents jobs above your chosen threshold. You control how selective the matching is."
+      },
+      "q3": {
+        "question": "Will applications be sent without my approval?",
+        "answer": "Never. You always review and approve every application before anything is sent. Even with auto-apply enabled, documents are generated for review first. Nothing leaves without your explicit confirmation."
+      },
+      "q4": {
+        "question": "Is my personal data safe?",
+        "answer": "Absolutely. We're GDPR compliant and your data is encrypted at rest and in transit. You can export or delete all your data at any time. We never sell your information to third parties."
+      },
+      "q5": {
+        "question": "What job boards do you search?",
+        "answer": "We search across multiple sources including Indeed, Welcome to the Jungle, RemoteOK, and more. All results are aggregated into a single dashboard so you don't have to check each site separately."
+      },
+      "q6": {
+        "question": "Can I customize the generated documents?",
+        "answer": "Yes. Each CV and cover letter is generated specifically for the job posting. You can preview and download them before confirming. The documents highlight the most relevant parts of your experience for each role."
+      }
+    },
     "finalCta": {
       "title": "Your next job is out there. Let's go find it.",
       "description": "Stop spending your evenings rewriting cover letters. Set up your profile once, and let TripaliumAI handle the rest.",
