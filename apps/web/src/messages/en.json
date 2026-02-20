@@ -153,6 +153,12 @@
         "and": "and",
         "termsOfService": "Terms of Service"
       },
+      "passwordRequirements": {
+        "minLength": "At least 8 characters",
+        "lowercase": "One lowercase letter",
+        "uppercase": "One uppercase letter",
+        "number": "One number"
+      },
       "toast": {
         "success": {
           "title": "Success",
@@ -1639,6 +1645,25 @@
       "sentEmailsDescription": "Emails sent for this application",
       "emailStatusTest": "Test"
     }
+  },
+  "welcome": {
+    "title": "Welcome to TripaliumAI!",
+    "description": "Get from signup to your first applications in 3 simple steps.",
+    "steps": {
+      "upload": {
+        "title": "Upload your CV",
+        "description": "Drop in your resume and we'll build your professional profile automatically."
+      },
+      "campaign": {
+        "title": "Create a campaign",
+        "description": "Tell us what roles and locations you're targeting. We'll search continuously."
+      },
+      "review": {
+        "title": "Review & apply",
+        "description": "We generate tailored documents for each match. You review and confirm with one click."
+      }
+    },
+    "cta": "Let's get started"
   },
   "metadata": {
     "title": "TripaliumAI - Job Search Automation",

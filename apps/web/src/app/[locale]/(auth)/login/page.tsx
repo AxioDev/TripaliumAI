@@ -22,9 +22,32 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const router = useRouter();
   const { toast } = useToast();
   const t = useTranslations('auth.login');
+  const tValidation = useTranslations('common.validation');
+
+  const validateField = (field: 'email' | 'password', value: string) => {
+    const newErrors = { ...errors };
+    if (field === 'email') {
+      if (!value) {
+        newErrors.email = tValidation('required');
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        newErrors.email = tValidation('invalidEmail');
+      } else {
+        delete newErrors.email;
+      }
+    }
+    if (field === 'password') {
+      if (!value) {
+        newErrors.password = tValidation('required');
+      } else {
+        delete newErrors.password;
+      }
+    }
+    setErrors(newErrors);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,8 +104,13 @@ export default function LoginPage() {
                 placeholder={t('emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => validateField('email', email)}
+                className={errors.email ? 'border-destructive' : ''}
                 required
               />
+              {errors.email && (
+                <p className="text-xs text-destructive">{errors.email}</p>
+              )}
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -96,8 +124,13 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onBlur={() => validateField('password', password)}
+                className={errors.password ? 'border-destructive' : ''}
                 required
               />
+              {errors.password && (
+                <p className="text-xs text-destructive">{errors.password}</p>
+              )}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

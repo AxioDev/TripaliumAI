@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AnimatedCheckmark } from '@/components/ui/animated-checkmark';
+import { WelcomeModal } from '@/components/dashboard/welcome-modal';
 import {
   FileText,
   Target,
@@ -113,6 +114,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      <WelcomeModal />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold md:text-3xl">{t('title')}</h1>

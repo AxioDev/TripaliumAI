@@ -153,6 +153,12 @@
         "and": "et les",
         "termsOfService": "Conditions d'utilisation"
       },
+      "passwordRequirements": {
+        "minLength": "Au moins 8 caractères",
+        "lowercase": "Une lettre minuscule",
+        "uppercase": "Une lettre majuscule",
+        "number": "Un chiffre"
+      },
       "toast": {
         "success": {
           "title": "Succès",
@@ -1643,6 +1649,25 @@
       "sentEmailsDescription": "E-mails envoyés pour cette candidature",
       "emailStatusTest": "Test"
     }
+  },
+  "welcome": {
+    "title": "Bienvenue sur TripaliumAI !",
+    "description": "De l'inscription à vos premières candidatures en 3 étapes simples.",
+    "steps": {
+      "upload": {
+        "title": "Téléversez votre CV",
+        "description": "Déposez votre CV et nous construirons automatiquement votre profil professionnel."
+      },
+      "campaign": {
+        "title": "Créez une campagne",
+        "description": "Indiquez les postes et lieux ciblés. Nous rechercherons en continu."
+      },
+      "review": {
+        "title": "Vérifiez et postulez",
+        "description": "Nous générons des documents personnalisés pour chaque correspondance. Vous vérifiez et confirmez en un clic."
+      }
+    },
+    "cta": "C'est parti"
   },
   "metadata": {
     "title": "TripaliumAI - Automatisation de recherche d'emploi",
