@@ -80,22 +80,22 @@ function MatchScoreBadge({ score, label }: { score: number; label: string }) {
 const sourceConfig: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
   remoteok: {
     icon: <Globe className="h-3 w-3" />,
-    color: 'bg-emerald-100 text-emerald-800',
+    color: 'bg-emerald-50 text-emerald-700',
     label: 'RemoteOK',
   },
   wttj: {
     icon: <Database className="h-3 w-3" />,
-    color: 'bg-violet-100 text-violet-800',
+    color: 'bg-zinc-100 text-zinc-700',
     label: 'WTTJ',
   },
   mock: {
     icon: <TestTube2 className="h-3 w-3" />,
-    color: 'bg-orange-100 text-orange-800',
+    color: 'bg-amber-50 text-amber-700',
     label: 'Demo',
   },
   RSS: {
     icon: <Rss className="h-3 w-3" />,
-    color: 'bg-amber-100 text-amber-800',
+    color: 'bg-amber-50 text-amber-700',
     label: 'RSS',
   },
   API: {
@@ -110,7 +110,7 @@ function SourceBadge({ source }: { source?: { name: string; displayName: string;
 
   const config = sourceConfig[source.name] || sourceConfig[source.type] || {
     icon: <Globe className="h-3 w-3" />,
-    color: 'bg-gray-100 text-gray-800',
+    color: 'bg-zinc-100 text-zinc-700',
     label: source.displayName,
   };
 
@@ -404,7 +404,7 @@ export default function CampaignDetailPage() {
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold">{campaign.name}</h1>
               {campaign.testMode && (
-                <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
+                <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded">
                   {t('detail.practice')}
                 </span>
               )}

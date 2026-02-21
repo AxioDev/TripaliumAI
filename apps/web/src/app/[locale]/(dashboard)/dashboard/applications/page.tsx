@@ -173,10 +173,10 @@ export default function ApplicationsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('stats.pendingReview')}</CardTitle>
-            <Eye className="h-4 w-4 text-yellow-600" />
+            <Eye className="h-4 w-4 text-amber-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{stats.pendingReview}</div>
+            <div className="text-2xl font-bold text-amber-600">{stats.pendingReview}</div>
           </CardContent>
         </Card>
         <Card>
@@ -318,7 +318,7 @@ export default function ApplicationsPage() {
                           {t(`status.${statusKey}`)}
                         </span>
                         {application.testMode && (
-                          <span className="text-xs bg-orange-100 text-orange-800 px-2 py-0.5 rounded">
+                          <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded">
                             {t('practice')}
                           </span>
                         )}

@@ -398,7 +398,7 @@ export function CVManager() {
                     <CardTitle className="text-sm sm:text-base flex items-center gap-1.5 sm:gap-2">
                       <span className="truncate">{cv.fileName}</span>
                       {cv.isBaseline && (
-                        <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-yellow-500 fill-yellow-500 shrink-0" />
+                        <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-500 fill-amber-500 shrink-0" />
                       )}
                     </CardTitle>
                     <CardDescription className="text-xs sm:text-sm">

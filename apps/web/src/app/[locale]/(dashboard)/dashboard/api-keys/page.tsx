@@ -179,13 +179,13 @@ export default function ApiKeysPage() {
       </div>
 
       {/* Info Card */}
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="border-sky-200 bg-sky-50">
         <CardContent className="py-4">
           <div className="flex items-start gap-3">
-            <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
+            <Shield className="h-5 w-5 text-sky-600 mt-0.5" />
             <div>
-              <p className="font-medium text-blue-900">{t('info.title')}</p>
-              <p className="text-sm text-blue-800">
+              <p className="font-medium text-sky-900">{t('info.title')}</p>
+              <p className="text-sm text-sky-800">
                 {t('info.description')}
               </p>
             </div>
@@ -251,7 +251,7 @@ export default function ApiKeysPage() {
                           </span>
                         )}
                         {key.expiresAt && (
-                          <span className="text-yellow-600">
+                          <span className="text-amber-600">
                             {t('expires')} {formatRelativeTime(key.expiresAt, locale)}
                           </span>
                         )}
@@ -262,7 +262,7 @@ export default function ApiKeysPage() {
                       size="icon"
                       onClick={() => setDeleteKeyId(key.id)}
                     >
-                      <Trash2 className="h-4 w-4 text-red-500" />
+                      <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>
                 );
@@ -360,10 +360,10 @@ export default function ApiKeysPage() {
                 {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
-            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
               <div className="flex items-start gap-2">
-                <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5" />
-                <p className="text-sm text-yellow-800">
+                <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5" />
+                <p className="text-sm text-amber-800">
                   {t('keyCreated.warning')}
                 </p>
               </div>
@@ -389,7 +389,7 @@ export default function ApiKeysPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>{tCommon('actions.cancel')}</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive/90"
               onClick={() => deleteKeyId && revokeMutation.mutate(deleteKeyId)}
             >
               {revokeMutation.isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

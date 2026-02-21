@@ -317,7 +317,7 @@ export default function CampaignsPage() {
                     <div className="flex items-center gap-2">
                       <CardTitle className="text-lg">{campaign.name}</CardTitle>
                       {campaign.testMode && (
-                        <span className="text-xs bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 px-2 py-0.5 rounded">
+                        <span className="text-xs bg-amber-50 text-amber-700 dark:bg-amber-900 dark:text-amber-200 px-2 py-0.5 rounded">
                           {t('practice')}
                         </span>
                       )}
@@ -391,7 +391,7 @@ export default function CampaignsPage() {
                           onClick={() => pauseMutation.mutate(campaign.id)}
                           disabled={pauseMutation.isLoading}
                         >
-                          <Pause className="h-4 w-4 text-yellow-600" />
+                          <Pause className="h-4 w-4 text-amber-600" />
                         </Button>
                       )}
                       {canStop && (
@@ -402,7 +402,7 @@ export default function CampaignsPage() {
                           onClick={() => stopMutation.mutate(campaign.id)}
                           disabled={stopMutation.isLoading}
                         >
-                          <Square className="h-4 w-4 text-red-600" />
+                          <Square className="h-4 w-4 text-rose-600" />
                         </Button>
                       )}
                       <Button
@@ -445,7 +445,7 @@ export default function CampaignsPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>{tCommon('actions.cancel')}</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive/90"
               onClick={() => {
                 if (deleteId) {
                   deleteMutation.mutate(deleteId);

@@ -418,7 +418,7 @@ export default function CVsPage() {
                     <CardTitle className="text-base flex items-center gap-2">
                       {cv.fileName}
                       {cv.isBaseline && (
-                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                        <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
                       )}
                     </CardTitle>
                     <CardDescription>
@@ -633,7 +633,7 @@ export default function CVsPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>{tCommon('actions.cancel')}</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive/90"
               onClick={() => {
                 if (deleteId) {
                   deleteMutation.mutate(deleteId);
